@@ -32,25 +32,25 @@ class RandomRhythmBox:
         images = self.load_data()
         display = []
         for image in images:
-            if not is_one_player:
-                display_size = (image[:, :133], image[:, 133:])         # (126, 133, 3)
-            else:
-                display_size = image
-            display.append(display_size)
+            # if not is_one_player:
+            #     display_size = (image[:, :133], image[:, 133:])         # (126, 133, 3)
+            # else:
+            #     display_size = image
+            # display.append(display_size)
+            display.append(image)
         return display
 
     def rhythm_box_display_area(self, level, is_one_player=True):
         if not is_one_player:
             if level == 'easy':
-                game_areas = self.split_display(is_one_player)
-                for (area1, area2) in game_areas:
-                    x, y, _ = area1.shape                                   # (126, 133, 3)
-                    print(area2.shape)
-                    box_area = cv2.rectangle(area1, (self.easy, self.easy), (x-self.easy, y-self.easy),
-                                             self.green_color, 1)
-                    box_area = cv2.rectangle(area2, (self.easy, self.easy), (x-self.easy, y-self.easy),
-                                             self.green_color, 1)
-                    cv2.imshow('rectangle', box_area)
+                game_areas = self.load_data()
+                for image in game_areas:
+                    x, y, _ = image.shape                                   # (126, 266, 3)
+                    area = cv2.rectangle(image, (self.easy, self.easy), (x-self.easy, y//2-self.easy),
+                                         self.green_color, 1)
+                    area = cv2.rectangle(area, (x+self.easy, y+self.easy), (x-self.easy, y-self.easy),
+                                         self.green_color, 1)
+                    cv2.imshow('rectangle', area)
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
             if level == 'norm':
