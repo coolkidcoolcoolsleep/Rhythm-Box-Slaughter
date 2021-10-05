@@ -6,16 +6,23 @@ import cv2
 
 
 class RandomRhythmBox:
-    def __init__(self, dataset, img_res=(266, 126)):
+    def __init__(self, dataset, img_width=266, img_height=126):
         self.dataset = dataset
-        self.img_res = img_res
+        self.img_width = img_width
+        self.img_height = img_height
+        self.easy = 30
+        self.norm = 20
+        self.hard = 15
+        self.red_color = (0, 0, 255)
+        self.blue_color = (255, 0, 0)
+        self.green_color = (0, 255, 0)
 
     def load_data(self):
         path = glob.glob('data/image_input/*.jpg')
         images = []
         for file in path:
             img = Image.open(file)
-            img = Image.fromarray(np.array(img)).resize(size=self.img_res)
+            img = Image.fromarray(np.array(img)).resize(size=(self.img_width, self.img_height))
             img = np.array(img)                 # (126, 266, 3)
             images.append(img)
 
@@ -26,40 +33,51 @@ class RandomRhythmBox:
         display = []
         for image in images:
             if not is_one_player:
-                display_size = (image[:63, :133], image[63:, 133:])
+                display_size = (image[:, :133], image[:, 133:])         # (126, 133, 3)
             else:
                 display_size = image
             display.append(display_size)
-
         return display
 
-    def random_box(self, level, is_one_player=True):
-        if level == 'easy':
+    def rhythm_box_display_area(self, level, is_one_player=True):
+        if not is_one_player:
+            if level == 'easy':
+                game_areas = self.split_display(is_one_player)
+                for (area1, area2) in game_areas:
+                    x, y, _ = area1.shape                                   # (126, 133, 3)
+                    print(area2.shape)
+                    box_area = cv2.rectangle(area1, (self.easy, self.easy), (x-self.easy, y-self.easy),
+                                             self.green_color, 1)
+                    box_area = cv2.rectangle(area2, (self.easy, self.easy), (x-self.easy, y-self.easy),
+                                             self.green_color, 1)
+                    cv2.imshow('rectangle', box_area)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+            if level == 'norm':
+                pass
+            if level == 'hard':
+                pass
+        else:
             pass
-            # game_area =
-        if level == 'norm':
-            pass
-        if level == 'hard':
-            pass
-        pass
 
     def bpm_per_song(self):
         pass
 
     def color_box(self):
         img = self.load_data()[0]
-        red_color, blue_color = (0, 0, 255), (255, 0, 0)
 
-        img = cv2.rectangle(img, (10, 10), (30, 30), blue_color, 3)
-        img = cv2.rectangle(img, (100, 100), (120, 120), red_color, 3)
+        img = cv2.rectangle(img, (10, 10), (30, 30), self.blue_color, 3)
+        img = cv2.rectangle(img, (100, 100), (120, 120), self.red_color, 3)
         cv2.imwrite('data/image_output/01.jpg', img)
-        cv2.imshow('rectangle',img)
+        cv2.imshow('rectangle', img)
         cv2.waitKey(0)
+
 
 if __name__ == '__main__':
     data = RandomRhythmBox('./data/image_input')
-    test = data.color_box()
-    # test = data.split_display(False)
+    data.rhythm_box_display_area('easy', False)
+    # test = data.color_box()
+    # test = data.split_display(True)
     # ['./data/image_input\\sample01.jpg']
 
 
