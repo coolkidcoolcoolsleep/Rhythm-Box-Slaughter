@@ -33,7 +33,7 @@ class RandomRhythmBox:
         display = []
         for image in images:
             # if not is_one_player:
-            #     display_size = (image[:, :133], image[:, 133:])         # (126, 133, 3)
+            #     display_size = (image[:, :133], image[:, 133:])                       # (126, 133, 3)
             # else:
             #     display_size = image
             # display.append(display_size)
@@ -44,15 +44,17 @@ class RandomRhythmBox:
         if not is_one_player:
             if level == 'easy':
                 game_areas = self.load_data()
-                for image in game_areas:
-                    x, y, _ = image.shape                                   # (126, 266, 3)
-                    area = cv2.rectangle(image, (self.easy, self.easy), (x-self.easy, y//2-self.easy),
-                                         self.green_color, 1)
-                    area = cv2.rectangle(area, (x+self.easy, y+self.easy), (x-self.easy, y-self.easy),
-                                         self.green_color, 1)
+                for area in game_areas:
+                    y, x, _ = area.shape                                                # (126, 266, 3)
+                    area1 = (self.easy, self.easy), (x//2-self.easy, y-self.easy)       # (30, 30), (103, 96)
+                    area2 = (x//2+self.easy, self.easy), (x-self.easy, y-self.easy)     # (163, 30), (236, 96)
+                    print(area1, area2)
+                    area = cv2.rectangle(area, (self.easy, self.easy), (x//2-self.easy, y-self.easy),
+                                         self.green_color, 3)
+                    area = cv2.rectangle(area, (x//2+self.easy, self.easy), (x-self.easy, y-self.easy),
+                                         self.green_color, 3)
                     cv2.imshow('rectangle', area)
                     cv2.waitKey(0)
-                    cv2.destroyAllWindows()
             if level == 'norm':
                 pass
             if level == 'hard':
