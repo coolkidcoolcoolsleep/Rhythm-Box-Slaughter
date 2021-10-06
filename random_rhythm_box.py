@@ -28,46 +28,65 @@ class RandomRhythmBox:
 
         return images
 
-    def split_display(self, is_one_player=True):
-        images = self.load_data()
-        display = []
-        for image in images:
-            # if not is_one_player:
-            #     display_size = (image[:, :133], image[:, 133:])                       # (126, 133, 3)
-            # else:
-            #     display_size = image
-            # display.append(display_size)
-            display.append(image)
-        return display
-
     def rhythm_box_display_area(self, level, is_one_player=True):
+        game_areas = self.load_data()
+        display_areas = []
         if not is_one_player:
             if level == 'easy':
-                game_areas = self.load_data()
                 for area in game_areas:
                     y, x, _ = area.shape                                                # (126, 266, 3)
                     area1 = (self.easy, self.easy), (x//2-self.easy, y-self.easy)       # (30, 30), (103, 96)
                     area2 = (x//2+self.easy, self.easy), (x-self.easy, y-self.easy)     # (163, 30), (236, 96)
-                    print(area1, area2)
-                    area = cv2.rectangle(area, (self.easy, self.easy), (x//2-self.easy, y-self.easy),
-                                         self.green_color, 3)
-                    area = cv2.rectangle(area, (x//2+self.easy, self.easy), (x-self.easy, y-self.easy),
-                                         self.green_color, 3)
-                    cv2.imshow('rectangle', area)
-                    cv2.waitKey(0)
+                    display_areas.append((area1, area2))
             if level == 'norm':
-                pass
+                for area in game_areas:
+                    y, x, _ = area.shape  # (126, 266, 3)
+                    area1 = (self.norm, self.norm), (x//2-self.norm, y-self.norm)  # (20, 20), (113, 106)
+                    area2 = (x//2+self.norm, self.norm), (x-self.norm, y-self.norm)  # (153, 20), (246, 106)
+                    display_areas.append((area1, area2))
             if level == 'hard':
-                pass
+                for area in game_areas:
+                    y, x, _ = area.shape  # (126, 266, 3)
+                    area1 = (self.hard, self.hard), (x//2-self.hard, y-self.hard)  # (15, 15), (118, 111)
+                    area2 = (x//2+self.hard, self.hard), (x-self.hard, y-self.hard)  # (148, 15), (251, 111)
+                    display_areas.append((area1, area2))
         else:
-            pass
+            if level == 'easy':
+                for area in game_areas:
+                    y, x, _ = area.shape                                                # (126, 266, 3)
+                    area1 = (self.easy, self.easy), (x-self.easy, y-self.easy)       # (30, 30), (236, 96)
+                    display_areas.append(area1)
+            if level == 'norm':
+                for area in game_areas:
+                    y, x, _ = area.shape  # (126, 266, 3)
+                    area1 = (self.norm, self.norm), (x-self.norm, y-self.norm)  # (20, 20), (246, 106)
+                    display_areas.append(area1)
+            if level == 'hard':
+                for area in game_areas:
+                    y, x, _ = area.shape  # (126, 266, 3)
+                    area1 = (self.hard, self.hard), (x-self.hard, y-self.hard)  # (15, 15), (251, 111)
+                    display_areas.append(area1)
+        return display_areas
 
     def bpm_per_song(self):
         pass
 
-    def color_box(self):
+    def random_box(self, level, is_one_player=True):
         img = self.load_data()[0]
-
+        areas = self.rhythm_box_display_area(level, is_one_player)
+        # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
+        if not is_one_player:
+            if level == 'easy':
+                for area in areas:
+                    area1, area2 = area
+                    (xs, ys), (xe, ye) = area1
+                    box_start = (np.random.randint(xs, xe, 1), np.random.randint(ys, ye, 1))
+                    a, b = box_start
+                    box = (a, b), (a+self.easy, b+self.easy)
+                    print(box_start)
+                    print(box)
+        exit()
+        # np.random.randint()
         img = cv2.rectangle(img, (10, 10), (30, 30), self.blue_color, 3)
         img = cv2.rectangle(img, (100, 100), (120, 120), self.red_color, 3)
         cv2.imwrite('data/image_output/01.jpg', img)
@@ -77,9 +96,10 @@ class RandomRhythmBox:
 
 if __name__ == '__main__':
     data = RandomRhythmBox('./data/image_input')
-    data.rhythm_box_display_area('easy', False)
+    data.random_box('easy', False)
+    # data.rhythm_box_display_area('hard', False)
+    # data.rhythm_box_display_area('hard', True)
     # test = data.color_box()
-    # test = data.split_display(True)
     # ['./data/image_input\\sample01.jpg']
 
 
