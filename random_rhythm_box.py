@@ -2,7 +2,7 @@
 import glob
 from PIL import Image
 import numpy as np
-import cv2
+import cv2, sys
 
 
 class RandomRhythmBox:
@@ -18,6 +18,29 @@ class RandomRhythmBox:
         self.green_color = (0, 255, 0)
         self.white_color = (255, 255, 255)
 
+    def load_video(self, level, is_one_player=True):
+        cap = cv2.VideoCapture()
+        cap.open(0)
+
+        if not cap.isOpened():
+            print('Camera open falied')
+            sys.exit()
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 266)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 126)
+        while True:
+            ret, frame = cap.read()
+
+            if not ret:
+                break
+            self.random_box(level, frame, is_one_player)
+            cv2.imshow('camera', frame)
+
+            if cv2.waitKey(10) == 27:  # esc 키를 누르면 닫음
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+
     def load_data(self):
         path = glob.glob('data/image_input/*.jpg')
         images = []
@@ -29,8 +52,9 @@ class RandomRhythmBox:
 
         return images
 
-    def rhythm_box_display_area(self, level, is_one_player=True):
-        game_areas = self.load_data()
+    def rhythm_box_display_area(self, level, frame, is_one_player=True):
+        # game_areas = self.load_data()
+        game_areas = frame
         display_areas = []
         for area in game_areas:
             y, x, _ = area.shape  # (126, 266, 3)
@@ -68,9 +92,10 @@ class RandomRhythmBox:
     def bpm_per_song(self):
         pass
 
-    def random_box(self, level, is_one_player=True):
-        img = self.load_data()[0]
-        areas = self.rhythm_box_display_area(level, is_one_player)
+    def random_box(self, level, frame, is_one_player=True):
+        # img = self.load_data()[0]
+        img = frame
+        areas = self.rhythm_box_display_area(level, is_one_player, frame)
         # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
         for area in areas:
             if not is_one_player:
@@ -105,14 +130,15 @@ class RandomRhythmBox:
                     img = cv2.rectangle(img, (c, d), (c + self.hard, d + self.hard), self.blue_color, 3)
         cv2.imshow('rhythm_box', img)
         cv2.waitKey(0)
-        cv2.imwrite(f'data/image_output/{i}.jpg', img)
+        cv2.imwrite(f'data/image_output/01.jpg', img)
 
 
 if __name__ == '__main__':
     data = RandomRhythmBox('./data/image_input')
+    data.load_video('easy', True)
     # data.random_box('easy', True)
-    for i in range(10):
-        data.random_box('easy', False)
+    # for i in range(10):
+    #     data.random_box('easy', False)
     # data.rhythm_box_display_area('easy', False)
     # data.rhythm_box_display_area('norm', False)
     # data.rhythm_box_display_area('hard', False)
