@@ -79,12 +79,14 @@ class RandomRhythmBox:
             if level == 'easy':
                 for area in areas:
                     area1, area2 = area
-                    (xs, ys), (xe, ye) = area1
-                    box_start = (np.random.randint(xs, xe, 1), np.random.randint(ys, ye, 1))
-                    a, b = box_start
-                    box = (a, b), (a+self.easy, b+self.easy)
-                    print(box_start)
-                    print(box)
+                    (xs1, ys1), (xe1, ye1) = area1
+                    a, b = int(np.random.randint(xs1, xe1, 1)), int(np.random.randint(ys1, ye1, 1))
+                    img = cv2.rectangle(img, (a, b), (a+self.easy, b+self.easy), self.red_color, 3)
+                    (xs2, ys2), (xe2, ye2) = area2
+                    a, b = int(np.random.randint(xs2, xe2, 1)), int(np.random.randint(ys2, ye2, 1))
+                    img = cv2.rectangle(img, (a, b), (a+self.easy, b+self.easy), self.blue_color, 3)
+                    cv2.imshow('rectangle', img)
+                    cv2.waitKey(0)
         exit()
         # np.random.randint()
         img = cv2.rectangle(img, (10, 10), (30, 30), self.blue_color, 3)
