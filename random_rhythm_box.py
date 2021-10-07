@@ -1,5 +1,5 @@
 # random_rhythm_box.py
-import glob
+import glob, os
 from PIL import Image
 import numpy as np
 import cv2, sys
@@ -21,24 +21,45 @@ class RandomRhythmBox:
     def load_video(self, level, is_one_player=True):
         cap = cv2.VideoCapture()
         cap.open(0)
-
         if not cap.isOpened():
             print('Camera open falied')
             sys.exit()
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 266)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 126)
+
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        # print(fps)
+        fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+        # delay = round(1000/fps)
+
+        if not os.path.exists('data/video_output'):
+            os.makedirs('data/video_output')
+        # out = cv2.VideoWriter('data/video_output/sample_video.mp4', fourcc, fps, (self.img_width, self.img_height))
+        # out = cv2.VideoWriter('data/video_output/easy_true.mp4', fourcc, fps, (self.img_width, self.img_height))
+        out = cv2.VideoWriter('data/video_output/easy_false.mp4', fourcc, fps, (self.img_width, self.img_height))
+
+        if not out.isOpened():
+            print('File open failed!')
+            cap.release()
+            sys.exit()
+
         while True:
-            ret, frame = cap.read()
+            ret, frame = cap.read()             # bool, numpy
 
             if not ret:
                 break
-            self.random_box(level, frame, is_one_player)
-            cv2.imshow('camera', frame)
+            flip_frame = cv2.flip(frame, 0)
+            resize_frame = cv2.resize(flip_frame, dsize=(266, 126))
+            # print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))       # 480.0
+            # print(resize_frame.shape)                       # (126, 266, 3)
+            self.random_box(level, resize_frame, is_one_player)
+
+            out.write(resize_frame)
+            cv2.imshow('camera', resize_frame)
 
             if cv2.waitKey(10) == 27:  # esc 키를 누르면 닫음
                 break
 
         cap.release()
+        out.release()
         cv2.destroyAllWindows()
 
     def load_data(self):
@@ -54,39 +75,40 @@ class RandomRhythmBox:
 
     def rhythm_box_display_area(self, level, frame, is_one_player=True):
         # game_areas = self.load_data()
-        game_areas = frame
+        # game_areas = frame
+        area = frame
         display_areas = []
-        for area in game_areas:
-            y, x, _ = area.shape  # (126, 266, 3)
-            if not is_one_player:
-                if level == 'easy':
-                    area1 = (0, 0), (x//2-self.easy, y-self.easy)       # (0, 0), (103, 96)
-                    area2 = (x//2, 0), (x-self.easy, y-self.easy)       # (133, 0), (236, 96)
-                    print(area1, area2)
-                    display_areas.append((area1, area2))
-                if level == 'norm':
-                    area1 = (0, 0), (x//2-self.norm, y-self.norm)       # (0, 0), (113, 106)
-                    area2 = (x//2, 0), (x-self.norm, y-self.norm)       # (133, 0), (246, 106)
-                    print(area1, area2)
-                    display_areas.append((area1, area2))
-                if level == 'hard':
-                    area1 = (0, 0), (x//2-self.hard, y-self.hard)       # (0, 0), (118, 111)
-                    area2 = (x//2, 0), (x-self.hard, y-self.hard)       # (133, 0), (251, 111)
-                    print(area1, area2)
-                    display_areas.append((area1, area2))
-            else:
-                if level == 'easy':
-                    area1 = (0, 0), (x-self.easy, y-self.easy)          # (0, 0), (236, 96)
-                    print(area1)
-                    display_areas.append(area1)
-                if level == 'norm':
-                    area1 = (0, 0), (x-self.norm, y-self.norm)          # (0, 0), (246, 106)
-                    print(area1)
-                    display_areas.append(area1)
-                if level == 'hard':
-                    area1 = (0, 0), (x-self.hard, y-self.hard)          # (0, 0), (251, 111)
-                    print(area1)
-                    display_areas.append(area1)
+        # for area in game_areas:
+        y, x, _ = area.shape  # (126, 266, 3)
+        if not is_one_player:
+            if level == 'easy':
+                area1 = (0, 0), (x//2-self.easy, y-self.easy)       # (0, 0), (103, 96)
+                area2 = (x//2, 0), (x-self.easy, y-self.easy)       # (133, 0), (236, 96)
+                # print(area1, area2)
+                display_areas.append((area1, area2))
+            if level == 'norm':
+                area1 = (0, 0), (x//2-self.norm, y-self.norm)       # (0, 0), (113, 106)
+                area2 = (x//2, 0), (x-self.norm, y-self.norm)       # (133, 0), (246, 106)
+                # print(area1, area2)
+                display_areas.append((area1, area2))
+            if level == 'hard':
+                area1 = (0, 0), (x//2-self.hard, y-self.hard)       # (0, 0), (118, 111)
+                area2 = (x//2, 0), (x-self.hard, y-self.hard)       # (133, 0), (251, 111)
+                # print(area1, area2)
+                display_areas.append((area1, area2))
+        else:
+            if level == 'easy':
+                area1 = (0, 0), (x-self.easy, y-self.easy)          # (0, 0), (236, 96)
+                # print(area1)
+                display_areas.append(area1)
+            if level == 'norm':
+                area1 = (0, 0), (x-self.norm, y-self.norm)          # (0, 0), (246, 106)
+                # print(area1)
+                display_areas.append(area1)
+            if level == 'hard':
+                area1 = (0, 0), (x-self.hard, y-self.hard)          # (0, 0), (251, 111)
+                # print(area1)
+                display_areas.append(area1)
         return display_areas
 
     def bpm_per_song(self):
@@ -95,7 +117,7 @@ class RandomRhythmBox:
     def random_box(self, level, frame, is_one_player=True):
         # img = self.load_data()[0]
         img = frame
-        areas = self.rhythm_box_display_area(level, is_one_player, frame)
+        areas = self.rhythm_box_display_area(level, frame, is_one_player)
         # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
         for area in areas:
             if not is_one_player:
@@ -128,14 +150,15 @@ class RandomRhythmBox:
                 if level == 'hard':
                     img = cv2.rectangle(img, (a, b), (a + self.hard, b + self.hard), self.red_color, 3)
                     img = cv2.rectangle(img, (c, d), (c + self.hard, d + self.hard), self.blue_color, 3)
-        cv2.imshow('rhythm_box', img)
-        cv2.waitKey(0)
-        cv2.imwrite(f'data/image_output/01.jpg', img)
+        # cv2.imshow('rhythm_box', img)
+        # cv2.waitKey(0)
+        # cv2.imwrite(f'data/image_output/01.jpg', img)
 
 
 if __name__ == '__main__':
     data = RandomRhythmBox('./data/image_input')
-    data.load_video('easy', True)
+    # data.load_video('easy', True)
+    data.load_video('easy', False)
     # data.random_box('easy', True)
     # for i in range(10):
     #     data.random_box('easy', False)
