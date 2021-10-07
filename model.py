@@ -1,22 +1,18 @@
-from tensorflow.keras.applications.resnet50 import preprocess_input
-from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import layers
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from PIL import Image
 import numpy as np
-import cv2
 import glob
 
 
 categories = ['blue_ball', 'red_ball']
-np_classes = len(categories)
 
 image_w = 64
 image_h = 64
 
-X, y = [], []
+x, y = [], []
 
 for idx, ball in enumerate(categories):
     files = glob.glob(ball + '/*.jpg')
@@ -26,53 +22,18 @@ for idx, ball in enumerate(categories):
         img = img.convert('RGB')
         img = img.resize((image_w, image_h))
         data = np.asarray(img)
-        X.append(data)
+        x.append(data)
         y.append(idx)
 
-X = np.array(X)
+X = np.array(x)
 Y = np.array(y)
 
-image = cv2.imread('blue_ball_094.jpg')
-(H, W) = image.shape[:2]
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.1)
 
-train_dir = '.'
-categories = ['blue_ball', 'red_ball']
+x_train = x_train.astype('float32') / 255
+x_test = x_test.astype('float32') / 255
 
-proposals, boxes, target = [], [], []
-
-for idx, cate in enumerate(categories):
-    box_dir = train_dir + '/' + cate
-    files = glob.glob(box_dir + '/*.txt')
-    for f in files:
-        with open(f, 'r', encoding='utf-8') as f:
-            _, x, y, w, h = f.readline().split()
-
-            roi = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            roi = cv2.resize(roi, (64, 64))
-
-            roi = img_to_array(roi)
-            roi = preprocess_input(roi)
-
-            proposals.append(roi)
-            boxes.append((x, y, w, h))
-
-            startX = float(x) / W
-            startY = float(y) / H
-            endX = float(w) / W
-            endY = float(h) / H
-
-            target.append((startX, startY, endX, endY))
-
-target = np.array(target)
-
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1)
-
-image_w = 64
-image_h = 64
-X_train = X_train.astype('float32') / 255
-X_test = X_test.astype('float32') / 255
-
-input_layer = tf.keras.layers.Input(shape=X_train.shape[1:])
+input_layer = tf.keras.layers.Input(shape=x_train.shape[1:])
 
 base_layers_1 = layers.experimental.preprocessing.Rescaling(1./255)(input_layer)
 base_layers_2 = layers.Conv2D(16, 3, padding='same', activation='relu')(base_layers_1)
@@ -106,6 +67,6 @@ model_path = 'model/blue_ball_red_ball/blue_ball_red_ball.model'
 checkpoint = ModelCheckpoint(filepath=model_path, monitor='val_loss', verbose=1, save_best_only=True)
 early_stopping = EarlyStopping(monitor='val_loss', patience=7)
 
-model.fit(X_train, y_train, callbacks=[checkpoint, early_stopping], validation_data=(X_test, y_test), epochs=100)
+model.fit(x_train, y_train, callbacks=[checkpoint, early_stopping], validation_data=(x_test, y_test), epochs=100)
 
 model.save('model/model.h5')
