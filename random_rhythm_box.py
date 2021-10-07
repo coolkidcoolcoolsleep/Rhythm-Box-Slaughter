@@ -3,6 +3,7 @@ import glob, os
 from PIL import Image
 import numpy as np
 import cv2, sys
+import random
 
 
 class RandomRhythmBox:
@@ -10,9 +11,9 @@ class RandomRhythmBox:
         self.dataset = dataset
         self.img_width = img_width
         self.img_height = img_height
-        self.easy = 30
-        self.norm = 20
-        self.hard = 15
+        self.easy = 50
+        self.norm = 40
+        self.hard = 30
         self.red_color = (0, 0, 255)
         self.blue_color = (255, 0, 0)
         self.green_color = (0, 255, 0)
@@ -30,17 +31,18 @@ class RandomRhythmBox:
         fourcc = cv2.VideoWriter_fourcc(*'DIVX')
         # delay = round(1000/fps)
 
-        if not os.path.exists('data/video_output'):
-            os.makedirs('data/video_output')
-        # out = cv2.VideoWriter('data/video_output/sample_video.mp4', fourcc, fps, (self.img_width, self.img_height))
-        # out = cv2.VideoWriter('data/video_output/easy_true.mp4', fourcc, fps, (self.img_width, self.img_height))
-        out = cv2.VideoWriter('data/video_output/easy_false.mp4', fourcc, fps, (self.img_width, self.img_height))
+        if not os.path.exists('data/video'):
+            os.makedirs('data/video')
+
+        out = cv2.VideoWriter(f'data/video/{level}_{is_one_player}.mp4',
+                              fourcc, fps, (self.img_width, self.img_height))
 
         if not out.isOpened():
             print('File open failed!')
             cap.release()
             sys.exit()
 
+        num = 0
         while True:
             ret, frame = cap.read()             # bool, numpy
 
@@ -50,12 +52,16 @@ class RandomRhythmBox:
             resize_frame = cv2.resize(flip_frame, dsize=(266, 126))
             # print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))       # 480.0
             # print(resize_frame.shape)                       # (126, 266, 3)
+            seed_num = num // 10
+            random.seed(seed_num)
+            num = num + 1
+
             self.random_box(level, resize_frame, is_one_player)
 
             out.write(resize_frame)
             cv2.imshow('camera', resize_frame)
 
-            if cv2.waitKey(10) == 27:  # esc 키를 누르면 닫음
+            if cv2.waitKey(15) == 27:  # esc 키를 누르면 닫음
                 break
 
         cap.release()
@@ -116,6 +122,7 @@ class RandomRhythmBox:
 
     def random_box(self, level, frame, is_one_player=True):
         # img = self.load_data()[0]
+
         img = frame
         areas = self.rhythm_box_display_area(level, frame, is_one_player)
         # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
@@ -125,8 +132,8 @@ class RandomRhythmBox:
                 area1, area2 = area
                 (xs1, ys1), (xe1, ye1) = area1
                 (xs2, ys2), (xe2, ye2) = area2
-                a1, b1 = int(np.random.randint(xs1, xe1, 1)), int(np.random.randint(ys1, ye1, 1))
-                a2, b2 = int(np.random.randint(xs2, xe2, 1)), int(np.random.randint(ys2, ye2, 1))
+                a1, b1 = random.randint(xs1, xe1), random.randint(ys1, ye1)
+                a2, b2 = random.randint(xs2, xe2), random.randint(ys2, ye2)
 
                 if level == 'easy':
                     img = cv2.rectangle(img, (a1, b1), (a1+self.easy, b1+self.easy), self.red_color, 3)
@@ -139,8 +146,8 @@ class RandomRhythmBox:
                     img = cv2.rectangle(img, (a2, b2), (a2+self.hard, b2+self.hard), self.blue_color, 3)
             else:
                 (xs1, ys1), (xe1, ye1) = area
-                a, b = int(np.random.randint(xs1, xe1, 1)), int(np.random.randint(ys1, ye1, 1))
-                c, d = int(np.random.randint(xs1, xe1, 1)), int(np.random.randint(ys1, ye1, 1))
+                a, b = random.randint(xs1, xe1), random.randint(ys1, ye1)
+                c, d = random.randint(xs1, xe1), random.randint(ys1, ye1)
                 if level == 'easy':
                     img = cv2.rectangle(img, (a, b), (a + self.easy, b + self.easy), self.red_color, 3)
                     img = cv2.rectangle(img, (c, d), (c + self.easy, d + self.easy), self.blue_color, 3)
@@ -157,19 +164,13 @@ class RandomRhythmBox:
 
 if __name__ == '__main__':
     data = RandomRhythmBox('./data/image_input')
-    # data.load_video('easy', True)
-    data.load_video('easy', False)
-    # data.random_box('easy', True)
-    # for i in range(10):
-    #     data.random_box('easy', False)
-    # data.rhythm_box_display_area('easy', False)
-    # data.rhythm_box_display_area('norm', False)
-    # data.rhythm_box_display_area('hard', False)
-    # data.rhythm_box_display_area('easy', True)
-    # data.rhythm_box_display_area('norm', True)
-    # data.rhythm_box_display_area('hard', True)
-    # test = data.color_box()
-    # ['./data/image_input\\sample01.jpg']
+    data.load_video('easy', True)
+    # data.load_video('norm', True)
+    # data.load_video('hard', True)
+    # data.load_video('easy', False)
+    # data.load_video('norm', False)
+    # data.load_video('hard', False)
+    # data.load_video('hard', False)
 
 
 
