@@ -5,13 +5,6 @@ import numpy as np
 
 
 class Tracking:
-    def press_q(self, color):
-        img = np.full((126, 266, 3), color, np.uint8)
-        text = 'press Q key to exit'
-        cv2.putText(img, text, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-
-        return img
-
     def track_and_draw(self, color_lower, color_upper, color):
         vidcap = cv2.VideoCapture(0)
         time.sleep(0.4)
@@ -45,9 +38,7 @@ class Tracking:
 
                     detections.append([x, y, w, h])
 
-            img = self.press_q(color)
-
-            cv2.imshow('Rhythm Box Slaughter', frame+img)
+            cv2.imshow('Rhythm Box Slaughter', frame)
             cv2.moveWindow(winname='Rhythm Box Slaughter', x=300, y=200)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
