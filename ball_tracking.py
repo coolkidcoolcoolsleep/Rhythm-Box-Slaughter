@@ -1,14 +1,12 @@
 import cv2
-import time
 import sys
-import numpy as np
 
 
 class Tracking:
-    def track_and_draw(self, color_lower, color_upper, color):
+    def track_and_draw(self, blue_lower, blue_upper, red_lower, red_upper):
         vidcap = cv2.VideoCapture(0)
-        time.sleep(0.4)
-        detections = []
+        detection_blue = []
+        detection_red = []
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
@@ -25,21 +23,32 @@ class Tracking:
 
             blurred = cv2.GaussianBlur(frame, (11, 11), 0)
             hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-            mask = cv2.inRange(hsv, color_lower, color_upper)
-            mask = cv2.erode(mask, None, iterations=2)
-            mask = cv2.dilate(mask, None, iterations=2)
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            blue_mask = cv2.inRange(hsv, blue_lower, blue_upper)
+            blue_mask = cv2.erode(blue_mask, None, iterations=2)
+            blue_mask = cv2.dilate(blue_mask, None, iterations=2)
+            contours, _ = cv2.findContours(blue_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             for cnt in contours:
                 area = cv2.contourArea(cnt)
                 if area > 100:
                     x, y, w, h = cv2.boundingRect(cnt)
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), color, 3)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
+                    detection_blue.append([x, y, w, h])
 
-                    detections.append([x, y, w, h])
+            red_mask = cv2.inRange(hsv, red_lower, red_upper)
+            red_mask = cv2.erode(red_mask, None, iterations=2)
+            red_mask = cv2.dilate(red_mask, None, iterations=2)
+            contours, _ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            for cnt in contours:
+                area = cv2.contourArea(cnt)
+                if area > 100:
+                    x, y, w, h = cv2.boundingRect(cnt)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
+                    detection_red.append([x, y, w, h])
 
             cv2.imshow('Rhythm Box Slaughter', frame)
-            cv2.moveWindow(winname='Rhythm Box Slaughter', x=300, y=200)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -47,19 +56,16 @@ class Tracking:
         vidcap.release()
         cv2.destroyAllWindows()
 
-        return detections
+        return detection_blue, detection_red
 
 
 if __name__ == '__main__':
-    red_lower = (0, 70, 50)
-    red_upper = (10, 255, 255)
-    red = (0, 0, 255)
-
     blue_lower = (100, 150, 0)
     blue_upper = (140, 255, 255)
-    blue = (255, 0, 0)
+
+    red_lower = (0, 70, 50)
+    red_upper = (10, 255, 255)
 
     t = Tracking()
 
-    t.track_and_draw(red_lower, red_upper, red)
-    # t.track_and_draw(blue_lower, blue_upper, blue)
+    t.track_and_draw(blue_lower, blue_upper, red_lower, red_upper)
