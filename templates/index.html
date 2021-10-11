@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>VIP</title>
+</head>
+<body>
+
+<h2>분류할 공 이미지의 URL을 입력하세요</h2>
+<form class='url'>
+	<input type="text" name="url"/>
+	<button type="button" id="submit">submit</button>
+</form>
+
+<table id="result">
+</table>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+
+
+<script>
+
+	const Result = ({ url, result }) => `
+	<tr>
+		<td><img class="crop-result" src="${url}"></td>
+		<td><img class="crop-result" src="data:image/png;base64, ${result}"></td>
+	</tr>
+	`;
+
+	$(function() {
+		$('#submit').click(function() {
+
+			var input = $('form.url').serialize();
+			console.log(input);
+
+			$.ajax({
+				url: '/model',
+				data: input,
+				type: 'GET',
+				success: function(response) {
+					var result = JSON.parse(response);
+					console.log(result);
+					$('#result').html([result].map(Result).join(''));
+				},
+				error: function(error){
+					console.log(error);
+				}
+
+			});
+		});
+	});
+</script>
+</body>
