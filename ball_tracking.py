@@ -50,7 +50,7 @@ class Tracking:
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) == 27:
                 break
 
         vidcap.release()
