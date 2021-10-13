@@ -25,7 +25,7 @@ while True:
     if not ret:
         print('Cannot receive frame from camera')
         break
-    # frame_cam = cv2.resize(frame_cam, (width, height), interpolation = cv2.INTER_AREA)
+    frame_cam = cv2.resize(frame_cam, (width, height), interpolation = cv2.INTER_AREA)
 
     # Blend the two images and show the result
     tr = 0.3    # transparency between 0-1, show camera if 0
