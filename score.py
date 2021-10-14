@@ -40,6 +40,7 @@ class Video_Manager:
             print('카메라를 열 수 없습니다.')
             sys.exit()
 
+        num = 0
         while True:
             _, frame = vidcap.read()    # _: ret
             # print(_)
@@ -50,6 +51,10 @@ class Video_Manager:
                 break
 
             frame = cv2.resize(frame, dsize=(266, 126))
+
+            seed_num = num // 10
+            random.seed(seed_num)
+            num = num + 1
 
             # GaussianBlur: 적용해서 노이즈와 이상치 줄임
             blurred = cv2.GaussianBlur(frame, (11, 11), 0)
