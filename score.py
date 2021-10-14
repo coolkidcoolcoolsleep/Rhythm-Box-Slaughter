@@ -4,7 +4,6 @@ import numpy as np
 import cv2, sys
 import random
 
-# 1. ball_tracking, random_rythm_box 한 화면에 띄우기
 # 2. random_box 좌표 끌고오고
 # 3. ball_tracking 좌표 끌고와서
 # 4. 2안에 3이 들어가나 비교
@@ -15,7 +14,6 @@ import random
 
 # 랜덤하게 생성된 좌표와 tracking 돼서 나온 좌표값이 일치할 때 + 10
 # 랜덤하게 생성된 좌표에 tracking 돼서 나온 좌표값이 일치하지 않을 때 -1
-
 
 class Video_Manager:
     def __init__(self, img_width=266, img_height=126):
@@ -184,6 +182,15 @@ class Video_Manager:
         # cv2.waitKey(0)
         # cv2.imwrite(f'data/image_output/01.jpg', img)
 
+    # 사각형 표현 방법 : (x1, y1, x2, y2)
+    # def overlap(rect1, rect2):
+    # 두 개의 사각형이 겹쳐지는지 확인하는 함수
+    # :param rect1: 첫번째 사각형
+    # :param rect2: 두번째 사각형
+    # :return: overlap이 되면 True, 아니면 False
+
+    # return not (rect1[2] < rect2[0] or rect1[0] > rect2[2] or rect1[1] > rect2[3] or rect1[3] < rect2[1])
+
 if __name__ == '__main__':
     blue_lower = (100, 150, 0)
     blue_upper = (140, 255, 255)
@@ -194,3 +201,4 @@ if __name__ == '__main__':
     t = Video_Manager()
 
     t.track_and_draw(blue_lower, blue_upper, red_lower, red_upper, 'easy', is_one_player=True)
+
