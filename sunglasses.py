@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 
 
 def sunglasses():
@@ -9,8 +8,14 @@ def sunglasses():
         exit()
 
     width, height = 266, 126
-    img = cv2.imread('circular-sunglasses.png')
+    img = cv2.imread('sunglasses.png', -1)     # -1: 투명 영역 불러오기
     img = cv2.resize(img, dsize=(width, height))
+
+    # RGBA이미지로부터 alpha mask 추출해서 RGB로 전환하기
+    b, g, r, a = cv2.split(img)
+    overlay_color = cv2.merge((b, g, r))
+
+    mask = cv2.medianBlur(a, 5)
 
     while True:
         ret, frame = cap.read()
@@ -19,12 +24,16 @@ def sunglasses():
             break
         frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
 
-        # Blend the two images and show the result
-        tr = 0.3    # transparency between 0-1, show camera if 0
-        frame = ((1-tr) * frame.astype(np.float) + tr * img.astype(np.float)).astype(np.uint8)
+        # 배경: 선글라스 뒤의 영역 black out 처리하기
+        img_bg = cv2.bitwise_and(frame.copy(), frame.copy(), mask=cv2.bitwise_not(mask))
 
+        # 전경: 선글라스 이미지에서 선글라스 mask out 처리하기
+        img_fg = cv2.bitwise_and(overlay_color, overlay_color, mask=mask)
+
+        frame = cv2.add(img_bg, img_fg)
         cv2.imshow('sunglasses', frame)
-        if cv2.waitKey(1) == 27:    # press ESC to quit
+
+        if cv2.waitKey(1) == 27:    # ESC키 눌러서 빠져나가기
             break
 
     cap.release()
