@@ -67,5 +67,4 @@ if __name__ == '__main__':
     red_upper = (10, 255, 255)
 
     t = Tracking()
-
     t.track_and_draw(blue_lower, blue_upper, red_lower, red_upper)
