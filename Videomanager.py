@@ -1,6 +1,5 @@
 import glob, os
 from PIL import Image
-import numpy as np
 import cv2, sys
 import random
 
@@ -83,8 +82,8 @@ class Video_Manager:
             area = cv2.contourArea(cnt)
             if area > 100:
                 x, y, w, h = cv2.boundingRect(cnt)
-                detection_blue.append(x, y, w, h)
-            print(detection_blue)
+                detection_blue.append((x, y, w, h))
+                print("blue: ", detection_blue)
 
         red_mask = cv2.inRange(hsv, red_lower, red_upper)
         red_mask = cv2.erode(red_mask, None, iterations=2)
@@ -95,8 +94,8 @@ class Video_Manager:
             area = cv2.contourArea(cnt)
             if area > 100:
                 x, y, w, h = cv2.boundingRect(cnt)
-                detection_red.append(x, y, w, h)
-            print(detection_blue)
+                detection_red.append((x, y, w, h))
+                print("red: ", detection_red)
 
         return detection_blue, detection_red
 
