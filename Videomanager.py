@@ -31,6 +31,7 @@ class Video_Manager:
             _, frame = vidcap.read()  # _: ret
             # print(_)
             # 영상 좌우 반전
+
             frame = cv2.flip(frame, 1)
 
             if frame is None:
