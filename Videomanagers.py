@@ -9,11 +9,11 @@ class Video_Manager:
     def __init__(self, img_width=266, img_height=126):
         self.img_width = img_width
         self.img_height = img_height
-        self.easy = 50
+        self.easy = 100
         self.norm = 40
         self.hard = 30
-        self.red_color = (0, 0, 255)
-        self.blue_color = (255, 0, 0)
+        self.red_color = (203, 192, 255)
+        self.blue_color = (223, 188, 80)
         self.green_color = (0, 255, 0)
         self.white_color = (255, 255, 255)
 
@@ -38,10 +38,11 @@ class Video_Manager:
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(266, 126))
+            frame = cv2.resize(frame, dsize=(1330, 630))
+            frame = cv2.flip(frame, -1)
 
             # 10 프레임당 1개의 박스 생성
-            seed_num = num // 10
+            seed_num = num // 60
             random.seed(seed_num)
             num = num + 1
 
@@ -59,7 +60,7 @@ class Video_Manager:
 
             for cnt in contours:
                 area = cv2.contourArea(cnt)
-                if area > 100:
+                if area > 800:
                     x, y, w, h = cv2.boundingRect(cnt)
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
                     detection_blue.append([x, y, w, h])
@@ -72,7 +73,7 @@ class Video_Manager:
 
             for cnt in contours:
                 area = cv2.contourArea(cnt)
-                if area > 100:
+                if area > 800:
                     x, y, w, h = cv2.boundingRect(cnt)
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     detection_red.append([x, y, w, h])
@@ -91,7 +92,6 @@ class Video_Manager:
         cv2.destroyAllWindows()
 
         return detection_blue, detection_red
-
 
     def rhythm_box_display_area(self, level, frame, is_one_player=True):
         # game_areas = self.load_data()
@@ -136,6 +136,7 @@ class Video_Manager:
 
         img = frame
         areas = self.rhythm_box_display_area(level, frame, is_one_player)
+        coordinate_red, coordinate_blue = [], []
         # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
         for area in areas:
             if not is_one_player:
@@ -147,6 +148,8 @@ class Video_Manager:
                 a2, b2 = random.randint(xs2, xe2), random.randint(ys2, ye2)
 
                 if level == 'easy':
+                    coordinate_red.append((a1, b1, self.easy, self.easy))
+                    coordinate_blue.append((a2, b2, self.easy, self.easy))
                     img = cv2.rectangle(img, (a1, b1), (a1+self.easy, b1+self.easy), self.red_color, 3)
                     img = cv2.rectangle(img, (a2, b2), (a2+self.easy, b2+self.easy), self.blue_color, 3)
                 if level == 'norm':
@@ -168,6 +171,8 @@ class Video_Manager:
                 if level == 'hard':
                     img = cv2.rectangle(img, (a, b), (a + self.hard, b + self.hard), self.red_color, 3)
                     img = cv2.rectangle(img, (c, d), (c + self.hard, d + self.hard), self.blue_color, 3)
+
+        return coordinate_red, coordinate_blue
         # cv2.imshow('rhythm_box', img)
         # cv2.waitKey(0)
         # cv2.imwrite(f'data/image_output/01.jpg', img)
@@ -184,9 +189,9 @@ if __name__ == '__main__':
     blue_lower = (100, 150, 0)
     blue_upper = (140, 255, 255)
 
-    red_lower = (0, 70, 50)
-    red_upper = (10, 255, 255)
+    red_lower = (170, 120, 120)
+    red_upper = (180, 255, 255)
 
     t = Video_Manager()
 
-    t.track_and_draw(blue_lower, blue_upper, red_lower, red_upper, 'easy', is_one_player=True)
+    t.track_and_draw(blue_lower, blue_upper, red_lower, red_upper, 'easy', is_one_player=False)
