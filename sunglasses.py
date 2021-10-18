@@ -1,4 +1,5 @@
 import cv2
+import cvlib as cv
 
 
 def sunglasses():
@@ -7,7 +8,7 @@ def sunglasses():
         print('Cannot open camera')
         exit()
 
-    width, height = 266, 126
+    width, height = 1330, 630
     img = cv2.imread('sunglasses.png', -1)     # -1: 투명 영역 불러오기
     img = cv2.resize(img, dsize=(width, height))
 
@@ -24,13 +25,17 @@ def sunglasses():
             break
         frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
 
-        # 배경: 선글라스 뒤의 영역 black out 처리하기
-        img_bg = cv2.bitwise_and(frame.copy(), frame.copy(), mask=cv2.bitwise_not(mask))
+        # face detection
+        faces, confidences = cv.detect_face(frame)
+        if faces:   # 얼굴이 인식되면 선글라스 이미지 띄우기
+            # 배경: 선글라스 뒤의 영역 black out 처리하기
+            img_bg = cv2.bitwise_and(frame.copy(), frame.copy(), mask=cv2.bitwise_not(mask))
 
-        # 전경: 선글라스 이미지에서 선글라스 mask out 처리하기
-        img_fg = cv2.bitwise_and(overlay_color, overlay_color, mask=mask)
+            # 전경: 선글라스 이미지에서 선글라스 mask out 처리하기
+            img_fg = cv2.bitwise_and(overlay_color, overlay_color, mask=mask)
 
-        frame = cv2.add(img_bg, img_fg)
+            frame = cv2.add(img_bg, img_fg)
+
         cv2.imshow('sunglasses', frame)
 
         if cv2.waitKey(1) == 27:    # ESC키 눌러서 빠져나가기
