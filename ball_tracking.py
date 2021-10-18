@@ -63,8 +63,11 @@ if __name__ == '__main__':
     blue_lower = (100, 150, 0)
     blue_upper = (140, 255, 255)
 
-    red_lower = (0, 70, 50)
-    red_upper = (10, 255, 255)
+    # red_lower = (0, 70, 50)
+    # red_upper = (10, 255, 255)
+
+    red_lower = (175, 70, 50)
+    red_upper = (180, 255, 255)
 
     t = Tracking()
     t.track_and_draw(blue_lower, blue_upper, red_lower, red_upper)
