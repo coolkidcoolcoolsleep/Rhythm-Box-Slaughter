@@ -1,5 +1,4 @@
 import cv2
-import sys
 
 
 class Tracking:
@@ -10,7 +9,7 @@ class Tracking:
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            sys.exit()
+            exit()
 
         while True:
             _, frame = vidcap.read()
