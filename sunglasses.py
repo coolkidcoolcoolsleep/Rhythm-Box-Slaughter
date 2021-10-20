@@ -21,12 +21,23 @@ def sunglasses():
 
         # face detection
         faces, _ = cv.detect_face(frame)
-        
+
         # 얼굴이 인식되면 선글라스 이미지 띄우기
         for face in faces:
             x, y, w, h = face[0], face[1], face[2], face[3]
             glasses = cv2.imread('sunglasses.png', -1)
-            frame = cvzone.overlayPNG(frame, glasses, [x, y])
+
+            glasses_height, glasses_width, _ = glasses.shape
+            roi = frame[x:x + glasses_width, y:y + glasses_height]
+
+            if x & y != 0 and roi.shape[0] & roi.shape[1] != 0:
+                print('glasses shape: ', glasses.shape)
+                frame = cvzone.overlayPNG(frame, glasses, [x + 50, y + 50])
+            if roi.shape[0] <= glasses.shape[0] or roi.shape[1] <= glasses.shape[1]:
+                print('roi shape:', roi.shape)
+
+            else:
+                print('x, y:', x, y)
 
         cv2.imshow('sunglasses', frame)
 
