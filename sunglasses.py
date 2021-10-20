@@ -34,7 +34,7 @@ def sunglasses():
 
         cv2.imshow('sunglasses', frame)
 
-        if cv2.waitKey(1) == 27:    # ESC키 눌러서 빠져나가기
+        if cv2.waitKey(1) == 27:
             break
 
     cap.release()
