@@ -5,7 +5,9 @@ import random
 
 
 class Video_Manager:
-    def load_video(self):
+    def load_video(self, img_width=665, img_height=315):
+        self.img_width = img_width
+        self.img_height = img_height
 
         # drawing_color
         self.blue_lower = (100, 150, 0)
@@ -15,7 +17,7 @@ class Video_Manager:
         self.red_upper = (180, 255, 255)
 
         # level
-        self.easy = 200
+        self.easy = 100
         self.norm = 40
         self.hard = 30
 
@@ -46,7 +48,7 @@ class Video_Manager:
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(665, 315))
+            frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
             seed_num = num // 90
             random.seed(seed_num)
@@ -54,7 +56,7 @@ class Video_Manager:
 
             # detection_blue와 red도 연속해서 끊어서 나와야 함
             detection_blue, detection_red = self.tracking_ball(frame)
-            coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=True)
+            coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
             # 좌표 비교
             # if self.isRectangleOverlap_blue(detection_blue, coordinate_blue):
@@ -63,7 +65,7 @@ class Video_Manager:
             print("detection_blue: ", detection_blue)
             print("detection_red: ", detection_red)
             print(self.isRectangleOverlap(detection_blue, coordinate_blue))
-            print(self.isRectangleOverlap(detection_red, coordinate_red))
+            # print(self.isRectangleOverlap(detection_red, coordinate_red))
 
             # print(self.isRectangleOverlap_blue(detection_blue, coordinate_blue))
             # print(self.isRectangleOverlap_blue(detection_blue, coordinate_blue))
@@ -167,7 +169,7 @@ class Video_Manager:
         # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
         for area in areas:
             if not is_one_player:
-                img = cv2.line(img, (133, 0), (133, 126), self.white_color, 2)
+                img = cv2.line(img, (self.img_width//2, 0), (self.img_width//2, self.img_height), self.white_color, 2)
                 area1, area2 = area
                 (xs1, ys1), (xe1, ye1) = area1
                 (xs2, ys2), (xe2, ye2) = area2
