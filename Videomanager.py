@@ -1,6 +1,6 @@
 import glob, os
 from PIL import Image
-import cv2, sys
+import cv2
 import random
 
 
@@ -15,7 +15,7 @@ class Video_Manager:
         self.red_upper = (180, 255, 255)
 
         # level
-        self.easy = 100
+        self.easy = 200
         self.norm = 40
         self.hard = 30
 
@@ -33,7 +33,7 @@ class Video_Manager:
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            sys.exit()
+            exit()
 
         num = 0
 
@@ -48,24 +48,29 @@ class Video_Manager:
 
             frame = cv2.resize(frame, dsize=(665, 315))
 
-            seed_num = num // 60
+            seed_num = num // 90
             random.seed(seed_num)
             num = num + 1
 
-            coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=True)
             # detection_blue와 red도 연속해서 끊어서 나와야 함
-            # detection_blue, detection_red = self.tracking_ball(frame)
-
-            print("coordinate_blue: ", coordinate_blue)
-            print("coordinate_red: ", coordinate_red)
-            # print("detection_blue: ", detection_blue)
-            # print("detection_red: ", detection_red)
+            detection_blue, detection_red = self.tracking_ball(frame)
+            coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=True)
 
             # 좌표 비교
-            # self.isRectangleOverlap_blue(detection_blue, coordinate_blue)
-            # self.isRectangleOverlap_red(detection_red)
+            # if self.isRectangleOverlap_blue(detection_blue, coordinate_blue):
+            print("coordinate_blue: ", coordinate_blue)
+            print("coordinate_red: ", coordinate_red)
+            print("detection_blue: ", detection_blue)
+            print("detection_red: ", detection_red)
+            print(self.isRectangleOverlap(detection_blue, coordinate_blue))
+            print(self.isRectangleOverlap(detection_red, coordinate_red))
+
+            # print(self.isRectangleOverlap_blue(detection_blue, coordinate_blue))
+            # print(self.isRectangleOverlap_blue(detection_blue, coordinate_blue))
 
             # 점수 합산
+
+
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -95,7 +100,7 @@ class Video_Manager:
             if area > 800:
                 x, y, w, h = cv2.boundingRect(cnt)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
-                detection_blue.append([x, y, w, h])
+                detection_blue.append([x, y, x + w, y + h])
 
         red_mask = cv2.inRange(hsv, self.red_lower, self.red_upper)
         # erode: 개체 경계의 픽셀을 제거
@@ -110,10 +115,10 @@ class Video_Manager:
             if area > 800:
                 x, y, w, h = cv2.boundingRect(cnt)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
-                detection_red.append([x, y, w, h])
+                detection_red.append([x, y, x + w, y + h])
                 # print("detection_red: ", x, y, w, h)
 
-        return detection_blue, detection_red
+        return detection_blue[-1:], detection_red[-1:]
 
     def rhythm_box_display_area(self, level, frame, is_one_player=True):
         # game_areas = self.load_data()
@@ -171,19 +176,19 @@ class Video_Manager:
 
                 if level == 'easy':
                     img = cv2.rectangle(img, (a1, b1), (a1 + self.easy, b1 + self.easy), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
+                    coordinate_red.append([a1, b1, a1 + self.easy, b1 + self.easy])
                     img = cv2.rectangle(img, (a2, b2), (a2 + self.easy, b2 + self.easy), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
+                    coordinate_blue.append([a2, b2, a2 + self.easy, b2 + self.easy])
                 if level == 'norm':
                     img = cv2.rectangle(img, (a1, b1), (a1 + self.norm, b1 + self.norm), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
+                    coordinate_red.append([a1, b1, a1 + self.easy, b1 + self.easy])
                     img = cv2.rectangle(img, (a2, b2), (a2 + self.norm, b2 + self.norm), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
+                    coordinate_blue.append([a2, b2, a2 + self.easy, b2 + self.easy])
                 if level == 'hard':
                     img = cv2.rectangle(img, (a1, b1), (a1 + self.hard, b1 + self.hard), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
+                    coordinate_red.append([a1, b1, a1 + self.easy, b1 + self.easy])
                     img = cv2.rectangle(img, (a2, b2), (a2 + self.hard, b2 + self.hard), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
+                    coordinate_blue.append([a2, b2, a2 + self.easy, b2 + self.easy])
 
             else:
                 (xs1, ys1), (xe1, ye1) = area
@@ -207,69 +212,23 @@ class Video_Manager:
 
         return coordinate_red, coordinate_blue
 
-    def isRectangleOverlap_blue(self, detection_blue, coordinate_blue):
-        if (detection_blue[0] >= coordinate_blue[2]) or (detection_blue[2] <= coordinate_blue[0]) \
-                or (detection_blue[3] <= coordinate_blue[1]) or (detection_blue[1] >= coordinate_blue[3]):
+    def isRectangleOverlap(self, detection_rect, coordinate_rect):
+        if (detection_rect[0][0] >= coordinate_rect[0][2]) or (detection_rect[0][2] <= coordinate_rect[0][0]) \
+                or (detection_rect[0][3] <= coordinate_rect[0][1]) or (detection_rect[0][1] >= coordinate_rect[0][3]):
             return False
         else: return True
 
-        # h1 = detection_blue[2] - detection_blue[0]
-        # v1 = detection_blue[3] - detection_blue[1]
-        # h2 = coordinate_blue[2] - coordinate_blue[0]
-        # v2 = coordinate_blue[3] - coordinate_blue[1]
-        #
-        # hflag = False
-        # vflag = False
-        #
-        # if detection_blue[0] <= coordinate_blue[0]:
-        #     if coordinate_blue[0] - detection_blue[0] < h1:
-        #         hflag = True
-        # else:
-        #     if detection_blue[0] - coordinate_blue[0] < h2:
-        #         hflag = True
-        #
-        # if detection_blue[1] <= coordinate_blue[1]:
-        #     if coordinate_blue[1] - detection_blue[1] < v1:
-        #         vflag = True
-        # else:
-        #     if detection_blue[1] - coordinate_blue[1] < v2:
-        #         vflag = True
-        #
-        # print(hflag, vflag)
-        # return hflag and vflag
+    # def isRectangleOverlap_blue(self, detection_blue, coordinate_blue):
+    #     if (detection_blue[0][0] >= coordinate_blue[0][2]) or (detection_blue[0][2] <= coordinate_blue[0][0]) \
+    #             or (detection_blue[0][3] <= coordinate_blue[0][1]) or (detection_blue[0][1] >= coordinate_blue[0][3]):
+    #         return False
+    #     else: return True
 
-        # def isRectangleOverlap_red(self, detection_red, coordinate_red):
-        #
-        #     h1 = detection_red[2] - detection_red[0]
-        #     v1 = detection_red[3] - detection_red[1]
-        #     h2 = coordinate_red[2] - coordinate_red[0]
-        #     v2 = coordinate_red[3] - coordinate_red[1]
-        #
-        #     hflag = False
-        #     vflag = False
-        #
-        #     if detection_red[0] <= coordinate_red[0]:
-        #         if coordinate_red[0] - detection_red[0] < h1:
-        #             hflag = True
-        #     else:
-        #         if detection_red[0] - coordinate_red[0] < h2:
-        #             hflag = True
-        #
-        #     if detection_red[1] <= coordinate_red[1]:
-        #         if coordinate_red[1] - detection_red[1] < v1:
-        #             vflag = True
-        #     else:
-        #         if detection_red[1] - coordinate_red[1] < v2:
-        #             vflag = True
-        #
-        #     print(hflag, vflag)
-        #     return hflag and vflag
-
-    def setScore(score):
-        if
-        pass
-        self.isRectangleOverlap_blue
-
+    # def isRectangleOverlap_red(self, detection_red, coordinate_red):
+    #     if (detection_red[0][0] >= coordinate_red[0][2]) or (detection_red[0][2] <= coordinate_red[0][0]) \
+    #             or (detection_red[0][3] <= coordinate_red[0][1]) or (detection_red[0][1] >= coordinate_red[0][3]):
+    #         return False
+    #     else: return True
 
 v = Video_Manager()
 v.load_video()
