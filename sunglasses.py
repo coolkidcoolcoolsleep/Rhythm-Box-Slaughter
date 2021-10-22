@@ -18,8 +18,6 @@ def sunglasses():
             break
 
         frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
-
-        # face detection
         faces, _ = cv.detect_face(frame)
         # 얼굴이 인식되면 선글라스 이미지 띄우기
         for face in faces:
