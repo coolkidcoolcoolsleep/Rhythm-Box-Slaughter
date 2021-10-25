@@ -15,8 +15,17 @@ class Video_Manager:
         self.blue_lower = (100, 150, 0)
         self.blue_lower = (100, 150, 0)
         self.blue_upper = (140, 255, 255)
-        self.red_lower = (0, 50, 50)
-        self.red_upper = (10, 255, 255)
+
+        # (-10, 100, 100) (10, 255, 255)
+        self.red_lower = (0, 50, 20)
+        self.red_upper = (5, 255, 255)
+        # (0, 70, 50), (10, 255, 255)
+        # (175, 70, 50) (180, 255, 255)
+        # self.red_lower = (170, 120, 120)
+        # self.red_upper = (180, 255, 255)
+        # (0, 50, 20), (5, 255, 255)
+        # self.red_lower = (153, 46, 82)
+        # self.red_upper = (166, 33, 55)
 
         # level
         self.easy = 100
@@ -34,7 +43,10 @@ class Video_Manager:
         self.red_score = 0
 
         # box
-        self.BoxThreshold = 20
+        self.BoxThreshold = 6
+
+
+        # 2p -> 빨간공 파란공
 
         # load_video
         vidcap = cv2.VideoCapture(0)
@@ -223,6 +235,7 @@ class Video_Manager:
 
     def isRectangleOverlap(self, detection_rect, coordinate_rect, BoxThreshold):
         if detection_rect and coordinate_rect:
+            # 리듬박스 시작점 x값
             if (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][0] <= coordinate_rect[0][2]+BoxThreshold) and \
                 (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][2] <= coordinate_rect[0][2]+BoxThreshold) and\
                 (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][1] <= coordinate_rect[0][3]+BoxThreshold) and\
@@ -231,5 +244,7 @@ class Video_Manager:
             else: return False
         else: False
 
-v = Video_Manager()
-v.load_video()
+
+if __name__ == '__main__':
+    v = Video_Manager()
+    v.load_video()
