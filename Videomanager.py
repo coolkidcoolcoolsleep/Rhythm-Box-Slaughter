@@ -23,6 +23,7 @@ class Video_Manager:
         self.norm = 40
         self.hard = 30
 
+        # color
         self.red_color = (203, 192, 255)
         self.blue_color = (223, 188, 80)
         self.green_color = (0, 255, 0)
@@ -31,6 +32,9 @@ class Video_Manager:
         # score
         self.blue_score = 0
         self.red_score = 0
+
+        # box
+        self.BoxThreshold = 20
 
         # load_video
         vidcap = cv2.VideoCapture(0)
@@ -63,10 +67,10 @@ class Video_Manager:
             # seed_num -> 3으로 나눴을 때 나머지가 0일 때만
 
             # 좌표 비교
-            if self.isRectangleOverlap(detection_blue, coordinate_blue):
+            if self.isRectangleOverlap(detection_blue, coordinate_blue, self.BoxThreshold):
                 cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
                               (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
-            if self.isRectangleOverlap(detection_red, coordinate_red):
+            if self.isRectangleOverlap(detection_red, coordinate_red, self.BoxThreshold):
                 cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                               (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
@@ -217,20 +221,15 @@ class Video_Manager:
 
         return coordinate_red, coordinate_blue
 
-    def isRectangleOverlap(self, detection_rect, coordinate_rect):
+    def isRectangleOverlap(self, detection_rect, coordinate_rect, BoxThreshold):
         if detection_rect and coordinate_rect:
-            if (coordinate_rect[0][0] <= detection_rect[0][0] <= coordinate_rect[0][2]) and \
-                (coordinate_rect[0][0] <= detection_rect[0][2] <= coordinate_rect[0][2]) and\
-                (coordinate_rect[0][1] <= detection_rect[0][1] <= coordinate_rect[0][3]) and\
-                (coordinate_rect[0][1] <= detection_rect[0][3] <= coordinate_rect[0][3]):
+            if (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][0] <= coordinate_rect[0][2]+BoxThreshold) and \
+                (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][2] <= coordinate_rect[0][2]+BoxThreshold) and\
+                (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][1] <= coordinate_rect[0][3]+BoxThreshold) and\
+                (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][3] <= coordinate_rect[0][3]+BoxThreshold):
                 return True
             else: return False
         else: False
-
-    # 사각형 안에 점 있나 확인하는 함수
-    def is_point_inside_rect(self, coordinate_blue, point):
-        return (self.l_top.x <= point.x <= self.r_top.x and
-                self.l_top.y <= point.y <= self.l_bot.y)
 
 v = Video_Manager()
 v.load_video()
