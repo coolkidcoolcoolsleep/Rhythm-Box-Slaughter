@@ -13,10 +13,36 @@ class Video_Manager:
 
         # drawing_color
         self.blue_lower = (100, 150, 0)
-        self.blue_lower = (100, 150, 0)
         self.blue_upper = (140, 255, 255)
-        self.red_lower = (170, 120, 120)
-        self.red_upper = (180, 255, 255)
+        # self.red_lower = (170, 120, 120)
+        # self.red_upper = (180, 255, 255)
+        # self.red_lower = (0, 80, 80)
+        # self.red_upper = (5, 255, 255)
+        # self.red_lower = (0, 50, 50)
+        # self.red_upper = (10, 255, 255)
+        # self.red_lower = (330, 60, 70)
+        # self.red_upper = (340, 80, 90)
+        # self.red_lower = (-10, 100, 100)
+        # self.red_upper = (10, 255, 255)
+        # self.red_lower = (0, 50, 20)
+        # self.red_upper = (5, 255, 255)
+        # 목덜미 인식됨
+        # self.red_lower = (0, 70, 50)
+        # self.red_upper = (10, 255, 255)
+        # 목덜미 이외의 피부까지 인식
+        # self.red_lower = (5, 70, 50)
+        # self.red_upper = (180, 255, 255)
+        # 절대 안됨 모든걸 인식함
+        # self.red_lower = (170, 120, 120)
+        # self.red_upper = (180, 255, 255)
+        # 잘된다
+        # self.red_lower = (0, 50, 20)
+        # self.red_upper = (5, 255, 255)
+        # 피부만 인식된다
+        # self.red_lower = (161, 155, 84)
+        # self.red_upper = (179, 255, 255)
+        self.red_lower = (350, 60, 60)
+        self.red_upper = (380, 80, 80)
 
         # level
         self.easy = 150
@@ -62,17 +88,17 @@ class Video_Manager:
             coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
             # 좌표 비교
-            if self.isRectangleOverlap_blue(detection_blue, coordinate_blue):
-                cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
-                              (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
-            if self.isRectangleOverlap_blue(detection_red, coordinate_red):
+            # if self.isRectangleOverlap_blue(detection_blue, coordinate_blue):
+            #     cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
+            #                   (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
+            # if self.isRectangleOverlap_blue(detection_red, coordinate_red):
                 # print("coordinate_blue: ", coordinate_red)
                 # print("coordinate_red: ", coordinate_red)
                 # print("detection_blue: ", detection_red)
                 # print("detection_red: ", detection_red)
                 # print(self.isRectangleOverlap_blue(detection_red, coordinate_red))
-                cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
-                              (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
+                # cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
+                #               (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
             # 점수 합산
 
