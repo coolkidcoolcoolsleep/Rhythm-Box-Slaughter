@@ -45,7 +45,6 @@ class Video_Manager:
         # box
         self.BoxThreshold = 6
 
-
         # 2p -> 빨간공 파란공
 
         # load_video
