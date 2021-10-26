@@ -1,123 +1,144 @@
 import cv2
-import cvlib as cv
-import cvzone
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-import threading
 import sys
-# from video_manager import Video_Manager
-
-
-running = False
+import random
+import winsound
+from video_manager import Video_Manager
 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.music_dialog = QtWidgets.QDialog()
-
-    def run(self):
-        global running
-        cap = cv2.VideoCapture(0)
-        width, height = 1330, 630
-
-        if not cap.isOpened():
-            print('카메라를 열 수 없습니다')
-            exit()
-
-        while True:
-            ret, img = cap.read()
-            if ret:
-                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                img = cv2.resize(img, dsize=(width, height), interpolation=cv2.INTER_AREA)
-                faces, _ = cv.detect_face(img)
-
-                for face in faces:
-                    x, y = face[0], face[1]
-                    glasses = cv2.imread('sunglasses.png', -1)
-
-                    try:
-                        img = cvzone.overlayPNG(img, glasses, [x+50, y+50])
-
-                    except:
-                        pass
-
-                h, w, c = img.shape
-                q_img = QtGui.QImage(img.data, w, h, w*c, QtGui.QImage.Format_RGB888)
-                pixmap = QtGui.QPixmap.fromImage(q_img)
-                label.setPixmap(pixmap)
-
-            else:
-                QtWidgets.QMessageBox.about(window, 'Error', '카메라를 불러올 수 없습니다')
-                break
-
-        cap.release()
+        self.music = QtWidgets.QComboBox(self)
 
     def player_1(self):
-        global running
-        running = True
-        th = threading.Thread(target=self.run)
-        th.start()
+        vm = Video_Manager()
+
+        vidcap = cv2.VideoCapture(0)
+
+        if not vidcap.isOpened():
+            print('카메라를 열 수 없습니다.')
+            sys.exit()
+
+        box_num = 0
+        rect_num = 0
+
+        while True:
+            _, frame = vidcap.read()  # _: ret
+            # 영상 좌우 반전
+            frame = cv2.flip(frame, 1)
+
+            if frame is None:
+                break
+
+            frame = cv2.resize(frame, dsize=(665, 315))
+
+            # 90 프레임마다 몫이 바뀌니까
+            box_seed_num = box_num // 90
+            random.seed(box_seed_num)
+            box_num = box_num + 1
+
+            detection_blue, detection_red = vm.tracking_ball(frame)
+            coordinate_red, coordinate_blue = vm.random_box('easy', frame, is_one_player=True)
+
+            # 좌표 비교
+            rectangle_seed_num = rect_num % 3
+            if rectangle_seed_num == 0:
+                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.load_video().BoxThreshold):
+                    cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
+                                  (coordinate_blue[0][2], coordinate_blue[0][3]), vm.green_color, 3)
+                if vm.isRectangleOverlap(detection_red, coordinate_red, vm.BoxThreshold):
+                    cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
+                                  (coordinate_red[0][2], coordinate_red[0][3]), vm.green_color, 3)
+            rect_num = rect_num + 1
+
+            # 점수 합산
+
+            cv2.imshow('Rhythm Box Slaughter', frame)
+
+            if cv2.waitKey(15) == 27:  # esc 키를 누르면 닫음
+                break
+
+        vidcap.release()
+        cv2.destroyAllWindows()
 
     def player_2(self):
-        global running
-        running = True
-        th = threading.Thread(target=self.run)
-        th.start()
+        vm = Video_Manager()
 
-    def select_music_window(self):
-        self.music_dialog.setWindowTitle('select music')
-        self.music_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.music_dialog.resize(300, 200)
-        self.music_dialog.show()
-        btn_music = QtWidgets.QPushButton('music', self.music_dialog)
-        btn_music.clicked.connect(self.select_music)
+        vidcap = cv2.VideoCapture(0)
 
-    def select_music(self):
-        music = QtWidgets.QComboBox(self)
-        music.move(200, 400)
-        music_list = [1, 2, 3, 4]
-        for i in music_list:
-            music.addItem(f'music{i}')
-        music.showPopup()
+        if not vidcap.isOpened():
+            print('카메라를 열 수 없습니다.')
+            sys.exit()
 
-    def close_event(self, event):
-        close = QtWidgets.QMessageBox()
-        close.setText('나가시겠습니까?')
-        close.setWindowTitle('Exit')
-        close.setWindowIcon(QtGui.QIcon('sunglasses.png'))
-        close.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-        close = close.exec()
+        box_num = 0
+        rect_num = 0
 
-        if close == QtWidgets.QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
+        while True:
+            _, frame = vidcap.read()  # _: ret
+            # print(_)
+            # 영상 좌우 반전
+            frame = cv2.flip(frame, 1)
+
+            if frame is None:
+                break
+
+            frame = cv2.resize(frame, dsize=(665, 315))
+
+            # 90 프레임마다 몫이 바뀌니까
+            box_seed_num = box_num // 90
+            random.seed(box_seed_num)
+            box_num = box_num + 1
+
+            detection_blue, detection_red = vm.tracking_ball(frame)
+            coordinate_red, coordinate_blue = vm.random_box('easy', frame, is_one_player=False)
+
+            # 좌표 비교
+            rectangle_seed_num = rect_num % 3
+            if rectangle_seed_num == 0:
+                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.load_video().BoxThreshold):
+                    cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
+                                  (coordinate_blue[0][2], coordinate_blue[0][3]), vm.green_color, 3)
+                if vm.isRectangleOverlap(detection_red, coordinate_red, vm.BoxThreshold):
+                    cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
+                                  (coordinate_red[0][2], coordinate_red[0][3]), vm.green_color, 3)
+            rect_num = rect_num + 1
+
+            # 점수 합산
+
+            cv2.imshow('Rhythm Box Slaughter', frame)
+
+            if cv2.waitKey(15) == 27:  # esc 키를 누르면 닫음
+                break
+
+        vidcap.release()
+        cv2.destroyAllWindows()
+
+    def music_play(self):
+        winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_LOOP | winsound.SND_ASYNC)
 
     def button(self):
-        btn_player_1 = QtWidgets.QPushButton('1 Player')
-        btn_player_1.setFixedSize(100, 20)
+        btn_player_1 = QtWidgets.QRadioButton('1 Player')
+        # btn_player_1.setFixedSize(100, 20)
 
-        btn_player_2 = QtWidgets.QPushButton('2 Player')
-        btn_player_2.setFixedSize(100, 20)
+        btn_player_2 = QtWidgets.QRadioButton('2 Player')
+        # btn_player_2.setFixedSize(100, 20)
 
-        btn_stop = QtWidgets.QPushButton('Exit')
-        btn_stop.setFixedSize(100, 20)
-
-        music = QtWidgets.QComboBox(self)
-        music.move(200, 400)
+        self.music.move(200, 400)
         music_list = [1, 2, 3, 4]
         for i in music_list:
-            music.addItem(f'music{i}')
+            self.music.addItem(f'music{i}')
+
+        btn_start = QtWidgets.QPushButton('Game Start')
 
         vbox.addWidget(label)
         hbox = QtWidgets.QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(btn_player_1)
         hbox.addWidget(btn_player_2)
-        hbox.addWidget(music)
-        hbox.addWidget(btn_stop)
+        hbox.addWidget(self.music)
+        hbox.addWidget(btn_start)
         hbox.addStretch(1)
 
         vbox.addStretch(3)
@@ -126,7 +147,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         btn_player_1.clicked.connect(self.player_1)
         btn_player_2.clicked.connect(self.player_2)
-        btn_stop.clicked.connect(self.close_event)
+        self.music.activated[str].connect(self.music_play)
 
 
 if __name__ == '__main__':
