@@ -55,7 +55,8 @@ class Video_Manager:
             print('카메라를 열 수 없습니다.')
             sys.exit()
 
-        num = 0
+        box_num = 0
+        rect_num = 0
 
         while True:
             _, frame = vidcap.read()  # _: ret
@@ -69,25 +70,24 @@ class Video_Manager:
             frame = cv2.resize(frame, dsize=(665, 315))
             # frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
-            seed_num = num // 90
-            random.seed(seed_num)
-            num = num + 1
+            # 90 프레임마다 몫이 바뀌니까
+            box_seed_num = box_num // 90
+            random.seed(box_seed_num)
+            box_num = box_num + 1
 
             detection_blue, detection_red = self.tracking_ball(frame)
             coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
-            # seed_num -> 3으로 나눴을 때 나머지가 0일 때만
-
             # 좌표 비교
-            if self.isRectangleOverlap(detection_blue, coordinate_blue, self.BoxThreshold):
-                cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
-                              (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
-            if self.isRectangleOverlap(detection_red, coordinate_red, self.BoxThreshold):
-                cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
-                              (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
-
-
-
+            rectangle_seed_num = rect_num % 3
+            if rectangle_seed_num == 0:
+                if self.isRectangleOverlap(detection_blue, coordinate_blue, self.BoxThreshold):
+                    cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
+                                  (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
+                if self.isRectangleOverlap(detection_red, coordinate_red, self.BoxThreshold):
+                    cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
+                                  (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
+            rect_num = rect_num + 1
 
             # 점수 합산
 
