@@ -1,8 +1,8 @@
-import glob, os
+import os
 from PIL import Image
-import cv2, sys
+import cv2
 import random
-
+import numpy as np
 
 class Video_Manager:
     def load_video(self, img_width=1330, img_height=630):
@@ -13,19 +13,16 @@ class Video_Manager:
 
         # drawing_color
         self.blue_lower = (100, 150, 0)
-        self.blue_lower = (100, 150, 0)
         self.blue_upper = (140, 255, 255)
-
-        # (-10, 100, 100) (10, 255, 255)
         self.red_lower = (0, 50, 20)
         self.red_upper = (5, 255, 255)
+
+        # (-10, 100, 100), (10, 255, 255)
         # (0, 70, 50), (10, 255, 255)
-        # (175, 70, 50) (180, 255, 255)
-        # self.red_lower = (170, 120, 120)
-        # self.red_upper = (180, 255, 255)
+        # (175, 70, 50), (180, 255, 255)
+        # (170, 120, 120), (180, 255, 255)
         # (0, 50, 20), (5, 255, 255)
-        # self.red_lower = (153, 46, 82)
-        # self.red_upper = (166, 33, 55)
+        # (153, 46, 82), (166, 33, 55)
 
         # level
         self.easy = 100
@@ -45,18 +42,21 @@ class Video_Manager:
         # box
         self.BoxThreshold = 6
 
-        # 2p -> 빨간공 파란공
+        # score
+        blue_score = 0
+        red_score = 0
+
+
+        # 중복 처리
 
         # load_video
         vidcap = cv2.VideoCapture(0)
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            sys.exit()
+            exit()
 
-        box_num = 0
-        rect_num = 0
-
+        box_num, rect_num = 0, 0
         while True:
             _, frame = vidcap.read()  # _: ret
             # print(_)
@@ -69,30 +69,47 @@ class Video_Manager:
             frame = cv2.resize(frame, dsize=(665, 315))
             # frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
-            # 90 프레임마다 몫이 바뀌니까
             box_seed_num = box_num // 90
             random.seed(box_seed_num)
-            box_num = box_num + 1
+            box_num += 1
 
+            # 볼 트래킹, 리듬박스 좌표 가져오기
             detection_blue, detection_red = self.tracking_ball(frame)
             coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
             # 좌표 비교
             rectangle_seed_num = rect_num % 3
+            rect_num += 1
             if rectangle_seed_num == 0:
                 if self.isRectangleOverlap(detection_blue, coordinate_blue, self.BoxThreshold):
                     cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
                                   (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
+                    # 점수 누적
+                    self.blue_score += 1
+
                 if self.isRectangleOverlap(detection_red, coordinate_red, self.BoxThreshold):
                     cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                                   (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
-            rect_num = rect_num + 1
+                    # 점수 누적
+                    self.red_score += 1
 
-            # 점수 합산
+            blue_score = str(self.blue_score)
+            red_score = str(self.red_score)
+
+            print("blue_score: ", blue_score)
+            print("red_score: ", red_score)
+
+
+            # (0, 100) : 문자열이 표시될 좌표 x = 0, y = 100
+            # cv2.FONT_HERSHEY_SCRIPT_SIMPLEX : 폰트 형태
+            # 1 : 문자열 크기(scale) 소수점 사용가능
+            # (0, 255, 0) : 문자열 색상 (r,g,b)
+
+            cv2.putText(frame, red_score, (5, 20), cv2.FONT_HERSHEY_PLAIN,  1, (0, 255, 0))
 
             cv2.imshow('Rhythm Box Slaughter', frame)
-
-            if cv2.waitKey(15) == 27:  # esc 키를 누르면 닫음
+            # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
+            if cv2.waitKey(15) == 27:
                 break
 
         vidcap.release()
@@ -234,14 +251,17 @@ class Video_Manager:
 
     def isRectangleOverlap(self, detection_rect, coordinate_rect, BoxThreshold):
         if detection_rect and coordinate_rect:
-            # 리듬박스 시작점 x값
             if (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][0] <= coordinate_rect[0][2]+BoxThreshold) and \
-                (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][2] <= coordinate_rect[0][2]+BoxThreshold) and\
-                (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][1] <= coordinate_rect[0][3]+BoxThreshold) and\
-                (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][3] <= coordinate_rect[0][3]+BoxThreshold):
+                (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][2] <= coordinate_rect[0][2]+BoxThreshold) and \
+                (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][1] <= coordinate_rect[0][3]+BoxThreshold) and \
+                    (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][3] <= coordinate_rect[0][3]+BoxThreshold):
                 return True
             else: return False
         else: False
+
+    # def score_calculation(self, is_one_player=True):
+
+
 
 
 if __name__ == '__main__':
