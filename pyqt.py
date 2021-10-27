@@ -5,7 +5,9 @@ from PyQt5 import QtCore
 import sys
 import random
 import winsound
+import threading
 from video_manager import Video_Manager
+import youtube_player
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -46,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # 좌표 비교
             rectangle_seed_num = rect_num % 3
             if rectangle_seed_num == 0:
-                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.load_video().BoxThreshold):
+                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.BoxThreshold):
                     cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
                                   (coordinate_blue[0][2], coordinate_blue[0][3]), vm.green_color, 3)
                 if vm.isRectangleOverlap(detection_red, coordinate_red, vm.BoxThreshold):
@@ -98,7 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # 좌표 비교
             rectangle_seed_num = rect_num % 3
             if rectangle_seed_num == 0:
-                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.load_video().BoxThreshold):
+                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.BoxThreshold):
                     cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
                                   (coordinate_blue[0][2], coordinate_blue[0][3]), vm.green_color, 3)
                 if vm.isRectangleOverlap(detection_red, coordinate_red, vm.BoxThreshold):
@@ -116,6 +118,9 @@ class MainWindow(QtWidgets.QMainWindow):
         vidcap.release()
         cv2.destroyAllWindows()
 
+    def youtube_play(self):
+        youtube_player.player()
+
     def music_play(self):
         music_list = ['jazzy frenchy',
                       'ukulele',
@@ -130,10 +135,17 @@ class MainWindow(QtWidgets.QMainWindow):
             # winsound.SND_FILENAME: wav file 이름
             # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
             # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
             print('test: bensound-jazzyfrenchy.wav')
         elif item == music_list[1]:
             # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
             print('test: bensound-ukulele.wav')
+
+            thread = threading.Thread(target=self.youtube_play)
+            thread.daemon = True
+            thread.start()
+
         elif item == music_list[2]:
             # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-cute.wav')
@@ -186,20 +198,34 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.music.activated[str].connect(self.music_play)
         self.music.currentIndexChanged.connect(self.music_play)
 
+    def background(self):
+        bg = QtGui.QImage('mint_pink.png')
+        scaled_bg = bg.scaled(400, 100)
+        palette = QtGui.QPalette()
+        palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg))
+        app.setPalette(palette)
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
     window = QtWidgets.QWidget()
     vbox = QtWidgets.QVBoxLayout()
     label = QtWidgets.QLabel()
+
+    label.setText('리듬 박스 학살')
+    label.setFont(QtGui.QFont('Arial', 15))
+    label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
     window.setWindowTitle('Rhythm Box Slaughter')
     window.setWindowIcon(QtGui.QIcon('sunglasses.png'))
 
+    app.setStyle('Fusion')
+
     main = MainWindow()
     main.button()
+    main.background()
 
     window.setLayout(vbox)
-    window.setGeometry(0, 0, 400, 200)
+    window.setGeometry(0, 0, 400, 100)
     window.show()
 
     sys.exit(app.exec_())
