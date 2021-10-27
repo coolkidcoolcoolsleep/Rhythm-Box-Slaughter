@@ -3,8 +3,9 @@ from PIL import Image
 import cv2
 import random
 import time
-
-
+import datetime
+from PIL import ImageFont, ImageDraw, Image
+import numpy as np
 
 class Video_Manager:
     def __init__(self):
@@ -83,14 +84,12 @@ class Video_Manager:
             if frame is None:
                 break
 
-            # frame = cv2.resize(frame, dsize=(665, 315))
             frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
             box_seed_num = self.box_num // 90
             random.seed(box_seed_num)
             self.box_num += 1
 
-            # 볼 트래킹, 리듬박스 좌표 가져오기
             detection_blue, detection_red = self.tracking_ball(frame)
             coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
@@ -101,23 +100,13 @@ class Video_Manager:
             rectangle_seed_num = self.rect_num % 3
             self.rect_num += 1
 
-            # 좌표, 점수 계산
             blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = self.score_calculation(frame,
                 rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num, detection_red, coordinate_red)
 
             self.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
                               is_answer_handled_blue)
 
-            blue_score = str(blue_score)
-            red_score = str(red_score)
-
-            # (0, 100) : 문자열이 표시될 좌표 x = 0, y = 100
-            # cv2.FONT_HERSHEY_SCRIPT_SIMPLEX : 폰트 형태
-            # 1 : 문자열 크기(scale) 소수점 사용가능
-            # (0, 255, 0) : 문자열 색상 (r,g,b)
-
-            cv2.putText(frame, red_score, (30, 40), cv2.FONT_HERSHEY_PLAIN,  3, (0, 0, 0))
-            cv2.putText(frame, blue_score, (570, 40), cv2.FONT_HERSHEY_PLAIN,  3, (0, 0, 0))
+            self.OnePlayerGameStats(frame, red_score, blue_score, img_width, img_height)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
             # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
@@ -297,6 +286,38 @@ class Video_Manager:
         if self.is_answer_handled_blue:
             cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                           (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
+
+    def OnePlayerGameStats(self, frame, red_score, blue_score, img_width, img_height):
+
+        # (0, 100) : 문자열이 표시될 좌표 x = 0, y = 100
+        # cv2.FONT_HERSHEY_SCRIPT_SIMPLEX : 폰트 형태
+        # 1 : 문자열 크기(scale) 소수점 사용가능
+        # (0, 255, 0) : 문자열 색상 (r,g,b)
+
+        blue_score_title = 'BLUE SCORE'
+        red_score_title = 'RED SCORE'
+
+        blue_score = str(blue_score)
+        red_score = str(red_score)
+
+        l_padding = 40
+        r_padding = 50
+
+        # height_padding = 50
+
+        cv2.putText(frame, red_score_title, (40, 60), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
+        cv2.putText(frame, blue_score_title, (img_width - 210, 60), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
+
+        cv2.putText(frame, red_score, (100, 100), cv2.FONT_HERSHEY_DUPLEX, 1.5, (0, 0, 0))
+        cv2.putText(frame, blue_score, (img_width-80, 100), cv2.FONT_HERSHEY_DUPLEX, 1.5, (0, 0, 0))
+
+    def TwoPlayerGameStats(self, frame, red_score, blue_score):
+
+        blue_score = str(blue_score)
+        red_score = str(red_score)
+
+        cv2.putText(frame, red_score, (30, 40), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0))
+        cv2.putText(frame, blue_score, (570, 40), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0))
 
 if __name__ == '__main__':
     v = Video_Manager()
