@@ -2,25 +2,23 @@ import os
 from PIL import Image
 import cv2
 import random
-import numpy as np
 import time
 
 
 
 class Video_Manager:
-    def load_video(self, img_width=1330, img_height=630):
-
-        # image_resizing
-        self.img_width = img_width
-        self.img_height = img_height
+    def __init__(self):
+        self.current_seed = 0
+        self.is_answer_handled_red = False
+        self.is_answer_handled_blue = False
 
         # drawing_color
         self.blue_lower = (100, 150, 0)
         self.blue_upper = (140, 255, 255)
-        self.red_lower = (0, 50, 20)
-        self.red_upper = (5, 255, 255)
+        self.red_lower = (-10, 100, 100)
+        self.red_upper = (10, 255, 255)
 
-        # (-10, 100, 100), (10, 255, 255)
+        # (0, 50, 20), (5, 255, 255)
         # (0, 70, 50), (10, 255, 255)
         # (175, 70, 50), (180, 255, 255)
         # (170, 120, 120), (180, 255, 255)
@@ -28,7 +26,7 @@ class Video_Manager:
         # (153, 46, 82), (166, 33, 55)
 
         # level
-        self.easy = 100
+        self.easy = 200
         self.norm = 40
         self.hard = 30
 
@@ -49,11 +47,25 @@ class Video_Manager:
         self.blue_score = 0
         self.red_score = 0
 
-        # timer
-        self.num_of_secs = 30
+        # area
+        self.easy_min_area = self.easy * 30
+        self.norm_min_area = self.norm * 30
+        self.hard_min_area = self.hard * 30
 
+        # display_size
+        self.img_width = 1330
+        self.img_height = 630
 
-        # 중복 처리
+        self.box_num = 0
+        self.rect_num = 0
+
+        # time
+        # self.num_of_secs = 30
+
+    def load_video(self):
+        # image_resizing
+        img_width = self.img_width
+        img_height = self.img_height
 
         # load_video
         vidcap = cv2.VideoCapture(0)
@@ -62,7 +74,6 @@ class Video_Manager:
             print('카메라를 열 수 없습니다.')
             exit()
 
-        box_num, rect_num = 0, 0
         while True:
             _, frame = vidcap.read()  # _: ret
             # print(_)
@@ -72,35 +83,33 @@ class Video_Manager:
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(665, 315))
-            # frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
+            # frame = cv2.resize(frame, dsize=(665, 315))
+            frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
-            box_seed_num = box_num // 90
+            box_seed_num = self.box_num // 90
             random.seed(box_seed_num)
-            box_num += 1
+            self.box_num += 1
 
             # 볼 트래킹, 리듬박스 좌표 가져오기
             detection_blue, detection_red = self.tracking_ball(frame)
             coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
-            # 좌표 비교
-            rectangle_seed_num = rect_num % 3
-            rect_num += 1
-            if rectangle_seed_num == 0:
-                if self.isRectangleOverlap(detection_blue, coordinate_blue, self.BoxThreshold):
-                    cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
-                                  (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
-                    # 점수 누적
-                    self.blue_score += 1
+            if box_seed_num != self.current_seed:
+                self.is_answer_handled_red = False
+                self.is_answer_handled_blue = False
 
-                if self.isRectangleOverlap(detection_red, coordinate_red, self.BoxThreshold):
-                    cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
-                                  (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
-                    # 점수 누적
-                    self.red_score += 1
+            rectangle_seed_num = self.rect_num % 3
+            self.rect_num += 1
 
-            blue_score = str(self.blue_score)
-            red_score = str(self.red_score)
+            # 좌표, 점수 계산
+            blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = self.score_calculation(frame,
+                rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num, detection_red, coordinate_red)
+
+            self.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
+                              is_answer_handled_blue)
+
+            blue_score = str(blue_score)
+            red_score = str(red_score)
 
             # (0, 100) : 문자열이 표시될 좌표 x = 0, y = 100
             # cv2.FONT_HERSHEY_SCRIPT_SIMPLEX : 폰트 형태
@@ -112,6 +121,7 @@ class Video_Manager:
 
             cv2.imshow('Rhythm Box Slaughter', frame)
             # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
+
             if cv2.waitKey(15) == 27:
                 break
 
@@ -135,7 +145,7 @@ class Video_Manager:
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
-            if area > 800:
+            if area > self.easy_min_area: # easy 기준 6500
                 x, y, w, h = cv2.boundingRect(cnt)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
                 # detection_blue = [x, y, w, h]
@@ -151,7 +161,7 @@ class Video_Manager:
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
-            if area > 800:
+            if area > self.easy_min_area:
                 x, y, w, h = cv2.boundingRect(cnt)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
                 # detection_red = [x, y, w, h]
@@ -262,6 +272,31 @@ class Video_Manager:
             else: return False
         else: False
 
+    def score_calculation(self, frame, rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num,
+                          detection_red, coordinate_red):
+        if rectangle_seed_num == 0:
+            if self.isRectangleOverlap(detection_blue, coordinate_blue,
+                                       self.BoxThreshold) and not self.is_answer_handled_red:
+                self.current_seed = box_seed_num
+                self.is_answer_handled_red = True
+                self.blue_score += 1
+
+            if self.isRectangleOverlap(detection_red, coordinate_red,
+                                       self.BoxThreshold) and not self.is_answer_handled_blue:
+                self.current_seed = box_seed_num
+                self.is_answer_handled_blue = True
+                self.red_score += 1
+
+        return self.blue_score, self.red_score, self.is_answer_handled_red, self.is_answer_handled_blue
+
+    def Drawing_Rectangle(self, frame, coordinate_blue, coordinate_red, is_answer_handled_red, is_answer_handled_blue):
+        if self.is_answer_handled_red:
+            cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
+                          (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
+
+        if self.is_answer_handled_blue:
+            cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
+                          (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
 if __name__ == '__main__':
     v = Video_Manager()
