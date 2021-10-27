@@ -1,6 +1,7 @@
 import cv2
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 import sys
 import random
 import winsound
@@ -19,7 +20,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            sys.exit()
+            exit()
 
         box_num = 0
         rect_num = 0
@@ -70,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            sys.exit()
+            exit()
 
         box_num = 0
         rect_num = 0
@@ -116,21 +117,53 @@ class MainWindow(QtWidgets.QMainWindow):
         cv2.destroyAllWindows()
 
     def music_play(self):
-        winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_LOOP | winsound.SND_ASYNC)
+        music_list = ['jazzy frenchy',
+                      'ukulele',
+                      'cute',
+                      'tenderness',
+                      'acoustic breeze',
+                      'better days']
+        item = self.music.currentText()
+        # index = self.music.findText(f'{item}', QtCore.Qt.MatchFixedString)    # findText: 인덱스를 return
+
+        if item == music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-jazzyfrenchy.wav')
+        elif item == music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-ukulele.wav')
+        elif item == music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+        print('test_music_play')
 
     def button(self):
         btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        # btn_player_1.setFixedSize(100, 20)
 
-        btn_player_2 = QtWidgets.QRadioButton('2 Player')
-        # btn_player_2.setFixedSize(100, 20)
+        btn_player_2 = QtWidgets.QRadioButton('2 Players')
 
         self.music.move(200, 400)
-        music_list = [1, 2, 3, 4]
+        music_list = ['jazzy frenchy',
+                      'ukulele',
+                      'cute',
+                      'tenderness',
+                      'acoustic breeze',
+                      'better days']
         for i in music_list:
-            self.music.addItem(f'music{i}')
+            self.music.addItem(i)
 
-        btn_start = QtWidgets.QPushButton('Game Start')
+        # btn_start = QtWidgets.QPushButton('Game Start')
 
         vbox.addWidget(label)
         hbox = QtWidgets.QHBoxLayout()
@@ -138,7 +171,7 @@ class MainWindow(QtWidgets.QMainWindow):
         hbox.addWidget(btn_player_1)
         hbox.addWidget(btn_player_2)
         hbox.addWidget(self.music)
-        hbox.addWidget(btn_start)
+        # hbox.addWidget(btn_start)
         hbox.addStretch(1)
 
         vbox.addStretch(3)
@@ -147,7 +180,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         btn_player_1.clicked.connect(self.player_1)
         btn_player_2.clicked.connect(self.player_2)
-        self.music.activated[str].connect(self.music_play)
+        # self.music.activated[str].connect(self.music_play)
+        self.music.currentIndexChanged.connect(self.music_play)
 
 
 if __name__ == '__main__':
@@ -162,7 +196,7 @@ if __name__ == '__main__':
     main.button()
 
     window.setLayout(vbox)
-    window.setGeometry(0, 0, 1330, 630)
+    window.setGeometry(0, 0, 400, 200)
     window.show()
 
     sys.exit(app.exec_())
