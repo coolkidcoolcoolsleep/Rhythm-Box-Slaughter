@@ -150,8 +150,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def button(self):
         btn_player_1 = QtWidgets.QRadioButton('1 Player')
+        btn_player_1.setToolTip('1인용 게임')
 
         btn_player_2 = QtWidgets.QRadioButton('2 Players')
+        btn_player_2.setToolTip('2인용 게임')
 
         self.music.move(200, 400)
         music_list = ['jazzy frenchy',
@@ -162,6 +164,7 @@ class MainWindow(QtWidgets.QMainWindow):
                       'better days']
         for i in music_list:
             self.music.addItem(i)
+        self.music.setToolTip('배경음악을 고르세요')
 
         # btn_start = QtWidgets.QPushButton('Game Start')
 
