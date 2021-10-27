@@ -3,6 +3,9 @@ from PIL import Image
 import cv2
 import random
 import numpy as np
+import time
+
+
 
 class Video_Manager:
     def load_video(self, img_width=1330, img_height=630):
@@ -43,8 +46,11 @@ class Video_Manager:
         self.BoxThreshold = 6
 
         # score
-        blue_score = 0
-        red_score = 0
+        self.blue_score = 0
+        self.red_score = 0
+
+        # timer
+        self.num_of_secs = 30
 
 
         # 중복 처리
@@ -96,16 +102,13 @@ class Video_Manager:
             blue_score = str(self.blue_score)
             red_score = str(self.red_score)
 
-            print("blue_score: ", blue_score)
-            print("red_score: ", red_score)
-
-
             # (0, 100) : 문자열이 표시될 좌표 x = 0, y = 100
             # cv2.FONT_HERSHEY_SCRIPT_SIMPLEX : 폰트 형태
             # 1 : 문자열 크기(scale) 소수점 사용가능
             # (0, 255, 0) : 문자열 색상 (r,g,b)
 
-            cv2.putText(frame, red_score, (5, 20), cv2.FONT_HERSHEY_PLAIN,  1, (0, 255, 0))
+            cv2.putText(frame, red_score, (30, 40), cv2.FONT_HERSHEY_PLAIN,  3, (0, 0, 0))
+            cv2.putText(frame, blue_score, (570, 40), cv2.FONT_HERSHEY_PLAIN,  3, (0, 0, 0))
 
             cv2.imshow('Rhythm Box Slaughter', frame)
             # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
@@ -258,10 +261,6 @@ class Video_Manager:
                 return True
             else: return False
         else: False
-
-    # def score_calculation(self, is_one_player=True):
-
-
 
 
 if __name__ == '__main__':
