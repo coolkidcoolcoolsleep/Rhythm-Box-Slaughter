@@ -68,7 +68,8 @@ class MainWindow(QtWidgets.QMainWindow):
             vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
                                    is_answer_handled_blue)
 
-            vm.OnePlayerGameStats(frame, red_score, blue_score, vm.img_width, vm.img_height)
+            # vm.OnePlayerGameStats(frame, red_score, blue_score, vm.one_player_score, img_width, img_height)
+            vm.TwoPlayerGameStats(frame, red_score, blue_score, vm.img_width, vm.img_height)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
             # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
@@ -124,7 +125,8 @@ class MainWindow(QtWidgets.QMainWindow):
             vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
                                    is_answer_handled_blue)
 
-            vm.OnePlayerGameStats(frame, red_score, blue_score, vm.img_width, vm.img_height)
+            # vm.OnePlayerGameStats(frame, red_score, blue_score, vm.one_player_score, img_width, img_height)
+            vm.TwoPlayerGameStats(frame, red_score, blue_score, vm.img_width, vm.img_height)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
             # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
@@ -187,6 +189,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def button(self):
         self.btn_player_1.setToolTip('1인용 게임')
         self.btn_player_2.setToolTip('2인용 게임')
+        self.btn_start.setToolTip('누르면 게임을 시작합니다')
 
         self.music.move(200, 400)
         music_list = ['(음악을 선택하세요)',
