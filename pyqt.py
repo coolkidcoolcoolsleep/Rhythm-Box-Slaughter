@@ -14,6 +14,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.music = QtWidgets.QComboBox(self)
+        self.button()
+        self.background()
+        self.label_text()
+        self.window_style()
 
     def player_1(self):
         vm = Video_Manager()
@@ -24,43 +28,48 @@ class MainWindow(QtWidgets.QMainWindow):
             print('카메라를 열 수 없습니다.')
             exit()
 
-        box_num = 0
-        rect_num = 0
-
         while True:
             _, frame = vidcap.read()  # _: ret
+            # print(_)
             # 영상 좌우 반전
             frame = cv2.flip(frame, 1)
 
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(665, 315))
+            frame = cv2.resize(frame, dsize=(vm.img_width, vm.img_height))
 
-            # 90 프레임마다 몫이 바뀌니까
-            box_seed_num = box_num // 90
+            box_seed_num = vm.box_num // 90
             random.seed(box_seed_num)
-            box_num = box_num + 1
+            vm.box_num += 1
 
             detection_blue, detection_red = vm.tracking_ball(frame)
             coordinate_red, coordinate_blue = vm.random_box('easy', frame, is_one_player=True)
 
-            # 좌표 비교
-            rectangle_seed_num = rect_num % 3
-            if rectangle_seed_num == 0:
-                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.BoxThreshold):
-                    cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
-                                  (coordinate_blue[0][2], coordinate_blue[0][3]), vm.green_color, 3)
-                if vm.isRectangleOverlap(detection_red, coordinate_red, vm.BoxThreshold):
-                    cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
-                                  (coordinate_red[0][2], coordinate_red[0][3]), vm.green_color, 3)
-            rect_num = rect_num + 1
+            if box_seed_num != vm.current_seed:
+                vm.is_answer_handled_red = False
+                vm.is_answer_handled_blue = False
 
-            # 점수 합산
+            rectangle_seed_num = vm.rect_num % 3
+            vm.rect_num += 1
+
+            blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = vm.score_calculation(frame,
+                                                                                                          rectangle_seed_num,
+                                                                                                          detection_blue,
+                                                                                                          coordinate_blue,
+                                                                                                          box_seed_num,
+                                                                                                          detection_red,
+                                                                                                          coordinate_red)
+
+            vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
+                                   is_answer_handled_blue)
+
+            vm.OnePlayerGameStats(frame, red_score, blue_score, vm.img_width, vm.img_height)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
+            # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
 
-            if cv2.waitKey(15) == 27:  # esc 키를 누르면 닫음
+            if cv2.waitKey(15) == 27:
                 break
 
         vidcap.release()
@@ -75,9 +84,6 @@ class MainWindow(QtWidgets.QMainWindow):
             print('카메라를 열 수 없습니다.')
             exit()
 
-        box_num = 0
-        rect_num = 0
-
         while True:
             _, frame = vidcap.read()  # _: ret
             # print(_)
@@ -87,32 +93,39 @@ class MainWindow(QtWidgets.QMainWindow):
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(665, 315))
+            frame = cv2.resize(frame, dsize=(vm.img_width, vm.img_height))
 
-            # 90 프레임마다 몫이 바뀌니까
-            box_seed_num = box_num // 90
+            box_seed_num = vm.box_num // 90
             random.seed(box_seed_num)
-            box_num = box_num + 1
+            vm.box_num += 1
 
             detection_blue, detection_red = vm.tracking_ball(frame)
             coordinate_red, coordinate_blue = vm.random_box('easy', frame, is_one_player=False)
 
-            # 좌표 비교
-            rectangle_seed_num = rect_num % 3
-            if rectangle_seed_num == 0:
-                if vm.isRectangleOverlap(detection_blue, coordinate_blue, vm.BoxThreshold):
-                    cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
-                                  (coordinate_blue[0][2], coordinate_blue[0][3]), vm.green_color, 3)
-                if vm.isRectangleOverlap(detection_red, coordinate_red, vm.BoxThreshold):
-                    cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
-                                  (coordinate_red[0][2], coordinate_red[0][3]), vm.green_color, 3)
-            rect_num = rect_num + 1
+            if box_seed_num != vm.current_seed:
+                vm.is_answer_handled_red = False
+                vm.is_answer_handled_blue = False
 
-            # 점수 합산
+            rectangle_seed_num = vm.rect_num % 3
+            vm.rect_num += 1
+
+            blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = vm.score_calculation(frame,
+                                                                                                          rectangle_seed_num,
+                                                                                                          detection_blue,
+                                                                                                          coordinate_blue,
+                                                                                                          box_seed_num,
+                                                                                                          detection_red,
+                                                                                                          coordinate_red)
+
+            vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
+                                   is_answer_handled_blue)
+
+            vm.OnePlayerGameStats(frame, red_score, blue_score, vm.img_width, vm.img_height)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
+            # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
 
-            if cv2.waitKey(15) == 27:  # esc 키를 누르면 닫음
+            if cv2.waitKey(15) == 27:
                 break
 
         vidcap.release()
@@ -123,7 +136,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def music_play(self):
         music_list = ['jazzy frenchy',
-                      'ukulele',
+                      'youtube music 1',
                       'cute',
                       'tenderness',
                       'acoustic breeze',
@@ -169,24 +182,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.music.move(200, 400)
         music_list = ['jazzy frenchy',
-                      'ukulele',
+                      'youtube music 1',
                       'cute',
                       'tenderness',
                       'acoustic breeze',
                       'better days']
         for i in music_list:
             self.music.addItem(i)
-        self.music.setToolTip('배경음악을 고르세요')
-
-        # btn_start = QtWidgets.QPushButton('Game Start')
+        self.music.setToolTip('배경음악을 선택하세요')
 
         vbox.addWidget(label)
         hbox = QtWidgets.QHBoxLayout()
         hbox.addStretch(1)
+        hbox.addWidget(self.music)
         hbox.addWidget(btn_player_1)
         hbox.addWidget(btn_player_2)
-        hbox.addWidget(self.music)
-        # hbox.addWidget(btn_start)
         hbox.addStretch(1)
 
         vbox.addStretch(3)
@@ -205,6 +215,19 @@ class MainWindow(QtWidgets.QMainWindow):
         palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg))
         app.setPalette(palette)
 
+    def label_text(self):
+        label.setText('리듬 박스 학살')
+        label.setFont(QtGui.QFont('Arial', 15))
+        label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+
+    def window_style(self):
+        window.setWindowTitle('Rhythm Box Slaughter')
+        window.setWindowIcon(QtGui.QIcon('sunglasses.png'))
+
+        window.setLayout(vbox)
+        window.setGeometry(0, 0, 400, 100)
+        window.show()
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
@@ -212,20 +235,8 @@ if __name__ == '__main__':
     vbox = QtWidgets.QVBoxLayout()
     label = QtWidgets.QLabel()
 
-    label.setText('리듬 박스 학살')
-    label.setFont(QtGui.QFont('Arial', 15))
-    label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-    window.setWindowTitle('Rhythm Box Slaughter')
-    window.setWindowIcon(QtGui.QIcon('sunglasses.png'))
-
     app.setStyle('Fusion')
 
     main = MainWindow()
-    main.button()
-    main.background()
-
-    window.setLayout(vbox)
-    window.setGeometry(0, 0, 400, 100)
-    window.show()
 
     sys.exit(app.exec_())
