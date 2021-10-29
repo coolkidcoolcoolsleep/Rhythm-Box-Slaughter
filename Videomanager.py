@@ -47,6 +47,7 @@ class Video_Manager:
         # score
         self.blue_score = 0
         self.red_score = 0
+        self.one_player_score = 0
 
         # area
         self.easy_min_area = self.easy * 30
@@ -106,7 +107,8 @@ class Video_Manager:
             self.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
                               is_answer_handled_blue)
 
-            self.OnePlayerGameStats(frame, red_score, blue_score, img_width, img_height)
+            # self.OnePlayerGameStats(frame, red_score, blue_score, self.one_player_score, img_width, img_height)
+            self.TwoPlayerGameStats(frame, red_score, blue_score, img_width, img_height)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
             # esc 키를 누르면 닫음 -> 후에 노래가 끝나면 종료로 수정해야 함
@@ -159,96 +161,61 @@ class Video_Manager:
 
         return detection_blue[-1:], detection_red[-1:]
 
-    def rhythm_box_display_area(self, level, frame, is_one_player=True):
+    def rhythm_box_display_area(self, level, frame):
         # game_areas = self.load_data()
         # game_areas = frame
         area = frame
         display_areas = []
         # for area in game_areas:
         y, x, _ = area.shape  # (126, 266, 3)
-        if not is_one_player:
-            if level == 'easy':
-                area1 = (0, 0), (x // 2 - self.easy, y - self.easy)  # (0, 0), (103, 96)
-                area2 = (x // 2, 0), (x - self.easy, y - self.easy)  # (133, 0), (236, 96)
-                # print(area1, area2)
-                display_areas.append((area1, area2))
-            if level == 'norm':
-                area1 = (0, 0), (x // 2 - self.norm, y - self.norm)  # (0, 0), (113, 106)
-                area2 = (x // 2, 0), (x - self.norm, y - self.norm)  # (133, 0), (246, 106)
-                # print(area1, area2)
-                display_areas.append((area1, area2))
-            if level == 'hard':
-                area1 = (0, 0), (x // 2 - self.hard, y - self.hard)  # (0, 0), (118, 111)
-                area2 = (x // 2, 0), (x - self.hard, y - self.hard)  # (133, 0), (251, 111)
-                # print(area1, area2)
-                display_areas.append((area1, area2))
-        else:
-            if level == 'easy':
-                area1 = (0, 0), (x - self.easy, y - self.easy)  # (0, 0), (236, 96)
-                # print(area1)
-                display_areas.append(area1)
-            if level == 'norm':
-                area1 = (0, 0), (x - self.norm, y - self.norm)  # (0, 0), (246, 106)
-                # print(area1)
-                display_areas.append(area1)
-            if level == 'hard':
-                area1 = (0, 0), (x - self.hard, y - self.hard)  # (0, 0), (251, 111)
-                # print(area1)
-                display_areas.append(area1)
+        if level == 'easy':
+            area1 = (0, 0), (x // 2 - self.easy, y - self.easy)  # (0, 0), (103, 96)
+            area2 = (x // 2, 0), (x - self.easy, y - self.easy)  # (133, 0), (236, 96)
+            # print(area1, area2)
+            display_areas.append((area1, area2))
+        if level == 'norm':
+            area1 = (0, 0), (x // 2 - self.norm, y - self.norm)  # (0, 0), (113, 106)
+            area2 = (x // 2, 0), (x - self.norm, y - self.norm)  # (133, 0), (246, 106)
+            # print(area1, area2)
+            display_areas.append((area1, area2))
+        if level == 'hard':
+            area1 = (0, 0), (x // 2 - self.hard, y - self.hard)  # (0, 0), (118, 111)
+            area2 = (x // 2, 0), (x - self.hard, y - self.hard)  # (133, 0), (251, 111)
+            # print(area1, area2)
+            display_areas.append((area1, area2))
         return display_areas
 
     def random_box(self, level, frame, is_one_player=True):
         # img = self.load_data()[0]
 
         img = frame
-        areas = self.rhythm_box_display_area(level, frame, is_one_player)
+        areas = self.rhythm_box_display_area(level, frame)
         coordinate_red, coordinate_blue = [], []
         # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
         for area in areas:
             if not is_one_player:
                 img = cv2.line(img, (self.img_width//2, 0), (self.img_width//2, self.img_height), self.white_color, 2)
-                area1, area2 = area
-                (xs1, ys1), (xe1, ye1) = area1
-                (xs2, ys2), (xe2, ye2) = area2
-                a1, b1 = random.randint(xs1, xe1), random.randint(ys1, ye1)
-                a2, b2 = random.randint(xs2, xe2), random.randint(ys2, ye2)
+            area1, area2 = area
+            (xs1, ys1), (xe1, ye1) = area1
+            (xs2, ys2), (xe2, ye2) = area2
+            a1, b1 = random.randint(xs1, xe1), random.randint(ys1, ye1)
+            a2, b2 = random.randint(xs2, xe2), random.randint(ys2, ye2)
 
-                if level == 'easy':
-                    img = cv2.rectangle(img, (a1, b1), (a1 + self.easy, b1 + self.easy), self.red_color, 3)
-                    coordinate_red.append([a1, b1, a1 + self.easy, b1 + self.easy])
-                    img = cv2.rectangle(img, (a2, b2), (a2 + self.easy, b2 + self.easy), self.blue_color, 3)
-                    coordinate_blue.append([a2, b2, a2 + self.easy, b2 + self.easy])
-                if level == 'norm':
-                    img = cv2.rectangle(img, (a1, b1), (a1 + self.norm, b1 + self.norm), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
-                    img = cv2.rectangle(img, (a2, b2), (a2 + self.norm, b2 + self.norm), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
-                if level == 'hard':
-                    img = cv2.rectangle(img, (a1, b1), (a1 + self.hard, b1 + self.hard), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
-                    img = cv2.rectangle(img, (a2, b2), (a2 + self.hard, b2 + self.hard), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
-
-            else:
-                (xs1, ys1), (xe1, ye1) = area
-                a, b = random.randint(xs1, xe1), random.randint(ys1, ye1)
-                c, d = random.randint(xs1, xe1), random.randint(ys1, ye1)
-                if level == 'easy':
-                    img = cv2.rectangle(img, (a, b), (a + self.easy, b + self.easy), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
-                    img = cv2.rectangle(img, (c, d), (c + self.easy, d + self.easy), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
-                if level == 'norm':
-                    img = cv2.rectangle(img, (a, b), (a + self.norm, b + self.norm), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
-                    img = cv2.rectangle(img, (c, d), (c + self.norm, d + self.norm), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
-                if level == 'hard':
-                    img = cv2.rectangle(img, (a, b), (a + self.hard, b + self.hard), self.red_color, 3)
-                    coordinate_red.append([a, b, a + self.easy, b + self.easy])
-                    img = cv2.rectangle(img, (c, d), (c + self.hard, d + self.hard), self.blue_color, 3)
-                    coordinate_blue.append([c, d, c + self.easy, d + self.easy])
-
+            if level == 'easy':
+                img = cv2.rectangle(img, (a1, b1), (a1 + self.easy, b1 + self.easy), self.red_color, 3)
+                coordinate_red.append([a1, b1, a1 + self.easy, b1 + self.easy])
+                img = cv2.rectangle(img, (a2, b2), (a2 + self.easy, b2 + self.easy), self.blue_color, 3)
+                coordinate_blue.append([a2, b2, a2 + self.easy, b2 + self.easy])
+            if level == 'norm':
+                img = cv2.rectangle(img, (a1, b1), (a1 + self.norm, b1 + self.norm), self.red_color, 3)
+                coordinate_red.append([a1, b1, a1 + self.norm, b1 + self.norm])
+                img = cv2.rectangle(img, (a2, b2), (a2 + self.norm, b2 + self.norm), self.blue_color, 3)
+                coordinate_blue.append([a2, b2, a2 + self.norm, b2 + self.norm])
+            if level == 'hard':
+                img = cv2.rectangle(img, (a1, b1), (a1 + self.hard, b1 + self.hard), self.red_color, 3)
+                coordinate_red.append([a1, b1, a1 + self.hard, b1 + self.hard])
+                img = cv2.rectangle(img, (a2, b2), (a2 + self.hard, b2 + self.hard), self.blue_color, 3)
+                coordinate_blue.append([a2, b2, a2 + self.hard, b2 + self.hard])
         return coordinate_red, coordinate_blue
 
     def isRectangleOverlap(self, detection_rect, coordinate_rect, BoxThreshold):
@@ -287,12 +254,16 @@ class Video_Manager:
             cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                           (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
-    def OnePlayerGameStats(self, frame, red_score, blue_score, img_width, img_height):
+    def OnePlayerGameStats(self, frame, red_score, blue_score, one_player_score, img_width, img_height):
 
-        # (0, 100) : 문자열이 표시될 좌표 x = 0, y = 100
-        # cv2.FONT_HERSHEY_SCRIPT_SIMPLEX : 폰트 형태
-        # 1 : 문자열 크기(scale) 소수점 사용가능
-        # (0, 255, 0) : 문자열 색상 (r,g,b)
+        one_player_score = str(blue_score + red_score)
+        score_title = 'SCORE'
+
+        cv2.putText(frame, score_title, (img_width - 120, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), cv2.LINE_4)
+        cv2.putText(frame, one_player_score, (img_width-80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0), cv2.LINE_8)
+
+
+    def TwoPlayerGameStats(self, frame, red_score, blue_score, img_width, img_height):
 
         blue_score_title = 'BLUE SCORE'
         red_score_title = 'RED SCORE'
@@ -300,24 +271,15 @@ class Video_Manager:
         blue_score = str(blue_score)
         red_score = str(red_score)
 
-        l_padding = 40
-        r_padding = 50
+        cv2.putText(frame, red_score_title, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
+        cv2.putText(frame, blue_score_title, (img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), cv2.LINE_4)
 
-        # height_padding = 50
+        cv2.putText(frame, red_score, (80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 255),cv2.LINE_8)
+        cv2.putText(frame, blue_score, (img_width-130, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 0), cv2.LINE_8)
 
-        cv2.putText(frame, red_score_title, (40, 60), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
-        cv2.putText(frame, blue_score_title, (img_width - 210, 60), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
+    def Winner_effect(self):
+        pass
 
-        cv2.putText(frame, red_score, (100, 100), cv2.FONT_HERSHEY_DUPLEX, 1.5, (0, 0, 0))
-        cv2.putText(frame, blue_score, (img_width-80, 100), cv2.FONT_HERSHEY_DUPLEX, 1.5, (0, 0, 0))
-
-    def TwoPlayerGameStats(self, frame, red_score, blue_score):
-
-        blue_score = str(blue_score)
-        red_score = str(red_score)
-
-        cv2.putText(frame, red_score, (30, 40), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0))
-        cv2.putText(frame, blue_score, (570, 40), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0))
 
 if __name__ == '__main__':
     v = Video_Manager()
