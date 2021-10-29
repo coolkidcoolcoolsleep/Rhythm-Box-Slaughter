@@ -14,6 +14,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.music = QtWidgets.QComboBox(self)
+        self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
+        self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
+        self.btn_start = QtWidgets.QPushButton('Game Start')
+
         self.button()
         self.background()
         self.label_text()
@@ -54,12 +58,12 @@ class MainWindow(QtWidgets.QMainWindow):
             vm.rect_num += 1
 
             blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = vm.score_calculation(frame,
-                                                                                                          rectangle_seed_num,
-                                                                                                          detection_blue,
-                                                                                                          coordinate_blue,
-                                                                                                          box_seed_num,
-                                                                                                          detection_red,
-                                                                                                          coordinate_red)
+                                                                                                        rectangle_seed_num,
+                                                                                                        detection_blue,
+                                                                                                        coordinate_blue,
+                                                                                                        box_seed_num,
+                                                                                                        detection_red,
+                                                                                                        coordinate_red)
 
             vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
                                    is_answer_handled_blue)
@@ -110,12 +114,12 @@ class MainWindow(QtWidgets.QMainWindow):
             vm.rect_num += 1
 
             blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = vm.score_calculation(frame,
-                                                                                                          rectangle_seed_num,
-                                                                                                          detection_blue,
-                                                                                                          coordinate_blue,
-                                                                                                          box_seed_num,
-                                                                                                          detection_red,
-                                                                                                          coordinate_red)
+                                                                                                        rectangle_seed_num,
+                                                                                                        detection_blue,
+                                                                                                        coordinate_blue,
+                                                                                                        box_seed_num,
+                                                                                                        detection_red,
+                                                                                                        coordinate_red)
 
             vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
                                    is_answer_handled_blue)
@@ -130,6 +134,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         vidcap.release()
         cv2.destroyAllWindows()
+
+    def game_start(self):
+        if self.btn_player_1.isChecked():
+            print('test: btn_player_1')
+            self.player_1()
+        elif self.btn_player_2.isChecked():
+            print('test: btn_player_2')
+            self.player_2()
 
     def youtube_play(self):
         youtube_player.player()
@@ -149,11 +161,11 @@ class MainWindow(QtWidgets.QMainWindow):
             # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
             # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
 
-            print('test: bensound-jazzyfrenchy.wav')
+            pass
         elif item == music_list[1]:
             # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
 
-            print('test: bensound-ukulele.wav')
+            print('test: youtube music 1')
 
             thread = threading.Thread(target=self.youtube_play)
             thread.daemon = True
@@ -171,17 +183,13 @@ class MainWindow(QtWidgets.QMainWindow):
         elif item == music_list[5]:
             # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-betterdays.wav')
-        print('test_music_play')
 
     def button(self):
-        btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        btn_player_1.setToolTip('1인용 게임')
-
-        btn_player_2 = QtWidgets.QRadioButton('2 Players')
-        btn_player_2.setToolTip('2인용 게임')
+        self.btn_player_1.setToolTip('1인용 게임')
+        self.btn_player_2.setToolTip('2인용 게임')
 
         self.music.move(200, 400)
-        music_list = ['jazzy frenchy',
+        music_list = ['(음악을 선택하세요)',
                       'youtube music 1',
                       'cute',
                       'tenderness',
@@ -195,17 +203,19 @@ class MainWindow(QtWidgets.QMainWindow):
         hbox = QtWidgets.QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(self.music)
-        hbox.addWidget(btn_player_1)
-        hbox.addWidget(btn_player_2)
+        hbox.addWidget(self.btn_player_1)
+        hbox.addWidget(self.btn_player_2)
+        hbox.addWidget(self.btn_start)
         hbox.addStretch(1)
 
         vbox.addStretch(3)
         vbox.addLayout(hbox)
         vbox.addStretch(1)
 
-        btn_player_1.clicked.connect(self.player_1)
-        btn_player_2.clicked.connect(self.player_2)
+        # self.btn_player_1.clicked.connect(self.player_1)
+        # self.btn_player_2.clicked.connect(self.player_2)
         # self.music.activated[str].connect(self.music_play)
+        self.btn_start.clicked.connect(self.game_start)
         self.music.currentIndexChanged.connect(self.music_play)
 
     def background(self):
