@@ -1,4 +1,6 @@
 # KKBox's_music_data.py
+import os.path
+
 import numpy as np
 import pandas as pd
 import random
@@ -10,17 +12,11 @@ print(train.info())
 x_train = train.drop(['source_system_tab', 'source_screen_name', 'source_type'], axis=1)
 print(x_train.info())
 
-song_listened = x_train['target'] == 1
-print(song_listened)
-exit()
-train_data = []
-for target in x_train.loc[:, 'target']:
-    if target == 1:
-        train_data.append([])
-print(train_data)
-df = pd.DataFrame(train_data, columns=['user_id', 'song_id'])
-
-print(df.info())
+is_song_listened = x_train['target'] == 1
+song_listened = x_train[is_song_listened]
+if not os.path.exists('data/collaborative'):
+    os.makedirs('data/collaborative')
+song_listened.to_csv('data/collaborative/train_data.csv')
 
 
 
