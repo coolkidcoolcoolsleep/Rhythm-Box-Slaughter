@@ -3,7 +3,6 @@ from PIL import Image
 import cv2
 import random
 import time
-import datetime
 from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 
@@ -12,6 +11,7 @@ class Video_Manager:
         self.current_seed = 0
         self.is_answer_handled_red = False
         self.is_answer_handled_blue = False
+        self.game_finish = False
 
         # drawing_color
         self.blue_lower = (100, 150, 0)
@@ -60,10 +60,11 @@ class Video_Manager:
 
         self.box_num = 0
         self.rect_num = 0
+        self.frame_num = 0
 
         # winner
-        self.winGameText = '축하합니다!!'
-        self.LoseGameText = '아쉽군요!'
+        self.winGameText = 'win!!'
+        self.LoseGameText = 'fail!'
 
     def load_video(self):
         # image_resizing
@@ -87,53 +88,42 @@ class Video_Manager:
                 break
 
             frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
+            if self.game_finish == False:
+                # 이걸 30초 동안만 반복해야 함
+                box_seed_num = self.box_num // 90
+                random.seed(box_seed_num)
+                self.box_num += 1
 
-            box_seed_num = self.box_num // 90
-            random.seed(box_seed_num)
-            self.box_num += 1
+                detection_blue, detection_red = self.tracking_ball(frame)
+                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
-            detection_blue, detection_red = self.tracking_ball(frame)
-            coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
+                if box_seed_num != self.current_seed:
+                    self.is_answer_handled_red = False
+                    self.is_answer_handled_blue = False
 
-            if box_seed_num != self.current_seed:
-                self.is_answer_handled_red = False
-                self.is_answer_handled_blue = False
+                rectangle_seed_num = self.rect_num % 3
+                self.rect_num += 1
 
-            rectangle_seed_num = self.rect_num % 3
-            self.rect_num += 1
+                # 점수 계산
+                blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = self.score_calculation(frame,
+                    rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num, detection_red, coordinate_red)
 
-            # 점수 계산
-            blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = self.score_calculation(frame,
-                rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num, detection_red, coordinate_red)
+                # 정답 rect 그리기
+                self.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
+                                  is_answer_handled_blue)
 
-            # 정답 rect 그리기
-            self.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
-                              is_answer_handled_blue)
+                # 점수 표기
+                # self.OnePlayerGameStats(frame, red_score, blue_score, self.one_player_score)
 
-            # 점수 표기
-            # self.OnePlayerGameStats(frame, red_score, blue_score, self.one_player_score)
-            self.TwoPlayerGameStats(frame, red_score, blue_score)
+                self.TwoPlayerGameStats(frame, red_score, blue_score)
+
+                self.frame_num = self.frame_num + 1
+                if self.frame_num == 900:
+                    self.game_finish = True
+            else:
+                self.Winner_effect(frame, red_score, blue_score, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
-
-            if cv2.waitKey(15) == 27:
-                break
-
-        # 게임 끝났을 때
-        while True:
-            vidcap = cv2.VideoCapture(0)
-            _, frame = vidcap.read()
-            frame = cv2.flip(frame, 1)
-
-            if frame is None:
-                break
-
-            frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
-
-            # 우승자 선정
-            # self.Winner_effect(self, frame, red_score, blue_score, is_one_player=True)
-
-            cv2.imshow('Winner', frame)
 
             if cv2.waitKey(15) == 27:
                 break
@@ -298,7 +288,7 @@ class Video_Manager:
         cv2.putText(frame, red_score, (80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 255),cv2.LINE_8)
         cv2.putText(frame, blue_score, (self.img_width-130, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 0), cv2.LINE_8)
 
-    def Winner_effect(self, frame, red_score, blue_score, is_one_player=True):
+    def Winner_effect(self, frame, red_score, blue_score, is_one_player=False):
         if not is_one_player:
             img = frame
             img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
