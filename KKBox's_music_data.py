@@ -1,324 +1,224 @@
-import os
-from PIL import Image
-import cv2
-import random
-import time
-import datetime
-from PIL import ImageFont, ImageDraw, Image
+# KKBox's_music_data.py
 import numpy as np
+import pandas as pd
+import random
+from sklearn import preprocessing
+import tensorflow as tf
 
-class Video_Manager:
-    def __init__(self):
-        self.current_seed = 0
-        self.is_answer_handled_red = False
-        self.is_answer_handled_blue = False
+train = pd.read_csv('data/kkbox-music-recommendation-challenge/train.csv/train.csv')
+print(train.info())
+x_train = train.drop(['source_system_tab', 'source_screen_name', 'source_type'], axis=1)
+print(x_train.info())
 
-        # drawing_color
-        self.blue_lower = (100, 150, 0)
-        self.blue_upper = (140, 255, 255)
-        self.red_lower = (-10, 100, 100)
-        self.red_upper = (10, 255, 255)
+song_listened = x_train['target'] == 1
+print(song_listened)
+exit()
+train_data = []
+for target in x_train.loc[:, 'target']:
+    if target == 1:
+        train_data.append([])
+print(train_data)
+df = pd.DataFrame(train_data, columns=['user_id', 'song_id'])
 
-        # (0, 50, 20), (5, 255, 255)
-        # (0, 70, 50), (10, 255, 255)
-        # (175, 70, 50), (180, 255, 255)
-        # (170, 120, 120), (180, 255, 255)
-        # (0, 50, 20), (5, 255, 255)
-        # (153, 46, 82), (166, 33, 55)
+print(df.info())
 
-        # level
-        self.easy = 200
-        self.norm = 40
-        self.hard = 30
 
-        # color
-        self.red_color = (203, 192, 255)
-        self.blue_color = (223, 188, 80)
-        self.green_color = (0, 255, 0)
-        self.white_color = (255, 255, 255)
 
-        # score
-        self.blue_score = 0
-        self.red_score = 0
 
-        # box
-        self.BoxThreshold = 6
 
-        # score
-        self.blue_score = 0
-        self.red_score = 0
-        self.one_player_score = 0
 
-        # area
-        self.easy_min_area = self.easy * 30
-        self.norm_min_area = self.norm * 30
-        self.hard_min_area = self.hard * 30
 
-        # display_size
-        self.img_width = 1330
-        self.img_height = 630
 
-        self.box_num = 0
-        self.rect_num = 0
 
-        # winner
-        self.winGameText = '축하합니다!!'
-        self.LoseGameText = '아쉽군요!'
 
-    def load_video(self):
-        # image_resizing
-        img_width = self.img_width
-        img_height = self.img_height
 
-        # load_video
-        vidcap = cv2.VideoCapture(0)
 
-        if not vidcap.isOpened():
-            print('카메라를 열 수 없습니다.')
-            exit()
 
-        while True:
-            _, frame = vidcap.read()  # _: ret
-            # print(_)
-            # 영상 좌우 반전
-            frame = cv2.flip(frame, 1)
 
-            if frame is None:
-                break
 
-            frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
-            box_seed_num = self.box_num // 90
-            random.seed(box_seed_num)
-            self.box_num += 1
 
-            detection_blue, detection_red = self.tracking_ball(frame)
-            coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
-            if box_seed_num != self.current_seed:
-                self.is_answer_handled_red = False
-                self.is_answer_handled_blue = False
+# users = pd.read_csv('data/kkbox-music-recommendation-challenge/members.csv/members.csv')
+# users = users.drop(['bd', 'registered_via', 'registration_init_time', 'expiration_date', 'city'], axis=1)
+# # print(users['gender'].isnull().sum())
+# # print(users['city'])
+# print(users.info())
+# RangeIndex: 34403 entries, 0 to 34402
+#      Column  Non-Null Count  Dtype
+# ---  ------  --------------  -----
+#  0   msno    34403 non-null  object
+#  1   city    34403 non-null  int64
+#  2   gender  14501 non-null  object
+# dtypes: int64(5), object(1)
+# print('songs 읽는중')
+# songs = pd.read_csv('data/kkbox-music-recommendation-challenge/songs.csv/songs.csv')
+# songs = songs.drop(['song_length', 'genre_ids', 'language'], axis=1)
+# print(songs.info())
+# RangeIndex: 2296320 entries, 0 to 2296319
+#      Column       Dtype
+# ---  ------       -----
+#  0   song_id      object
+#  1   artist_name  object
+#  2   composer     object
+#  3   lyricist     object
+#  4   language     float64
+# print('train 읽는중')
+# train = pd.read_csv('data/kkbox-music-recommendation-challenge/train.csv/train.csv')
+# train = train.drop(['source_system_tab', 'source_screen_name', 'source_type'], axis=1)
+# print(train.info())
+# RangeIndex: 7377418 entries, 0 to 7377417
+#      Column   Dtype
+# ---  ------   -----
+#  0   msno     object
+#  1   song_id  object
+#  2   target   int64
+# print('songs, train 병합하는 중')
+# df = pd.merge(songs, train)
+# print(df.info())
+#      Column       Dtype
+# ---  ------       -----
+#  0   song_id      object
+#  1   artist_name  object
+#  2   composer     object
+#  3   lyricist     object
+#  4   language     float64
+#  5   msno         object
+#  6   target       int64
 
-            rectangle_seed_num = self.rect_num % 3
-            self.rect_num += 1
+# content_based filtering 사용하기
+# print('df song_id, msno encoding')
+# le = preprocessing.LabelEncoder()
+# df['msno'] = le.fit_transform(df['msno'])
+# df['song_id'] = le.fit_transform(df['song_id'])
+# print(df.info())
+#      Column       Dtype
+# ---  ------       -----
+#  0   song_id      int32
+#  1   artist_name  object
+#  2   composer     object
+#  3   lyricist     object
+#  4   msno         int32
+#  5   target       int64
+# df['composer'] = df['composer'].fillna('unknown')
+# df['composer'] = le.fit_transform(df['composer'])
+# df['lyricist'] = df['lyricist'].fillna('unknown')
+# df['lyricist'] = le.fit_transform(df['lyricist'])
+# print(df['composer'])
+# print(df['lyricist'])
+# print(df.info())
+#
+# x_train = df['song_id', 'msno']
+# y_train = df['target']
+#
+# song_played_count_train = df['song_id'].value_counts()
+# print(song_played_count_train)
+# Name: song_id, Length: 359966, dtype: int64
 
-            # 점수 계산
-            blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = self.score_calculation(frame,
-                rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num, detection_red, coordinate_red)
 
-            # 정답 rect 그리기
-            self.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
-                              is_answer_handled_blue)
 
-            # 점수 표기
-            # self.OnePlayerGameStats(frame, red_score, blue_score, self.one_player_score)
-            self.TwoPlayerGameStats(frame, red_score, blue_score)
 
-            cv2.imshow('Rhythm Box Slaughter', frame)
+# user 반으로 줄이고 shuffle 하기
+# n_users = np.max(df['msno'])
+# n_songs = np.max(df['song_id'])
+# shape = (n_users // 2, n_songs + 1)
+# users_list = list(np.arange(n_users // 2))
+# random.shuffle(list(users_list))
+# # print(users_list)
+# 메모리 부족 현상 발생
+# shape = (n_users + 1, n_songs + 1)
+# print(shape)
+# adj_matrix = np.ndarray(shape, dtype=int)
+# for song_id, artist_name, composer, lyricist, msno, target in df.loc[users_list]:
+#     adj_matrix[n_users][n_songs] = 1
+# print(adj_matrix)
 
-            if cv2.waitKey(15) == 27:
-                break
 
-        # 게임 끝났을 때
-        while True:
-            vidcap = cv2.VideoCapture(0)
-            _, frame = vidcap.read()
-            frame = cv2.flip(frame, 1)
 
-            if frame is None:
-                break
+# users_song_record = pd.merge(users, train)
+# print(users_song_record.info())
+# print(users_song_record[:3])
+#
+# users_song_record_grouped = users_song_record.groupby(['msno'])
+# print(users_song_record.head())
+# print(collections.Counter(users_song_record['target']))
+# <class 'pandas.core.frame.DataFrame'>
+# Int64Index: 7377418 entries, 0 to 7377417
+# Data columns (total 12 columns):
+#  #   Column                  Dtype
+# ---  ------                  -----
+#  0   msno                    object
+#  1   city                    int64
+#  2   bd                      int64
+#  3   gender                  object
+#  4   registered_via          int64
+#  5   registration_init_time  int64
+#  6   expiration_date         int64
+#  7   song_id                 object
+#  8   source_system_tab       object
+#  9   source_screen_name      object
+#  10  source_type             object
+#  11  target                  int64
+# dtypes: int64(6), object(6)
+# memory usage: 731.7+ MB
+# None
+#                                            msno  city  ...    source_type target
+# 0  XQxgAYj3klVKjR3oxPPXYYFp4soD4TuBghkhMTD4oTw=     1  ...  local-library      1
+# 1  XQxgAYj3klVKjR3oxPPXYYFp4soD4TuBghkhMTD4oTw=     1  ...  local-library      1
+# 2  XQxgAYj3klVKjR3oxPPXYYFp4soD4TuBghkhMTD4oTw=     1  ...  local-library      1
+#
+# [3 rows x 12 columns]
+# exit()
+# # df = df.drop(['song_id', 'msno'], axis=1)
+# # print(collections.Counter(df['song']))
+#
+# print(train.info())
+# print(train.isnull().sum())
+# msno                       0
+# song_id                    0
+# source_system_tab      24849
+# source_screen_name    414804
+# source_type            21539
+# target                     0
+#
+# print(collections.Counter(train['source_system_tab']))
+# # Counter({'my library': 3684730, 'discover': 2179252, 'search': 623286, 'radio': 476701, 'listen with': 212266,
+# # 'explore': 167949, nan: 24849, 'notification': 6185, 'settings': 2200})
+# print(collections.Counter(train['source_screen_name']))
+# # Counter({'Local playlist more': 3228202, 'Online playlist more': 1294689, 'Radio': 474467, 'Album more': 420156,
+# # nan: 414804, 'Search': 298487, 'Artist more': 252429, 'Discover Feature': 244246, 'Discover Chart': 213658,
+# # 'Others profile more': 201795, 'Discover Genre': 82202, 'My library': 75980, 'Explore': 72342, 'Unknown': 54170,
+# # 'Discover New': 15955, 'Search Trends': 13632, 'Search Home': 13482, 'My library_Search': 6451, 'Self profile more':
+# # 212, 'Concert': 47, 'Payment': 12})
+# print(collections.Counter(train['source_type']))
+# # Counter({'local-library': 2261399, 'online-playlist': 1967924, 'local-playlist': 1079503, 'radio': 483109,
+# # 'album': 477344, 'top-hits-for-artist': 423614, 'song': 244722, 'song-based-playlist': 210527, 'listen-with': 192842,
+# # nan: 21539, 'topic-article-playlist': 11194, 'artist': 3038, 'my-daily-playlist': 663})
+#
+# train['source_system_tab'] = train['source_system_tab'].fillna('my library')
+# train['source_screen_name'] = train['source_screen_name'].fillna('my library')
+# train['source_type'] = train['source_type'].fillna('my library')
+#
+# print(train_data.info())
+# print(train_data.isnull().sum())
+#
+# le = preprocessing.LabelEncoder()
+# le.fit(train_data['source_system_tab'])
+#
+# test = le.transform(train_data['source_system_tab'])
+# print(np.max(test))         # 7
 
-            frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
 
-            # 우승자 선정
-            # self.Winner_effect(self, frame, red_score, blue_score, is_one_player=True)
 
-            cv2.imshow('Winner', frame)
 
-            if cv2.waitKey(15) == 27:
-                break
 
-        vidcap.release()
-        cv2.destroyAllWindows()
 
-    def tracking_ball(self, frame):
-        detection_red = []
-        detection_blue = []
-        # GaussianBlur: 적용해서 노이즈와 이상치 줄임
-        blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
-        blue_mask = cv2.inRange(hsv, self.blue_lower, self.blue_upper)
-        # erode: 개체 경계의 픽셀을 제거
-        blue_mask = cv2.erode(blue_mask, None, iterations=2)
-        # dilate: 공백으로 구분 된 연결 영역
-        blue_mask = cv2.dilate(blue_mask, None, iterations=2)
-        # 공의 윤곽선 찾기
-        contours, _ = cv2.findContours(blue_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        for cnt in contours:
-            area = cv2.contourArea(cnt)
-            if area > self.easy_min_area: # easy 기준 6500
-                x, y, w, h = cv2.boundingRect(cnt)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
-                # detection_blue = [x, y, w, h]
-                detection_blue.append([x, y, x + w, y + h])
 
-        red_mask = cv2.inRange(hsv, self.red_lower, self.red_upper)
-        # erode: 개체 경계의 픽셀을 제거
-        red_mask = cv2.erode(red_mask, None, iterations=2)
-        # dilate: 공백으로 구분 된 연결 영역
-        red_mask = cv2.dilate(red_mask, None, iterations=2)
-        # 공의 윤곽선 찾기
-        contours, _ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        for cnt in contours:
-            area = cv2.contourArea(cnt)
-            if area > self.easy_min_area:
-                x, y, w, h = cv2.boundingRect(cnt)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
-                # detection_red = [x, y, w, h]
-                detection_red.append([x, y, x + w, y + h])
-                # print("detection_red: ", x, y, w, h)
 
-        return detection_blue[-1:], detection_red[-1:]
 
-    def rhythm_box_display_area(self, level, frame):
-        # game_areas = self.load_data()
-        # game_areas = frame
-        area = frame
-        display_areas = []
-        # for area in game_areas:
-        y, x, _ = area.shape  # (126, 266, 3)
-        if level == 'easy':
-            area1 = (0, 0), (x // 2 - self.easy, y - self.easy)  # (0, 0), (103, 96)
-            area2 = (x // 2, 0), (x - self.easy, y - self.easy)  # (133, 0), (236, 96)
-            # print(area1, area2)
-            display_areas.append((area1, area2))
-        if level == 'norm':
-            area1 = (0, 0), (x // 2 - self.norm, y - self.norm)  # (0, 0), (113, 106)
-            area2 = (x // 2, 0), (x - self.norm, y - self.norm)  # (133, 0), (246, 106)
-            # print(area1, area2)
-            display_areas.append((area1, area2))
-        if level == 'hard':
-            area1 = (0, 0), (x // 2 - self.hard, y - self.hard)  # (0, 0), (118, 111)
-            area2 = (x // 2, 0), (x - self.hard, y - self.hard)  # (133, 0), (251, 111)
-            # print(area1, area2)
-            display_areas.append((area1, area2))
-        return display_areas
 
-    def random_box(self, level, frame, is_one_player=True):
-        # img = self.load_data()[0]
 
-        img = frame
-        areas = self.rhythm_box_display_area(level, frame)
-        coordinate_red, coordinate_blue = [], []
-        # (((30, 30), (103, 96)), ((163, 30), (236, 96)))
-        for area in areas:
-            if not is_one_player:
-                img = cv2.line(img, (self.img_width//2, 0), (self.img_width//2, self.img_height), self.white_color, 2)
-            area1, area2 = area
-            (xs1, ys1), (xe1, ye1) = area1
-            (xs2, ys2), (xe2, ye2) = area2
-            a1, b1 = random.randint(xs1, xe1), random.randint(ys1, ye1)
-            a2, b2 = random.randint(xs2, xe2), random.randint(ys2, ye2)
 
-            if level == 'easy':
-                img = cv2.rectangle(img, (a1, b1), (a1 + self.easy, b1 + self.easy), self.red_color, 3)
-                coordinate_red.append([a1, b1, a1 + self.easy, b1 + self.easy])
-                img = cv2.rectangle(img, (a2, b2), (a2 + self.easy, b2 + self.easy), self.blue_color, 3)
-                coordinate_blue.append([a2, b2, a2 + self.easy, b2 + self.easy])
-            if level == 'norm':
-                img = cv2.rectangle(img, (a1, b1), (a1 + self.norm, b1 + self.norm), self.red_color, 3)
-                coordinate_red.append([a1, b1, a1 + self.norm, b1 + self.norm])
-                img = cv2.rectangle(img, (a2, b2), (a2 + self.norm, b2 + self.norm), self.blue_color, 3)
-                coordinate_blue.append([a2, b2, a2 + self.norm, b2 + self.norm])
-            if level == 'hard':
-                img = cv2.rectangle(img, (a1, b1), (a1 + self.hard, b1 + self.hard), self.red_color, 3)
-                coordinate_red.append([a1, b1, a1 + self.hard, b1 + self.hard])
-                img = cv2.rectangle(img, (a2, b2), (a2 + self.hard, b2 + self.hard), self.blue_color, 3)
-                coordinate_blue.append([a2, b2, a2 + self.hard, b2 + self.hard])
-        return coordinate_red, coordinate_blue
-
-    def isRectangleOverlap(self, detection_rect, coordinate_rect, BoxThreshold):
-        if detection_rect and coordinate_rect:
-            if (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][0] <= coordinate_rect[0][2]+BoxThreshold) and \
-                (coordinate_rect[0][0]-BoxThreshold <= detection_rect[0][2] <= coordinate_rect[0][2]+BoxThreshold) and \
-                (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][1] <= coordinate_rect[0][3]+BoxThreshold) and \
-                    (coordinate_rect[0][1]-BoxThreshold <= detection_rect[0][3] <= coordinate_rect[0][3]+BoxThreshold):
-                return True
-            else: return False
-        else: False
-
-    def score_calculation(self, frame, rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num,
-                          detection_red, coordinate_red):
-        if rectangle_seed_num == 0:
-            if self.isRectangleOverlap(detection_blue, coordinate_blue,
-                                       self.BoxThreshold) and not self.is_answer_handled_red:
-                self.current_seed = box_seed_num
-                self.is_answer_handled_red = True
-                self.blue_score += 1
-
-            if self.isRectangleOverlap(detection_red, coordinate_red,
-                                       self.BoxThreshold) and not self.is_answer_handled_blue:
-                self.current_seed = box_seed_num
-                self.is_answer_handled_blue = True
-                self.red_score += 1
-
-        return self.blue_score, self.red_score, self.is_answer_handled_red, self.is_answer_handled_blue
-
-    def Drawing_Rectangle(self, frame, coordinate_blue, coordinate_red, is_answer_handled_red, is_answer_handled_blue):
-        if self.is_answer_handled_red:
-            cv2.rectangle(frame, (coordinate_blue[0][0], coordinate_blue[0][1]),
-                          (coordinate_blue[0][2], coordinate_blue[0][3]), self.green_color, 3)
-
-        if self.is_answer_handled_blue:
-            cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
-                          (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
-
-    def OnePlayerGameStats(self, frame, red_score, blue_score, one_player_score):
-
-        one_player_score = str(blue_score + red_score)
-        score_title = 'SCORE'
-
-        cv2.putText(frame, score_title, (self.img_width - 120, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), cv2.LINE_4)
-        cv2.putText(frame, one_player_score, (self.img_width-80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0), cv2.LINE_8)
-
-    def TwoPlayerGameStats(self, frame, red_score, blue_score):
-
-        blue_score_title = 'BLUE SCORE'
-        red_score_title = 'RED SCORE'
-
-        blue_score = str(blue_score)
-        red_score = str(red_score)
-
-        cv2.putText(frame, red_score_title, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
-        cv2.putText(frame, blue_score_title, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), cv2.LINE_4)
-
-        cv2.putText(frame, red_score, (80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 255),cv2.LINE_8)
-        cv2.putText(frame, blue_score, (self.img_width-130, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 0), cv2.LINE_8)
-
-    def Winner_effect(self, frame, red_score, blue_score, is_one_player=True):
-        if not is_one_player:
-            img = frame
-            img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
-            if red_score > blue_score:
-                # red 영역 화면 출력
-                cv2.putText(frame, self.winGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
-                # blue 영역 화면 출력
-                cv2.putText(frame, self.LoseGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0),
-                            cv2.LINE_4)
-            else:
-                # blue 영역 화면 출력
-                cv2.putText(frame, self.winGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0),
-                            cv2.LINE_4)
-                # red 영역 화면 출력
-                cv2.putText(frame, self.LoseGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
-        else:
-            # 화면 중앙에 출력
-            cv2.putText(frame, self.winGameText, (self.img_width - 80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0),
-                        cv2.LINE_8)
-
-if __name__ == '__main__':
-    v = Video_Manager()
-    v.load_video()
