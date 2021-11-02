@@ -6,18 +6,32 @@ from sklearn import preprocessing
 import tensorflow as tf
 
 train = pd.read_csv('data/kkbox-music-recommendation-challenge/train.csv/train.csv')
-print(train.info())
+print(train['target'].unique())
+# print(train.info())
 x_train = train.drop(['source_system_tab', 'source_screen_name', 'source_type'], axis=1)
 print(x_train.info())
 
-is_song_listened = x_train['target'] == 1
-song_listened = x_train[is_song_listened]
+# songs = pd.read_csv('data/kkbox-music-recommendation-challenge/songs.csv/songs.csv')
+# print(songs.info())
+
+le = preprocessing.LabelEncoder()
+x_train['msno'] = le.fit_transform(x_train['msno'])
+
+le1 = preprocessing.LabelEncoder()
+# le1.fit(songs['song_id'])
+# songs['song_id'] = le1.transform(songs['song_id'])
+# print(songs.info())
+x_train['song_id'] = le1.fit_transform(x_train['song_id'])
+# print(songs.head())
+
+# is_song_listened = x_train['target'] == 1
+# song_listened = x_train[is_song_listened]
 if not os.path.exists('data/collaborative'):
     os.makedirs('data/collaborative')
-print(song_listened.columns)
+print(x_train.columns)
 # song_listened.reset_index()
-print(song_listened.head())
-song_listened.to_csv('data/collaborative/train_data.csv', index=False)
+print(x_train.head())
+x_train.to_csv('data/collaborative/train_data.csv', index=False)
 
 # users = pd.read_csv('data/kkbox-music-recommendation-challenge/members.csv/members.csv')
 # users = users.drop(['bd', 'registered_via', 'registration_init_time', 'expiration_date', 'city'], axis=1)
