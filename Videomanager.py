@@ -58,13 +58,19 @@ class Video_Manager:
         self.img_width = 1330
         self.img_height = 630
 
+        # player_num
         self.box_num = 0
         self.rect_num = 0
         self.frame_num = 0
 
         # winner
         self.winGameText = 'win!!'
-        self.LoseGameText = 'fail!'
+        self.LoseGameText = 'lose!'
+        self.drawGameText = 'draw'
+
+        self.blue_score_title = 'BLUE SCORE'
+        self.red_score_title = 'RED SCORE'
+        self.score_title = 'SCORE'
 
     def load_video(self):
         # image_resizing
@@ -88,8 +94,8 @@ class Video_Manager:
                 break
 
             frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
+
             if self.game_finish == False:
-                # 이걸 30초 동안만 반복해야 함
                 box_seed_num = self.box_num // 90
                 random.seed(box_seed_num)
                 self.box_num += 1
@@ -113,9 +119,7 @@ class Video_Manager:
                                   is_answer_handled_blue)
 
                 # 점수 표기
-                # self.OnePlayerGameStats(frame, red_score, blue_score, self.one_player_score)
-
-                self.TwoPlayerGameStats(frame, red_score, blue_score)
+                self.PlayerGameStats(frame, red_score, blue_score, is_one_player=False)
 
                 self.frame_num = self.frame_num + 1
                 if self.frame_num == 900:
@@ -266,27 +270,24 @@ class Video_Manager:
             cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                           (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
-    def OnePlayerGameStats(self, frame, red_score, blue_score, one_player_score):
+    def PlayerGameStats(self, frame, red_score, blue_score, is_one_player=False):
+        if not is_one_player:
+            blue_score = str(blue_score)
+            red_score = str(red_score)
 
-        one_player_score = str(blue_score + red_score)
-        score_title = 'SCORE'
+            cv2.putText(frame, self.red_score_title, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
+            cv2.putText(frame, self.blue_score_title, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), cv2.LINE_4)
 
-        cv2.putText(frame, score_title, (self.img_width - 120, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), cv2.LINE_4)
-        cv2.putText(frame, one_player_score, (self.img_width-80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0), cv2.LINE_8)
+            cv2.putText(frame, red_score, (80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 255),cv2.LINE_8)
+            cv2.putText(frame, blue_score, (self.img_width-130, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 0), cv2.LINE_8)
 
-    def TwoPlayerGameStats(self, frame, red_score, blue_score):
+        else:
+            one_player_score = str(blue_score + red_score)
 
-        blue_score_title = 'BLUE SCORE'
-        red_score_title = 'RED SCORE'
-
-        blue_score = str(blue_score)
-        red_score = str(red_score)
-
-        cv2.putText(frame, red_score_title, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
-        cv2.putText(frame, blue_score_title, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), cv2.LINE_4)
-
-        cv2.putText(frame, red_score, (80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 255),cv2.LINE_8)
-        cv2.putText(frame, blue_score, (self.img_width-130, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 0), cv2.LINE_8)
+            cv2.putText(frame, self.score_title, (self.img_width - 120, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0),
+                        cv2.LINE_4)
+            cv2.putText(frame, one_player_score, (self.img_width - 80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0),
+                        cv2.LINE_8)
 
     def Winner_effect(self, frame, red_score, blue_score, is_one_player=False):
         if not is_one_player:
@@ -298,12 +299,20 @@ class Video_Manager:
                 # blue 영역 화면 출력
                 cv2.putText(frame, self.LoseGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0),
                             cv2.LINE_4)
-            else:
+            elif red_score < blue_score:
                 # blue 영역 화면 출력
-                cv2.putText(frame, self.winGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0),
+                cv2.putText(frame, self.winGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            (255, 0, 0),
                             cv2.LINE_4)
                 # red 영역 화면 출력
                 cv2.putText(frame, self.LoseGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
+            elif red_score == blue_score:
+                # blue 영역 화면 출력
+                cv2.putText(frame, self.drawGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            (255, 0, 0),
+                            cv2.LINE_4)
+                # red 영역 화면 출력
+                cv2.putText(frame, self.drawGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
         else:
             # 화면 중앙에 출력
             cv2.putText(frame, self.winGameText, (self.img_width - 80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0),
