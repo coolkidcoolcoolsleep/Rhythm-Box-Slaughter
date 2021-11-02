@@ -1,9 +1,7 @@
 # KKBox's_music_data.py
 import os.path
-
 import numpy as np
 import pandas as pd
-import random
 from sklearn import preprocessing
 import tensorflow as tf
 
@@ -16,24 +14,10 @@ is_song_listened = x_train['target'] == 1
 song_listened = x_train[is_song_listened]
 if not os.path.exists('data/collaborative'):
     os.makedirs('data/collaborative')
-song_listened.to_csv('data/collaborative/train_data.csv')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print(song_listened.columns)
+# song_listened.reset_index()
+print(song_listened.head())
+song_listened.to_csv('data/collaborative/train_data.csv', index=False)
 
 # users = pd.read_csv('data/kkbox-music-recommendation-challenge/members.csv/members.csv')
 # users = users.drop(['bd', 'registered_via', 'registration_init_time', 'expiration_date', 'city'], axis=1)
