@@ -1,4 +1,5 @@
 import cv2
+import os
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -149,7 +150,7 @@ class MainWindow(QtWidgets.QMainWindow):
         youtube_player.player()
 
     def music_play(self):
-        music_list = ['jazzy frenchy',
+        music_list = ['(음악을 선택하세요)',
                       'youtube music 1',
                       'cute',
                       'tenderness',
@@ -242,7 +243,17 @@ class MainWindow(QtWidgets.QMainWindow):
         window.show()
 
 
+def resources():
+    try:
+        os.chdir(sys._MEIPASS)
+        print(sys._MEIPASS)
+    except:
+        os.chdir(os.getcwd())
+
+
 if __name__ == '__main__':
+    resources()
+
     app = QtWidgets.QApplication([])
     window = QtWidgets.QWidget()
     vbox = QtWidgets.QVBoxLayout()
