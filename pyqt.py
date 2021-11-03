@@ -241,19 +241,6 @@ class GameWindow1(Game):
     def __init__(self):
         super().__init__()
         Game.__init__(self)
-        # self.button()
-        # self.music = QtWidgets.QComboBox(self)
-        # self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        # self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
-        # self.btn_start = QtWidgets.QPushButton('Game Start')
-        #
-        # self.window = QtWidgets.QWidget()
-        # self.vbox = QtWidgets.QVBoxLayout()
-        # self.label = QtWidgets.QLabel()
-        #
-        # self.background()
-        # self.label_text()
-        # self.window_style()
 
     def music_play(self):
         item = self.music.currentText()
@@ -298,19 +285,6 @@ class GameWindow2(Game):
     def __init__(self):
         super().__init__()
         Game.__init__(self)
-        # self.button()
-        # self.music = QtWidgets.QComboBox(self)
-        # self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        # self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
-        # self.btn_start = QtWidgets.QPushButton('Game Start')
-        #
-        # self.window = QtWidgets.QWidget()
-        # self.vbox = QtWidgets.QVBoxLayout()
-        # self.label = QtWidgets.QLabel()
-
-        # self.background()
-        # self.label_text()
-        # self.window_style()
 
     def music_play(self):
         item = self.music.currentText()
@@ -355,19 +329,6 @@ class GameWindow3(Game):
     def __init__(self):
         super().__init__()
         Game.__init__(self)
-        # self.button()
-        # self.music = QtWidgets.QComboBox(self)
-        # self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        # self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
-        # self.btn_start = QtWidgets.QPushButton('Game Start')
-        #
-        # self.window = QtWidgets.QWidget()
-        # self.vbox = QtWidgets.QVBoxLayout()
-        # self.label = QtWidgets.QLabel()
-
-        # self.background()
-        # self.label_text()
-        # self.window_style()
 
     def music_play(self):
         item = self.music.currentText()
@@ -412,19 +373,6 @@ class GameWindow4(Game):
     def __init__(self):
         super().__init__()
         Game.__init__(self)
-        # self.button()
-        # self.music = QtWidgets.QComboBox(self)
-        # self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        # self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
-        # self.btn_start = QtWidgets.QPushButton('Game Start')
-        #
-        # self.window = QtWidgets.QWidget()
-        # self.vbox = QtWidgets.QVBoxLayout()
-        # self.label = QtWidgets.QLabel()
-
-        # self.background()
-        # self.label_text()
-        # self.window_style()
 
     def music_play(self):
         item = self.music.currentText()
@@ -469,19 +417,6 @@ class GameWindow5(Game):
     def __init__(self):
         super().__init__()
         Game.__init__(self)
-        # self.button()
-        # self.music = QtWidgets.QComboBox(self)
-        # self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
-        # self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
-        # self.btn_start = QtWidgets.QPushButton('Game Start')
-        #
-        # self.window = QtWidgets.QWidget()
-        # self.vbox = QtWidgets.QVBoxLayout()
-        # self.label = QtWidgets.QLabel()
-
-        # self.background()
-        # self.label_text()
-        # self.window_style()
 
     def music_play(self):
         item = self.music.currentText()
