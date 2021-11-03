@@ -23,9 +23,9 @@ def player():
     start = time.time()
 
     while True:
-        # if time.time() - start > 7:
-        #     player.pause()
-        #     break
+        if time.time() - start > 40:
+            player.pause()
+            break
         pass
         # stop = input('Type "s" to stop; "p" to pause; "" to play; : ')
         # if stop == 's':
