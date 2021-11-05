@@ -236,7 +236,12 @@ class GameWindow1(Game):
                   'cute',
                   'tenderness',
                   'acoustic breeze',
-                  'better days']
+                  'better days',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
 
     def __init__(self):
         super().__init__()
@@ -273,6 +278,21 @@ class GameWindow1(Game):
             # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-betterdays.wav')
 
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
 
 class GameWindow2(Game):
     music_list = ['(노래를 선택하세요)',
@@ -280,7 +300,12 @@ class GameWindow2(Game):
                   'cute 2',
                   'tenderness 2',
                   'acoustic breeze 2',
-                  'better days 2']
+                  'better days 2',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
 
     def __init__(self):
         super().__init__()
@@ -317,6 +342,21 @@ class GameWindow2(Game):
             # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-betterdays.wav')
 
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
 
 class GameWindow3(Game):
     music_list = ['(노래를 선택하세요)',
@@ -324,7 +364,12 @@ class GameWindow3(Game):
                   'cute 3',
                   'tenderness 3',
                   'acoustic breeze 3',
-                  'better days 3']
+                  'better days 3',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
 
     def __init__(self):
         super().__init__()
@@ -361,6 +406,21 @@ class GameWindow3(Game):
             # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-betterdays.wav')
 
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
 
 class GameWindow4(Game):
     music_list = ['(노래를 선택하세요)',
@@ -368,7 +428,12 @@ class GameWindow4(Game):
                   'cute 4',
                   'tenderness 4',
                   'acoustic breeze 4',
-                  'better days 4']
+                  'better days 4',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
 
     def __init__(self):
         super().__init__()
@@ -405,6 +470,21 @@ class GameWindow4(Game):
             # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-betterdays.wav')
 
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
 
 class GameWindow5(Game):
     music_list = ['(노래를 선택하세요)',
@@ -412,7 +492,12 @@ class GameWindow5(Game):
                   'cute 5',
                   'tenderness 5',
                   'acoustic breeze 5',
-                  'better days 5']
+                  'better days 5',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
 
     def __init__(self):
         super().__init__()
@@ -449,11 +534,346 @@ class GameWindow5(Game):
             # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
             print('test: bensound-betterdays.wav')
 
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
+
+class GameWindow6(Game):
+    music_list = ['(노래를 선택하세요)',
+                  'youtube music 6',
+                  'cute 6',
+                  'tenderness 6',
+                  'acoustic breeze 6',
+                  'better days 6',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            pass
+        elif item == self.music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            print('test: youtube music 6')
+
+            thread = threading.Thread(target=lambda: self.youtube_play('https://youtu.be/sjkrrmBnpGE'))
+            thread.daemon = True
+            thread.start()
+
+        elif item == self.music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == self.music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == self.music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == self.music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
+
+class GameWindow7(Game):
+    music_list = ['(노래를 선택하세요)',
+                  'youtube music 7',
+                  'cute 7',
+                  'tenderness 7',
+                  'acoustic breeze 7',
+                  'better days 7',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            pass
+        elif item == self.music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            print('test: youtube music 7')
+
+            thread = threading.Thread(target=lambda: self.youtube_play('https://youtu.be/CfPxlb8-ZQ0'))
+            thread.daemon = True
+            thread.start()
+
+        elif item == self.music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == self.music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == self.music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == self.music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
+
+class GameWindow8(Game):
+    music_list = ['(노래를 선택하세요)',
+                  'youtube music 8',
+                  'cute 8',
+                  'tenderness 8',
+                  'acoustic breeze 8',
+                  'better days 8',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            pass
+        elif item == self.music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            print('test: youtube music 8')
+
+            thread = threading.Thread(target=lambda: self.youtube_play('https://youtu.be/IRyJe-0Uie0'))
+            thread.daemon = True
+            thread.start()
+
+        elif item == self.music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == self.music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == self.music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == self.music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
+
+class GameWindow9(Game):
+    music_list = ['(노래를 선택하세요)',
+                  'youtube music 9',
+                  'cute 9',
+                  'tenderness 9',
+                  'acoustic breeze 9',
+                  'better days 9',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            pass
+        elif item == self.music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            print('test: youtube music 9')
+
+            thread = threading.Thread(target=lambda: self.youtube_play('https://youtu.be/bbxXdASyLQw'))
+            thread.daemon = True
+            thread.start()
+
+        elif item == self.music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == self.music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == self.music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == self.music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
+
+class GameWindow10(Game):
+    music_list = ['(노래를 선택하세요)',
+                  'youtube music 10',
+                  'cute 10',
+                  'tenderness 10',
+                  'acoustic breeze 10',
+                  'better days 10',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            pass
+        elif item == self.music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            print('test: youtube music 10')
+
+            thread = threading.Thread(target=lambda: self.youtube_play('https://youtu.be/Hq2yWd5wG_M'))
+            thread.daemon = True
+            thread.start()
+
+        elif item == self.music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == self.music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == self.music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == self.music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
 
 class FindSongs(QtWidgets.QWidget):
     select_favorite_list_1 = ['(좋아하는 노래를 선택하세요)',
                               '1',
-                              '2 jazz',
+                              '2 study coffee jazz',
                               '3 After The Rain',
                               '4 Relaxing Bossa Nova & Jazz',
                               '5 New York Jazz Lounge',
@@ -465,7 +885,7 @@ class FindSongs(QtWidgets.QWidget):
 
     select_favorite_list_2 = ['(좋아하는 노래를 선택하세요)',
                               '1',
-                              '2 jazz',
+                              '2 study coffee jazz',
                               '3 After The Rain',
                               '4 Relaxing Bossa Nova & Jazz',
                               '5 New York Jazz Lounge',
@@ -475,52 +895,52 @@ class FindSongs(QtWidgets.QWidget):
                               '9',
                               '10']
 
-    select_favorite_list_3 = ['(좋아하는 노래를 선택하세요)',
-                              '1',
-                              '2 jazz',
-                              '3 After The Rain',
-                              '4 Relaxing Bossa Nova & Jazz',
-                              '5 New York Jazz Lounge',
-                              '6',
-                              '7',
-                              '8',
-                              '9',
-                              '10']
-
-    select_favorite_list_4 = ['(좋아하는 노래를 선택하세요)',
-                              '1',
-                              '2 jazz',
-                              '3 After The Rain',
-                              '4 Relaxing Bossa Nova & Jazz',
-                              '5 New York Jazz Lounge',
-                              '6',
-                              '7',
-                              '8',
-                              '9',
-                              '10']
-
-    select_favorite_list_5 = ['(좋아하는 노래를 선택하세요)',
-                              '1',
-                              '2 jazz',
-                              '3 After The Rain',
-                              '4 Relaxing Bossa Nova & Jazz',
-                              '5 New York Jazz Lounge',
-                              '6',
-                              '7',
-                              '8',
-                              '9',
-                              '10']
+    # select_favorite_list_3 = ['(좋아하는 노래를 선택하세요)',
+    #                           '1',
+    #                           '2 study coffee jazz',
+    #                           '3 After The Rain',
+    #                           '4 Relaxing Bossa Nova & Jazz',
+    #                           '5 New York Jazz Lounge',
+    #                           '6',
+    #                           '7',
+    #                           '8',
+    #                           '9',
+    #                           '10']
+    #
+    # select_favorite_list_4 = ['(좋아하는 노래를 선택하세요)',
+    #                           '1',
+    #                           '2 study coffee jazz',
+    #                           '3 After The Rain',
+    #                           '4 Relaxing Bossa Nova & Jazz',
+    #                           '5 New York Jazz Lounge',
+    #                           '6',
+    #                           '7',
+    #                           '8',
+    #                           '9',
+    #                           '10']
+    #
+    # select_favorite_list_5 = ['(좋아하는 노래를 선택하세요)',
+    #                           '1',
+    #                           '2 study coffee jazz',
+    #                           '3 After The Rain',
+    #                           '4 Relaxing Bossa Nova & Jazz',
+    #                           '5 New York Jazz Lounge',
+    #                           '6',
+    #                           '7',
+    #                           '8',
+    #                           '9',
+    #                           '10']
 
     def __init__(self):
         super().__init__()
         QtWidgets.QWidget.__init__(self)
-        self.final_matching = []
+        # self.final_matching = []
 
         self.select_song_1 = QtWidgets.QComboBox(self)
         self.select_song_2 = QtWidgets.QComboBox(self)
-        self.select_song_3 = QtWidgets.QComboBox(self)
-        self.select_song_4 = QtWidgets.QComboBox(self)
-        self.select_song_5 = QtWidgets.QComboBox(self)
+        # self.select_song_3 = QtWidgets.QComboBox(self)
+        # self.select_song_4 = QtWidgets.QComboBox(self)
+        # self.select_song_5 = QtWidgets.QComboBox(self)
 
         self.window = QtWidgets.QWidget()
         self.vbox = QtWidgets.QVBoxLayout()
@@ -545,17 +965,17 @@ class FindSongs(QtWidgets.QWidget):
 
         self.add_item_in_combobox(self.select_song_1, self.select_favorite_list_1)
         self.add_item_in_combobox(self.select_song_2, self.select_favorite_list_2)
-        self.add_item_in_combobox(self.select_song_3, self.select_favorite_list_3)
-        self.add_item_in_combobox(self.select_song_4, self.select_favorite_list_4)
-        self.add_item_in_combobox(self.select_song_5, self.select_favorite_list_5)
+        # self.add_item_in_combobox(self.select_song_3, self.select_favorite_list_3)
+        # self.add_item_in_combobox(self.select_song_4, self.select_favorite_list_4)
+        # self.add_item_in_combobox(self.select_song_5, self.select_favorite_list_5)
 
         self.vbox.addWidget(self.label)
         hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(self.select_song_1)
         hbox.addWidget(self.select_song_2)
-        hbox.addWidget(self.select_song_3)
-        hbox.addWidget(self.select_song_4)
-        hbox.addWidget(self.select_song_5)
+        # hbox.addWidget(self.select_song_3)
+        # hbox.addWidget(self.select_song_4)
+        # hbox.addWidget(self.select_song_5)
         hbox.addWidget(self.btn_go)
         self.vbox.addLayout(hbox)
 
@@ -567,70 +987,97 @@ class FindSongs(QtWidgets.QWidget):
         self.window.show()
 
     def match(self):
-        select_songs_lists = [self.select_song_1, self.select_song_2, self.select_song_3,
-                              self.select_song_4, self.select_song_5]
+        # select_songs_lists = [self.select_song_1, self.select_song_2, self.select_song_3,
+        #                       self.select_song_4, self.select_song_5]
+        # select_songs_lists = [self.select_song_1, self.select_song_2]
 
-        matching = []
-        idx = 0
-        for songs in select_songs_lists:
-            all_items = [songs.itemText(i) for i in range(songs.count())]
-            for _ in all_items:
-                while idx < 5:
-                    match = [j for j in range(1, 11)]
-                    matching.append(match)
-                    idx += 1
+        # matching = []
+        # idx = 0
+        # for songs in select_songs_lists:
+        #     all_items = [songs.itemText(i) for i in range(songs.count())]
+        #     for _ in all_items:
+        #         while idx < 5:
+        #             match = [j for j in range(1, 11)]
+        #             matching.append(match)
+        #             idx += 1
         # print(matching)
 
-        i = 0
-        while i < 5:
-            for j in matching[i]:
-                for k in matching[i]:
-                    for l in matching[i]:
-                        for m in matching[i]:
-                            for n in matching[i]:
-                                self.final_matching.append((j, k, l, m, n))
-            i += 1
+        # count = 0
+        # while count < 1:
+        #     for i in [i for i in range(1, 11)]:
+        #         for j in [i for i in range(1, 11)]:
+        #             # for k in matching[count]:
+        #             #     for l in matching[count]:
+        #             #         for m in matching[count]:
+        #             #             self.final_matching.append((i, j, k, l, m))
+        #             self.final_matching.append((i, j))
+        #     count += 1
         # print(self.final_matching)
 
-        self.select_song_5.currentIndexChanged.connect(self.current_index)
-        # self.select_song_5.activated[str].connect(self.current_index)
+        self.select_song_2.currentIndexChanged.connect(self.current_index)
 
     def current_index(self):
-        matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex(),
-                          self.select_song_3.currentIndex(), self.select_song_4.currentIndex(),
-                          self.select_song_5.currentIndex())
+        # matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex(),
+        #                   self.select_song_3.currentIndex(), self.select_song_4.currentIndex(),
+        #                   self.select_song_5.currentIndex())
+
+        matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex())
 
         print(matched_musics)
 
-        # (in final_matching) 테스트 버전
-        if matched_musics in [(i, 1, 1, 1, 1) for i in range(1, 11)]:
-            self.btn_go.clicked.connect(self.btn_go_clicked_1)
-            print('success: currentIndex')
-            # if self.select_song_1.currentIndex() == 0 or self.select_song_2.currentIndex() == 0 or \
-            #     self.select_song_3.currentIndex() == 0 or self.select_song_4.currentIndex() == 0 or \
-            #         self.select_song_5.currentIndex() == 0:
-            #     pass
+        def test_list(number):
+            test_list = [(number, i) for i in range(1, 11)]
 
-        elif matched_musics in [(2, 2, 2, 2, 2)]:
+            return test_list
+
+        # 테스트 버전
+        if matched_musics in test_list(1):
+            self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            print('success: currentIndex 1')
+
+        elif matched_musics in test_list(2):
             self.btn_go.clicked.connect(self.btn_go_clicked_2)
             print('success: currentIndex 2')
 
-        elif matched_musics in [(3, 3, 3, 3, 3)]:
+        elif matched_musics in test_list(3):
             self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            print('success: currentIndex 3')
 
-        elif matched_musics in [(4, 4, 4, 4, 4)]:
+        elif matched_musics in test_list(4):
             self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            print('success: currentIndex 4')
 
-        elif matched_musics in [(5, 5, 5, 5, 5)]:
+        elif matched_musics in test_list(5):
             self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            print('success: currentIndex 5')
+
+        elif matched_musics in test_list(6):
+            self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            print('success: currentIndex 6')
+
+        elif matched_musics in test_list(7):
+            self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            print('success: currentIndex 7')
+
+        elif matched_musics in test_list(8):
+            self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            print('success: currentIndex 8')
+
+        elif matched_musics in test_list(9):
+            self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            print('success: currentIndex 9')
+
+        elif matched_musics in test_list(10):
+            self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            print('success: currentIndex 10')
 
         else:
             self.btn_go.clicked.connect(self.btn_go_clicked_1)
             # self.btn_go.clicked.connect(self.open_msg)
-            # print('매칭되는 목록이 없습니다')
+            print('test: 매칭되는 목록이 없습니다')
 
     def open_msg(self):
-        self.msg.setText('매칭되는 목록이 없습니다\n다시 선택해주세요')
+        self.msg.setText('매치되는 목록이 없습니다\n다시 선택해주세요')
         self.msg.setWindowTitle('알림')
         self.msg.setWindowIcon(QtGui.QIcon('sunglasses.png'))
         self.msg.StandardButtons(QtWidgets.QMessageBox.Ok)
@@ -644,14 +1091,13 @@ class FindSongs(QtWidgets.QWidget):
         app.setPalette(palette)
 
     def text_style(self):
-        self.label.setText('왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
-        self.label.setFont(QtGui.QFont('Arial', 15))
+        self.label.setText('<리듬 박스 학살>\n왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
+        self.label.setFont(QtGui.QFont('Arial', 15, weight=QtGui.QFont.Bold))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
 
     def new_window(self, game_window):
         if self.w is None:
             self.w = game_window
-            # self.w.show()
 
         else:
             self.w.close()
@@ -672,11 +1118,26 @@ class FindSongs(QtWidgets.QWidget):
     def btn_go_clicked_5(self):
         self.new_window(GameWindow5())
 
+    def btn_go_clicked_6(self):
+        self.new_window(GameWindow6())
+
+    def btn_go_clicked_7(self):
+        self.new_window(GameWindow7())
+
+    def btn_go_clicked_8(self):
+        self.new_window(GameWindow8())
+
+    def btn_go_clicked_9(self):
+        self.new_window(GameWindow9())
+
+    def btn_go_clicked_10(self):
+        self.new_window(GameWindow10())
+
 
 def resources():
     try:
         os.chdir(sys._MEIPASS)
-        print(sys._MEIPASS)
+        # print(sys._MEIPASS)
     except:
         os.chdir(os.getcwd())
 
