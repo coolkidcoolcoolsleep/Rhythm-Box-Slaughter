@@ -945,6 +945,7 @@ class FindSongs(QtWidgets.QWidget):
         self.window = QtWidgets.QWidget()
         self.vbox = QtWidgets.QVBoxLayout()
         self.label = QtWidgets.QLabel()
+        self.label_2 = QtWidgets.QLabel()
         self.btn_go = QtWidgets.QPushButton('선택')
         self.msg = QtWidgets.QMessageBox()
 
@@ -970,6 +971,7 @@ class FindSongs(QtWidgets.QWidget):
         # self.add_item_in_combobox(self.select_song_5, self.select_favorite_list_5)
 
         self.vbox.addWidget(self.label)
+        self.vbox.addWidget(self.label_2)
         hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(self.select_song_1)
         hbox.addWidget(self.select_song_2)
@@ -1091,9 +1093,12 @@ class FindSongs(QtWidgets.QWidget):
         app.setPalette(palette)
 
     def text_style(self):
-        self.label.setText('<리듬 박스 학살>\n왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
+        self.label.setText('*리듬 박스 학살*')
         self.label.setFont(QtGui.QFont('Arial', 15, weight=QtGui.QFont.Bold))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.label_2.setText('왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
 
     def new_window(self, game_window):
         if self.w is None:
