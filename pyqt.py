@@ -870,6 +870,70 @@ class GameWindow10(Game):
             print('music 10')
 
 
+class GameWindow11(Game):
+    music_list = ['(노래를 선택하세요)',
+                  'youtube music 11',
+                  'cute 11',
+                  'tenderness 11',
+                  'acoustic breeze 11',
+                  'better days 11',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            # winsound.SND_FILENAME: wav file 이름
+            # winsound.SND_ASYNC: 사운드 async 재생한다. 실행 시 바로 리턴되고 사운드는 재생된다.
+            # winsound.PlaySound('bensound-jazzyfrenchy.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            pass
+        elif item == self.music_list[1]:
+            # winsound.PlaySound('bensound-ukulele.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+            print('test: youtube music 10')
+
+            thread = threading.Thread(target=lambda: self.youtube_play('https://youtu.be/7TO_oHxuk6c'))
+            thread.daemon = True
+            thread.start()
+
+        elif item == self.music_list[2]:
+            # winsound.PlaySound('bensound-cute.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-cute.wav')
+        elif item == self.music_list[3]:
+            # winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-tenderness.wav')
+        elif item == self.music_list[4]:
+            # winsound.PlaySound('bensound-acousticbreeze.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-acousticbreeze.wav')
+        elif item == self.music_list[5]:
+            # winsound.PlaySound('bensound-betterdays.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
+            print('test: bensound-betterdays.wav')
+
+        elif item == self.music_list[6]:
+            print('music 6')
+
+        elif item == self.music_list[7]:
+            print('music 7')
+
+        elif item == self.music_list[8]:
+            print('music 8')
+
+        elif item == self.music_list[9]:
+            print('music 9')
+
+        elif item == self.music_list[10]:
+            print('music 10')
+
+
 class FindSongs(QtWidgets.QWidget):
     select_favorite_list_1 = ['(좋아하는 노래를 선택하세요)',
                               '1',
@@ -944,15 +1008,40 @@ class FindSongs(QtWidgets.QWidget):
 
         self.window = QtWidgets.QWidget()
         self.vbox = QtWidgets.QVBoxLayout()
+        self.hbox = QtWidgets.QHBoxLayout()
+        self.grid_layout = QtWidgets.QGridLayout()
+
         self.label = QtWidgets.QLabel()
         self.label_2 = QtWidgets.QLabel()
         self.btn_go = QtWidgets.QPushButton('선택')
         self.msg = QtWidgets.QMessageBox()
 
+        self.song_img_1 = QtWidgets.QRadioButton('song 1')
+        self.song_img_2 = QtWidgets.QRadioButton('song 2')
+        self.song_img_3 = QtWidgets.QRadioButton('song 3')
+        self.song_img_4 = QtWidgets.QRadioButton('song 4')
+        self.song_img_5 = QtWidgets.QRadioButton('song 5')
+        self.song_img_6 = QtWidgets.QRadioButton('song 6')
+        self.song_img_7 = QtWidgets.QRadioButton('song 7')
+        self.song_img_8 = QtWidgets.QRadioButton('song 8')
+        self.song_img_9 = QtWidgets.QRadioButton('song 9')
+        self.song_img_10 = QtWidgets.QRadioButton('song 10')
+        self.song_img_11 = QtWidgets.QRadioButton('song 11')
+        self.song_img_12 = QtWidgets.QRadioButton('song 12')
+        self.song_img_13 = QtWidgets.QRadioButton('song 13')
+        self.song_img_14 = QtWidgets.QRadioButton('song 14')
+        self.song_img_15 = QtWidgets.QRadioButton('song 15')
+        self.song_img_16 = QtWidgets.QRadioButton('song 16')
+        self.song_img_17 = QtWidgets.QRadioButton('song 17')
+        self.song_img_18 = QtWidgets.QRadioButton('song 18')
+        self.song_img_19 = QtWidgets.QRadioButton('song 19')
+        self.song_img_20 = QtWidgets.QRadioButton('song 20')
+
         self.box_layout()
         self.match()
         self.background()
         self.text_style()
+        self.current_index()
 
         self.w = None
 
@@ -972,19 +1061,144 @@ class FindSongs(QtWidgets.QWidget):
 
         self.vbox.addWidget(self.label)
         self.vbox.addWidget(self.label_2)
-        hbox = QtWidgets.QHBoxLayout()
-        hbox.addWidget(self.select_song_1)
-        hbox.addWidget(self.select_song_2)
-        # hbox.addWidget(self.select_song_3)
-        # hbox.addWidget(self.select_song_4)
-        # hbox.addWidget(self.select_song_5)
-        hbox.addWidget(self.btn_go)
-        self.vbox.addLayout(hbox)
+
+        self.btn_go.setMaximumWidth(100)
+
+        vbox_img_1 = QtWidgets.QVBoxLayout()
+
+        vbox_img_1.addWidget(self.song_img_1)
+        self.song_img_1.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_1.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_1.setAutoExclusive(False)
+
+        vbox_img_1.addWidget(self.song_img_2)
+        self.song_img_2.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_2.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_2.setAutoExclusive(False)
+
+        vbox_img_1.addWidget(self.song_img_3)
+        self.song_img_3.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_3.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_3.setAutoExclusive(False)
+
+        vbox_img_1.addWidget(self.song_img_4)
+        self.song_img_4.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_4.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_4.setAutoExclusive(False)
+
+        vbox_img_1.addWidget(self.song_img_5)
+        self.song_img_5.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_5.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_5.setAutoExclusive(False)
+
+        vbox_img_3 = QtWidgets.QVBoxLayout()
+
+        vbox_img_3.addWidget(self.song_img_6)
+        self.song_img_6.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_6.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_6.setAutoExclusive(False)
+
+        vbox_img_3.addWidget(self.song_img_7)
+        self.song_img_7.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_7.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_7.setAutoExclusive(False)
+
+        vbox_img_3.addWidget(self.song_img_8)
+        self.song_img_8.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_8.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_8.setAutoExclusive(False)
+
+        vbox_img_3.addWidget(self.song_img_9)
+        self.song_img_9.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_9.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_9.setAutoExclusive(False)
+
+        vbox_img_3.addWidget(self.song_img_10)
+        self.song_img_10.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_10.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_10.setAutoExclusive(False)
+
+        vbox_img_2 = QtWidgets.QVBoxLayout()
+
+        vbox_img_2.addWidget(self.song_img_11)
+        self.song_img_11.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_11.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_11.setAutoExclusive(False)
+
+        vbox_img_2.addWidget(self.song_img_12)
+        self.song_img_12.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_12.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_12.setAutoExclusive(False)
+
+        vbox_img_2.addWidget(self.song_img_13)
+        self.song_img_13.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_13.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_13.setAutoExclusive(False)
+
+        vbox_img_2.addWidget(self.song_img_14)
+        self.song_img_14.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_14.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_14.setAutoExclusive(False)
+
+        vbox_img_2.addWidget(self.song_img_15)
+        self.song_img_15.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_15.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_15.setAutoExclusive(False)
+
+        vbox_img_4 = QtWidgets.QVBoxLayout()
+
+        vbox_img_4.addWidget(self.song_img_16)
+        self.song_img_16.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_16.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_16.setAutoExclusive(False)
+
+        vbox_img_4.addWidget(self.song_img_17)
+        self.song_img_17.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_17.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_17.setAutoExclusive(False)
+
+        vbox_img_4.addWidget(self.song_img_18)
+        self.song_img_18.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_18.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_18.setAutoExclusive(False)
+
+        vbox_img_4.addWidget(self.song_img_19)
+        self.song_img_19.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_19.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_19.setAutoExclusive(False)
+
+        vbox_img_4.addWidget(self.song_img_20)
+        self.song_img_20.setIcon(QtGui.QIcon('sunglasses.png'))
+        self.song_img_20.setIconSize(QtCore.QSize(100, 100))
+        self.song_img_20.setAutoExclusive(False)
+
+        self.hbox.addLayout(vbox_img_1)
+        self.hbox.addLayout(vbox_img_3)
+        self.hbox.addLayout(vbox_img_2)
+        self.hbox.addLayout(vbox_img_4)
+        # self.hbox.addWidget(self.btn_go)
+
+        self.grid_layout.addLayout(self.vbox, 0, 0)
+        self.grid_layout.addLayout(self.hbox, 1, 0)
+        self.grid_layout.addWidget(self.btn_go, 100, 100, alignment=QtCore.Qt.AlignCenter)
+
+        # dropdown style
+        # hbox = QtWidgets.QHBoxLayout()
+        # hbox.addWidget(self.select_song_1)
+        # hbox.addWidget(self.select_song_2)
+        # # hbox.addWidget(self.select_song_3)
+        # # hbox.addWidget(self.select_song_4)
+        # # hbox.addWidget(self.select_song_5)
+        # hbox.addWidget(self.btn_go)
+        # self.vbox.addLayout(hbox)
 
         self.window.setWindowTitle('Rhythm Box Slaughter')
         self.window.setWindowIcon(QtGui.QIcon('sunglasses.png'))
 
+        self.window.setLayout(self.grid_layout)
+        self.window.setLayout(self.hbox)
         self.window.setLayout(self.vbox)
+
         self.window.setGeometry(0, 0, 400, 100)
         self.window.show()
 
@@ -1016,67 +1230,889 @@ class FindSongs(QtWidgets.QWidget):
         #     count += 1
         # print(self.final_matching)
 
-        self.select_song_2.currentIndexChanged.connect(self.current_index)
+        # dropdown style
+        # self.select_song_2.currentIndexChanged.connect(self.current_index)
+
+        self.song_img_1.clicked.connect(self.current_index)
+        self.song_img_2.clicked.connect(self.current_index)
+        self.song_img_3.clicked.connect(self.current_index)
+        self.song_img_4.clicked.connect(self.current_index)
+        self.song_img_5.clicked.connect(self.current_index)
+        self.song_img_6.clicked.connect(self.current_index)
+        self.song_img_7.clicked.connect(self.current_index)
+        self.song_img_8.clicked.connect(self.current_index)
+        self.song_img_9.clicked.connect(self.current_index)
+        self.song_img_10.clicked.connect(self.current_index)
+        self.song_img_11.clicked.connect(self.current_index)
+        self.song_img_12.clicked.connect(self.current_index)
+        self.song_img_13.clicked.connect(self.current_index)
+        self.song_img_14.clicked.connect(self.current_index)
+        self.song_img_15.clicked.connect(self.current_index)
+        self.song_img_16.clicked.connect(self.current_index)
+        self.song_img_17.clicked.connect(self.current_index)
+        self.song_img_18.clicked.connect(self.current_index)
+        self.song_img_19.clicked.connect(self.current_index)
+        self.song_img_20.clicked.connect(self.current_index)
 
     def current_index(self):
         # matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex(),
         #                   self.select_song_3.currentIndex(), self.select_song_4.currentIndex(),
         #                   self.select_song_5.currentIndex())
 
-        matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex())
+        # matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex())
+        #
+        # print(matched_musics)
+        #
+        # def test_list(number):
+        #     test_list = [(number, i) for i in range(1, 11)]
+        #
+        #     return test_list
 
-        print(matched_musics)
+        # dropdown style 테스트 버전
+        # if matched_musics in test_list(1):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_1)
+        #     print('success: currentIndex 1')
+        #
+        # elif matched_musics in test_list(2):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_2)
+        #     print('success: currentIndex 2')
+        #
+        # elif matched_musics in test_list(3):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_3)
+        #     print('success: currentIndex 3')
+        #
+        # elif matched_musics in test_list(4):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_4)
+        #     print('success: currentIndex 4')
+        #
+        # elif matched_musics in test_list(5):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_5)
+        #     print('success: currentIndex 5')
+        #
+        # elif matched_musics in test_list(6):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_6)
+        #     print('success: currentIndex 6')
+        #
+        # elif matched_musics in test_list(7):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_7)
+        #     print('success: currentIndex 7')
+        #
+        # elif matched_musics in test_list(8):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_8)
+        #     print('success: currentIndex 8')
+        #
+        # elif matched_musics in test_list(9):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_9)
+        #     print('success: currentIndex 9')
+        #
+        # elif matched_musics in test_list(10):
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_10)
+        #     print('success: currentIndex 10')
+        #
+        # else:
+        #     self.btn_go.clicked.connect(self.btn_go_clicked_1)
+        #     # self.btn_go.clicked.connect(self.open_msg)
+        #     print('test: 매칭되는 목록이 없습니다')
 
-        def test_list(number):
-            test_list = [(number, i) for i in range(1, 11)]
+        # song img 버전
+        if self.song_img_1.isChecked():
+            print('test: song_img_1')
+            if self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
 
-            return test_list
+        elif self.song_img_2.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_2)
 
-        # 테스트 버전
-        if matched_musics in test_list(1):
-            self.btn_go.clicked.connect(self.btn_go_clicked_1)
-            print('success: currentIndex 1')
+        elif self.song_img_3.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_3)
 
-        elif matched_musics in test_list(2):
-            self.btn_go.clicked.connect(self.btn_go_clicked_2)
-            print('success: currentIndex 2')
+        elif self.song_img_4.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_4)
 
-        elif matched_musics in test_list(3):
-            self.btn_go.clicked.connect(self.btn_go_clicked_3)
-            print('success: currentIndex 3')
+        elif self.song_img_5.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_5)
 
-        elif matched_musics in test_list(4):
-            self.btn_go.clicked.connect(self.btn_go_clicked_4)
-            print('success: currentIndex 4')
+        elif self.song_img_6.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_6)
 
-        elif matched_musics in test_list(5):
-            self.btn_go.clicked.connect(self.btn_go_clicked_5)
-            print('success: currentIndex 5')
+        elif self.song_img_7.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_7)
 
-        elif matched_musics in test_list(6):
-            self.btn_go.clicked.connect(self.btn_go_clicked_6)
-            print('success: currentIndex 6')
+        elif self.song_img_8.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_8)
 
-        elif matched_musics in test_list(7):
-            self.btn_go.clicked.connect(self.btn_go_clicked_7)
-            print('success: currentIndex 7')
+        elif self.song_img_9.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_9)
 
-        elif matched_musics in test_list(8):
-            self.btn_go.clicked.connect(self.btn_go_clicked_8)
-            print('success: currentIndex 8')
+        elif self.song_img_10.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_10)
 
-        elif matched_musics in test_list(9):
-            self.btn_go.clicked.connect(self.btn_go_clicked_9)
-            print('success: currentIndex 9')
+        elif self.song_img_11.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_11)
 
-        elif matched_musics in test_list(10):
-            self.btn_go.clicked.connect(self.btn_go_clicked_10)
-            print('success: currentIndex 10')
+        elif self.song_img_12.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
 
-        else:
-            self.btn_go.clicked.connect(self.btn_go_clicked_1)
-            # self.btn_go.clicked.connect(self.open_msg)
-            print('test: 매칭되는 목록이 없습니다')
+        elif self.song_img_13.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_14.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_15.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_16.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_17.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_18.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_19.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_20.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+
+        elif self.song_img_20.isChecked():
+            if self.song_img_1.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_3.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_4.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_5.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_6.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_7.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_8.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_9.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_10.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_11.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_12.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_13.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_14.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_15.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_16.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_17.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_18.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_19.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
+            elif self.song_img_2.isChecked():
+                self.btn_go.clicked.connect(self.btn_go_clicked_1)
 
     def open_msg(self):
         self.msg.setText('매치되는 목록이 없습니다\n다시 선택해주세요')
@@ -1097,7 +2133,8 @@ class FindSongs(QtWidgets.QWidget):
         self.label.setFont(QtGui.QFont('Arial', 15, weight=QtGui.QFont.Bold))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
 
-        self.label_2.setText('왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
+        # self.label_2.setText('왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
+        self.label_2.setText('노래를 2곡 선택한 뒤 선택 버튼을 눌러주세요')
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
 
     def new_window(self, game_window):
@@ -1137,6 +2174,9 @@ class FindSongs(QtWidgets.QWidget):
 
     def btn_go_clicked_10(self):
         self.new_window(GameWindow10())
+
+    def btn_go_clicked_11(self):
+        self.new_window(GameWindow11())
 
 
 def resources():
