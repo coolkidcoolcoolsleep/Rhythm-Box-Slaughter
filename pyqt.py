@@ -9,6 +9,7 @@ import threading
 import pafy
 import vlc
 import time
+import winsound
 from video_manager import Video_Manager
 
 
@@ -16,6 +17,7 @@ class Game(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         # QtWidgets.QWidget.__init__(self)
+
         self.music = QtWidgets.QComboBox()
         self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
         self.btn_player_2 = QtWidgets.QRadioButton('2 Players')
@@ -32,7 +34,7 @@ class Game(QtWidgets.QWidget):
         self.window_style()
         self.button()
 
-    def player_1(self):
+    def player_1(self, mode):
         vm = Video_Manager()
 
         # image_resizing
@@ -63,7 +65,7 @@ class Game(QtWidgets.QWidget):
                 vm.box_num += 1
 
                 detection_blue, detection_red = vm.tracking_ball(frame)
-                coordinate_red, coordinate_blue = vm.random_box('easy', frame, is_one_player=True)
+                coordinate_red, coordinate_blue = vm.random_box(mode, frame, is_one_player=True)
 
                 if box_seed_num != vm.current_seed:
                     vm.is_answer_handled_red = False
@@ -102,7 +104,7 @@ class Game(QtWidgets.QWidget):
         vidcap.release()
         cv2.destroyAllWindows()
 
-    def player_2(self):
+    def player_2(self, mode):
         vm = Video_Manager()
 
         # image_resizing
@@ -133,7 +135,7 @@ class Game(QtWidgets.QWidget):
                 vm.box_num += 1
 
                 detection_blue, detection_red = vm.tracking_ball(frame)
-                coordinate_red, coordinate_blue = vm.random_box('easy', frame, is_one_player=False)
+                coordinate_red, coordinate_blue = vm.random_box(mode, frame, is_one_player=False)
 
                 if box_seed_num != vm.current_seed:
                     vm.is_answer_handled_red = False
@@ -172,11 +174,29 @@ class Game(QtWidgets.QWidget):
         vidcap.release()
         cv2.destroyAllWindows()
 
-    def game_start(self):
+    def game_start_easy(self):
         if self.btn_player_1.isChecked():
-            self.player_1()
+            self.player_1('easy')
         elif self.btn_player_2.isChecked():
-            self.player_2()
+            self.player_2('easy')
+
+    def game_start_normal(self):
+        if self.btn_player_1.isChecked():
+            self.player_1('normal')
+        elif self.btn_player_2.isChecked():
+            self.player_2('normal')
+
+    def game_start_hard(self):
+        if self.btn_player_1.isChecked():
+            self.player_1('hard')
+        elif self.btn_player_2.isChecked():
+            self.player_2('hard')
+
+    def game_start_hell(self):
+        if self.btn_player_1.isChecked():
+            self.player_1('hell')
+        elif self.btn_player_2.isChecked():
+            self.player_2('hell')
 
     def box_layout(self):
         self.btn_player_1.setToolTip('1인용 게임')
@@ -203,10 +223,10 @@ class Game(QtWidgets.QWidget):
         self.vbox.addStretch(1)
 
     def background(self):
-        bg = QtGui.QImage('bg.jpg')
-        scaled_bg = bg.scaled(1280, 720)
+        bg_text = QtGui.QImage('bg.jpg')
+        scaled_bg_text = bg_text.scaled(1280, 720)
         palette = QtGui.QPalette()
-        palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg))
+        palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg_text))
         app.setPalette(palette)
 
     # def label_text(self):
@@ -214,7 +234,7 @@ class Game(QtWidgets.QWidget):
     #     self.label.setFont(QtGui.QFont('Arial', 45))
     #
     #     self.label.setText('리듬 박스 학살')
-    #     self.label.setFont(QtGui.QFont('웰컴체 Regular', 45, weight=QtGui.QFont.Bold))
+    #     self.label.setFont(QtGui.QFont('DOSMyungjo', 45, weight=QtGui.QFont.Bold))
     #     self.label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
 
     def window_style(self):
@@ -226,32 +246,29 @@ class Game(QtWidgets.QWidget):
         self.window.show()
 
     def youtube_play(self, url):
-        audio = pafy.new(url)
-        audio = audio.getbestaudio()
-        play_url = audio.url
+        try:
+            audio = pafy.new(url)
+            audio = audio.getbestaudio()
+            play_url = audio.url
 
-        instance = vlc.Instance()
-        player = instance.media_player_new()
-        media = instance.media_new(play_url)
-        media.get_mrl()
-        player.set_media(media)
-        player.play()
+            instance = vlc.Instance()
+            player = instance.media_player_new()
+            media = instance.media_new(play_url)
+            media.get_mrl()
+            player.set_media(media)
+            player.play()
 
-        start = time.time()
+            start = time.time()
 
-        while True:
-            if time.time() - start > 40:
-                player.pause()
-                break
-            pass
-            # stop = input('Type "s" to stop; "p" to pause; "" to play; : ')
-            # if stop == 's':
-            #     player.pause()
-            #     break
-            # elif stop == 'p':
-            #     player.pause()
-            # elif stop == '':
-            #     player.play()
+            while True:
+                if time.time() - start > 40:
+                    player.pause()
+                    break
+                pass
+
+        except KeyError as err:
+            if err.args[0] == 'dislike_count':
+                winsound.PlaySound('bensound-tenderness.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def button(self):
         self.music.move(200, 400)
@@ -261,13 +278,13 @@ class Game(QtWidgets.QWidget):
         self.music.setFixedSize(200, 30)
 
         self.btn_player_1.setStyleSheet(
-            'QRadioButton{font: 15pt 웰컴체 Regular;} QRadioButton::indicator { width: 20px; height: 20px;};')
+            'QRadioButton{font: 15pt DOSMyungjo;} QRadioButton::indicator {width: 20px; height: 20px;};')
         self.btn_player_2.setStyleSheet(
-            'QRadioButton{font: 15pt 웰컴체 Regular;} QRadioButton::indicator { width: 20px; height: 20px;};')
+            'QRadioButton{font: 15pt DOSMyungjo;} QRadioButton::indicator {width: 20px; height: 20px;};')
 
         self.btn_start.setFixedSize(150, 30)
-        self.btn_start.setFont(QtGui.QFont('웰컴체 Regular', 15))
-        self.btn_start.clicked.connect(self.game_start)
+        self.btn_start.setFont(QtGui.QFont('DOSMyungjo', 15))
+        # self.btn_start.clicked.connect(self.game_start)
 
         self.music.currentIndexChanged.connect(self.music_play)
 
@@ -302,33 +319,43 @@ class GameWindow1(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://www.youtube.com/watch?v=lXDyWT3VlKg&ab_channel=M2')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow2(Game):
@@ -356,33 +383,43 @@ class GameWindow2(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/2v5iWf2KDCw')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow3(Game):
@@ -410,33 +447,43 @@ class GameWindow3(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://www.youtube.com/watch?v=cSvgRKsML7o')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow4(Game):
@@ -464,33 +511,43 @@ class GameWindow4(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/Y-JQ-RCyPpQ')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow5(Game):
@@ -518,33 +575,43 @@ class GameWindow5(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/_sI_Ps7JSEk')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow6(Game):
@@ -572,33 +639,43 @@ class GameWindow6(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/sjkrrmBnpGE')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow7(Game):
@@ -626,33 +703,43 @@ class GameWindow7(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/CfPxlb8-ZQ0')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow8(Game):
@@ -680,33 +767,43 @@ class GameWindow8(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/IRyJe-0Uie0')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow9(Game):
@@ -734,33 +831,43 @@ class GameWindow9(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/bbxXdASyLQw')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow10(Game):
@@ -788,33 +895,43 @@ class GameWindow10(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/Hq2yWd5wG_M')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow11(Game):
@@ -842,33 +959,43 @@ class GameWindow11(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow12(Game):
@@ -896,33 +1023,43 @@ class GameWindow12(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow13(Game):
@@ -950,33 +1087,43 @@ class GameWindow13(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow14(Game):
@@ -1004,33 +1151,43 @@ class GameWindow14(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow15(Game):
@@ -1058,33 +1215,43 @@ class GameWindow15(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow16(Game):
@@ -1112,33 +1279,43 @@ class GameWindow16(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow17(Game):
@@ -1166,33 +1343,43 @@ class GameWindow17(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow18(Game):
@@ -1220,33 +1407,43 @@ class GameWindow18(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow19(Game):
@@ -1274,33 +1471,43 @@ class GameWindow19(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow20(Game):
@@ -1328,33 +1535,43 @@ class GameWindow20(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow21(Game):
@@ -1382,33 +1599,43 @@ class GameWindow21(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow22(Game):
@@ -1436,33 +1663,43 @@ class GameWindow22(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow23(Game):
@@ -1490,33 +1727,43 @@ class GameWindow23(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow24(Game):
@@ -1544,33 +1791,43 @@ class GameWindow24(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow25(Game):
@@ -1598,33 +1855,43 @@ class GameWindow25(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow26(Game):
@@ -1652,33 +1919,43 @@ class GameWindow26(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow27(Game):
@@ -1706,33 +1983,43 @@ class GameWindow27(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow28(Game):
@@ -1760,33 +2047,43 @@ class GameWindow28(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow29(Game):
@@ -1814,33 +2111,43 @@ class GameWindow29(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow30(Game):
@@ -1868,33 +2175,43 @@ class GameWindow30(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow31(Game):
@@ -1922,33 +2239,43 @@ class GameWindow31(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow32(Game):
@@ -1976,33 +2303,43 @@ class GameWindow32(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow33(Game):
@@ -2030,33 +2367,43 @@ class GameWindow33(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow34(Game):
@@ -2084,33 +2431,43 @@ class GameWindow34(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow35(Game):
@@ -2138,33 +2495,43 @@ class GameWindow35(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow36(Game):
@@ -2192,33 +2559,43 @@ class GameWindow36(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow37(Game):
@@ -2246,33 +2623,43 @@ class GameWindow37(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow38(Game):
@@ -2300,33 +2687,43 @@ class GameWindow38(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow39(Game):
@@ -2354,33 +2751,43 @@ class GameWindow39(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow40(Game):
@@ -2408,33 +2815,43 @@ class GameWindow40(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow41(Game):
@@ -2462,33 +2879,43 @@ class GameWindow41(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow42(Game):
@@ -2516,33 +2943,43 @@ class GameWindow42(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow43(Game):
@@ -2570,33 +3007,43 @@ class GameWindow43(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow44(Game):
@@ -2624,33 +3071,43 @@ class GameWindow44(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow45(Game):
@@ -2678,33 +3135,43 @@ class GameWindow45(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow46(Game):
@@ -2732,33 +3199,43 @@ class GameWindow46(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow47(Game):
@@ -2786,33 +3263,43 @@ class GameWindow47(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow48(Game):
@@ -2840,33 +3327,43 @@ class GameWindow48(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow49(Game):
@@ -2894,33 +3391,43 @@ class GameWindow49(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow50(Game):
@@ -2948,33 +3455,43 @@ class GameWindow50(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow51(Game):
@@ -3002,33 +3519,43 @@ class GameWindow51(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow52(Game):
@@ -3056,33 +3583,43 @@ class GameWindow52(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow53(Game):
@@ -3110,33 +3647,43 @@ class GameWindow53(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow54(Game):
@@ -3164,33 +3711,43 @@ class GameWindow54(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow55(Game):
@@ -3218,33 +3775,43 @@ class GameWindow55(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow56(Game):
@@ -3272,33 +3839,43 @@ class GameWindow56(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow57(Game):
@@ -3326,33 +3903,43 @@ class GameWindow57(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow58(Game):
@@ -3380,33 +3967,43 @@ class GameWindow58(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow59(Game):
@@ -3434,33 +4031,43 @@ class GameWindow59(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow60(Game):
@@ -3488,33 +4095,43 @@ class GameWindow60(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow61(Game):
@@ -3542,33 +4159,43 @@ class GameWindow61(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow62(Game):
@@ -3596,33 +4223,43 @@ class GameWindow62(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow63(Game):
@@ -3650,33 +4287,43 @@ class GameWindow63(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow64(Game):
@@ -3704,33 +4351,43 @@ class GameWindow64(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow65(Game):
@@ -3758,33 +4415,43 @@ class GameWindow65(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow66(Game):
@@ -3812,33 +4479,43 @@ class GameWindow66(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow67(Game):
@@ -3866,33 +4543,43 @@ class GameWindow67(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow68(Game):
@@ -3920,33 +4607,43 @@ class GameWindow68(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow69(Game):
@@ -3974,33 +4671,43 @@ class GameWindow69(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow70(Game):
@@ -4028,33 +4735,43 @@ class GameWindow70(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow71(Game):
@@ -4082,33 +4799,43 @@ class GameWindow71(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow72(Game):
@@ -4136,33 +4863,43 @@ class GameWindow72(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow73(Game):
@@ -4190,33 +4927,43 @@ class GameWindow73(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow74(Game):
@@ -4244,33 +4991,43 @@ class GameWindow74(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow75(Game):
@@ -4298,33 +5055,43 @@ class GameWindow75(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow76(Game):
@@ -4352,33 +5119,43 @@ class GameWindow76(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow77(Game):
@@ -4406,33 +5183,43 @@ class GameWindow77(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow78(Game):
@@ -4460,33 +5247,43 @@ class GameWindow78(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow79(Game):
@@ -4514,33 +5311,43 @@ class GameWindow79(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow80(Game):
@@ -4568,33 +5375,43 @@ class GameWindow80(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow81(Game):
@@ -4622,33 +5439,43 @@ class GameWindow81(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow82(Game):
@@ -4676,33 +5503,43 @@ class GameWindow82(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow83(Game):
@@ -4730,33 +5567,43 @@ class GameWindow83(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow84(Game):
@@ -4784,33 +5631,43 @@ class GameWindow84(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow85(Game):
@@ -4838,33 +5695,43 @@ class GameWindow85(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow86(Game):
@@ -4892,33 +5759,43 @@ class GameWindow86(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow87(Game):
@@ -4946,33 +5823,43 @@ class GameWindow87(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow88(Game):
@@ -5000,33 +5887,43 @@ class GameWindow88(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow89(Game):
@@ -5054,33 +5951,43 @@ class GameWindow89(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow90(Game):
@@ -5108,33 +6015,43 @@ class GameWindow90(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow91(Game):
@@ -5162,33 +6079,43 @@ class GameWindow91(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow92(Game):
@@ -5216,33 +6143,43 @@ class GameWindow92(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow93(Game):
@@ -5270,33 +6207,43 @@ class GameWindow93(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow94(Game):
@@ -5324,33 +6271,43 @@ class GameWindow94(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow95(Game):
@@ -5378,33 +6335,43 @@ class GameWindow95(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow96(Game):
@@ -5432,33 +6399,43 @@ class GameWindow96(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow97(Game):
@@ -5486,33 +6463,43 @@ class GameWindow97(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow98(Game):
@@ -5540,33 +6527,43 @@ class GameWindow98(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow99(Game):
@@ -5594,33 +6591,43 @@ class GameWindow99(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow100(Game):
@@ -5648,33 +6655,43 @@ class GameWindow100(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow101(Game):
@@ -5702,33 +6719,43 @@ class GameWindow101(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow102(Game):
@@ -5756,33 +6783,43 @@ class GameWindow102(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow103(Game):
@@ -5810,33 +6847,43 @@ class GameWindow103(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow104(Game):
@@ -5864,33 +6911,43 @@ class GameWindow104(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow105(Game):
@@ -5918,33 +6975,43 @@ class GameWindow105(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow106(Game):
@@ -5972,33 +7039,43 @@ class GameWindow106(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow107(Game):
@@ -6026,33 +7103,43 @@ class GameWindow107(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow108(Game):
@@ -6080,33 +7167,43 @@ class GameWindow108(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow109(Game):
@@ -6134,33 +7231,43 @@ class GameWindow109(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow110(Game):
@@ -6188,33 +7295,43 @@ class GameWindow110(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow111(Game):
@@ -6242,33 +7359,43 @@ class GameWindow111(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow112(Game):
@@ -6296,33 +7423,43 @@ class GameWindow112(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow113(Game):
@@ -6350,33 +7487,43 @@ class GameWindow113(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow114(Game):
@@ -6404,33 +7551,43 @@ class GameWindow114(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow115(Game):
@@ -6458,33 +7615,43 @@ class GameWindow115(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow116(Game):
@@ -6512,33 +7679,43 @@ class GameWindow116(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow117(Game):
@@ -6566,33 +7743,43 @@ class GameWindow117(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow118(Game):
@@ -6620,33 +7807,43 @@ class GameWindow118(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow119(Game):
@@ -6674,33 +7871,43 @@ class GameWindow119(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow120(Game):
@@ -6728,33 +7935,43 @@ class GameWindow120(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow121(Game):
@@ -6782,33 +7999,43 @@ class GameWindow121(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow122(Game):
@@ -6836,33 +8063,43 @@ class GameWindow122(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow123(Game):
@@ -6890,33 +8127,43 @@ class GameWindow123(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow124(Game):
@@ -6944,33 +8191,43 @@ class GameWindow124(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow125(Game):
@@ -6998,33 +8255,43 @@ class GameWindow125(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow126(Game):
@@ -7052,33 +8319,43 @@ class GameWindow126(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow127(Game):
@@ -7106,33 +8383,43 @@ class GameWindow127(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow128(Game):
@@ -7160,33 +8447,43 @@ class GameWindow128(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow129(Game):
@@ -7214,33 +8511,43 @@ class GameWindow129(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow130(Game):
@@ -7268,33 +8575,43 @@ class GameWindow130(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow131(Game):
@@ -7322,33 +8639,43 @@ class GameWindow131(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow132(Game):
@@ -7376,33 +8703,43 @@ class GameWindow132(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow133(Game):
@@ -7430,33 +8767,43 @@ class GameWindow133(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow134(Game):
@@ -7484,33 +8831,43 @@ class GameWindow134(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow135(Game):
@@ -7538,33 +8895,43 @@ class GameWindow135(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow136(Game):
@@ -7592,33 +8959,43 @@ class GameWindow136(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow137(Game):
@@ -7646,33 +9023,43 @@ class GameWindow137(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow138(Game):
@@ -7700,33 +9087,43 @@ class GameWindow138(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow139(Game):
@@ -7754,33 +9151,43 @@ class GameWindow139(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow140(Game):
@@ -7808,33 +9215,43 @@ class GameWindow140(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow141(Game):
@@ -7862,33 +9279,43 @@ class GameWindow141(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow142(Game):
@@ -7916,33 +9343,43 @@ class GameWindow142(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow143(Game):
@@ -7970,33 +9407,43 @@ class GameWindow143(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow144(Game):
@@ -8024,33 +9471,43 @@ class GameWindow144(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow145(Game):
@@ -8078,33 +9535,43 @@ class GameWindow145(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow146(Game):
@@ -8132,33 +9599,43 @@ class GameWindow146(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow147(Game):
@@ -8186,33 +9663,43 @@ class GameWindow147(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow148(Game):
@@ -8240,33 +9727,43 @@ class GameWindow148(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow149(Game):
@@ -8294,33 +9791,43 @@ class GameWindow149(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow150(Game):
@@ -8348,33 +9855,43 @@ class GameWindow150(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow151(Game):
@@ -8402,33 +9919,43 @@ class GameWindow151(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow152(Game):
@@ -8456,33 +9983,43 @@ class GameWindow152(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow153(Game):
@@ -8510,33 +10047,43 @@ class GameWindow153(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow154(Game):
@@ -8564,33 +10111,43 @@ class GameWindow154(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow155(Game):
@@ -8618,33 +10175,43 @@ class GameWindow155(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow156(Game):
@@ -8672,33 +10239,43 @@ class GameWindow156(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow157(Game):
@@ -8726,33 +10303,43 @@ class GameWindow157(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow158(Game):
@@ -8780,33 +10367,43 @@ class GameWindow158(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow159(Game):
@@ -8834,33 +10431,43 @@ class GameWindow159(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow160(Game):
@@ -8888,33 +10495,43 @@ class GameWindow160(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow161(Game):
@@ -8942,33 +10559,43 @@ class GameWindow161(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow162(Game):
@@ -8996,33 +10623,43 @@ class GameWindow162(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow163(Game):
@@ -9050,33 +10687,43 @@ class GameWindow163(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow164(Game):
@@ -9104,33 +10751,43 @@ class GameWindow164(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow165(Game):
@@ -9158,33 +10815,43 @@ class GameWindow165(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow166(Game):
@@ -9212,33 +10879,43 @@ class GameWindow166(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow167(Game):
@@ -9266,33 +10943,43 @@ class GameWindow167(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow168(Game):
@@ -9320,33 +11007,43 @@ class GameWindow168(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow169(Game):
@@ -9374,33 +11071,43 @@ class GameWindow169(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow170(Game):
@@ -9428,33 +11135,43 @@ class GameWindow170(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow171(Game):
@@ -9482,33 +11199,43 @@ class GameWindow171(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow172(Game):
@@ -9536,33 +11263,43 @@ class GameWindow172(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow173(Game):
@@ -9590,33 +11327,43 @@ class GameWindow173(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow174(Game):
@@ -9644,33 +11391,43 @@ class GameWindow174(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow175(Game):
@@ -9698,33 +11455,43 @@ class GameWindow175(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow176(Game):
@@ -9752,33 +11519,43 @@ class GameWindow176(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow177(Game):
@@ -9806,33 +11583,43 @@ class GameWindow177(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow178(Game):
@@ -9860,33 +11647,43 @@ class GameWindow178(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow179(Game):
@@ -9914,33 +11711,43 @@ class GameWindow179(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow180(Game):
@@ -9968,33 +11775,43 @@ class GameWindow180(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow181(Game):
@@ -10022,33 +11839,43 @@ class GameWindow181(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow182(Game):
@@ -10076,33 +11903,43 @@ class GameWindow182(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow183(Game):
@@ -10130,33 +11967,43 @@ class GameWindow183(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow184(Game):
@@ -10184,33 +12031,43 @@ class GameWindow184(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow185(Game):
@@ -10238,33 +12095,43 @@ class GameWindow185(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow186(Game):
@@ -10292,33 +12159,43 @@ class GameWindow186(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow187(Game):
@@ -10346,33 +12223,43 @@ class GameWindow187(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow188(Game):
@@ -10400,33 +12287,43 @@ class GameWindow188(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow189(Game):
@@ -10454,33 +12351,43 @@ class GameWindow189(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow190(Game):
@@ -10508,59 +12415,69 @@ class GameWindow190(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class FindSongs(QtWidgets.QWidget):
-    select_favorite_list_1 = ['(좋아하는 노래를 선택하세요)',
-                              '1',
-                              '2 study coffee jazz',
-                              '3 After The Rain',
-                              '4 Relaxing Bossa Nova & Jazz',
-                              '5 New York Jazz Lounge',
-                              '6',
-                              '7',
-                              '8',
-                              '9',
-                              '10']
-
-    select_favorite_list_2 = ['(좋아하는 노래를 선택하세요)',
-                              '1',
-                              '2 study coffee jazz',
-                              '3 After The Rain',
-                              '4 Relaxing Bossa Nova & Jazz',
-                              '5 New York Jazz Lounge',
-                              '6',
-                              '7',
-                              '8',
-                              '9',
-                              '10']
+    # select_favorite_list_1 = ['(좋아하는 노래를 선택하세요)',
+    #                           '1',
+    #                           '2 study coffee jazz',
+    #                           '3 After The Rain',
+    #                           '4 Relaxing Bossa Nova & Jazz',
+    #                           '5 New York Jazz Lounge',
+    #                           '6',
+    #                           '7',
+    #                           '8',
+    #                           '9',
+    #                           '10']
+    #
+    # select_favorite_list_2 = ['(좋아하는 노래를 선택하세요)',
+    #                           '1',
+    #                           '2 study coffee jazz',
+    #                           '3 After The Rain',
+    #                           '4 Relaxing Bossa Nova & Jazz',
+    #                           '5 New York Jazz Lounge',
+    #                           '6',
+    #                           '7',
+    #                           '8',
+    #                           '9',
+    #                           '10']
 
     # select_favorite_list_3 = ['(좋아하는 노래를 선택하세요)',
     #                           '1',
@@ -10634,7 +12551,7 @@ class FindSongs(QtWidgets.QWidget):
         self.song_img_14 = QtWidgets.QRadioButton('YA MAN!! - SKULL && HAHA')
         self.song_img_15 = QtWidgets.QRadioButton('길 - 김나영')
         self.song_img_16 = QtWidgets.QRadioButton('썩은 미소 - 미생 OST')
-        self.song_img_17 = QtWidgets.QRadioButton('예쁘게 하고 나와 - Boys Republic')
+        self.song_img_17 = QtWidgets.QRadioButton('예쁘게 입고 나와 - Boys Republic')
         self.song_img_18 = QtWidgets.QRadioButton("너의 마음을 내게 준다면 - Girl's Day")
         self.song_img_19 = QtWidgets.QRadioButton('끝 - 브로콜리 너마저')
         self.song_img_20 = QtWidgets.QRadioButton("소심한K씨의대범한사랑고백 - T-Ok")
@@ -10643,6 +12560,7 @@ class FindSongs(QtWidgets.QWidget):
         self.match()
         self.background()
         self.text_style()
+        self.msg_box()
 
         self.w = None
 
@@ -10668,7 +12586,8 @@ class FindSongs(QtWidgets.QWidget):
         self.vbox.addWidget(self.label_1)
         self.vbox.addWidget(self.label_2)
 
-        self.btn_go.setMaximumWidth(100)
+        self.btn_go.setFont(QtGui.QFont('DOSMyungjo', 30))
+        self.btn_go.setFixedSize(QtCore.QSize(150, 50))
 
         vbox_img_1 = QtWidgets.QVBoxLayout()
 
@@ -10765,7 +12684,7 @@ class FindSongs(QtWidgets.QWidget):
 
         self.grid_layout.addLayout(self.vbox, 0, 0)
         self.grid_layout.addLayout(self.hbox, 1, 0)
-        self.grid_layout.addWidget(self.btn_go, 100, 100, alignment=QtCore.Qt.AlignCenter)
+        self.grid_layout.addWidget(self.btn_go, 2, 0, alignment=QtCore.Qt.AlignCenter)
 
         # dropdown style
         # hbox = QtWidgets.QHBoxLayout()
@@ -11278,14 +13197,17 @@ class FindSongs(QtWidgets.QWidget):
         app.setPalette(palette)
 
     def text_style(self):
-        self.label_1.setText('*리듬 박스 학살*')
-        self.label_1.setFont(QtGui.QFont('웰컴체 Regular', 45, weight=QtGui.QFont.Bold))
+        self.label_1.setText('리듬 박스 학살')
+        self.label_1.setFont(QtGui.QFont('DOSMyungjo', 50, weight=QtGui.QFont.Bold))
         self.label_1.setAlignment(QtCore.Qt.AlignCenter)
 
         # self.label_2.setText('왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
         self.label_2.setText('노래를 2곡 선택한 뒤 선택 버튼을 눌러주세요')
-        self.label_2.setFont(QtGui.QFont('웰컴체 Regular'))
+        self.label_2.setFont(QtGui.QFont('DOSMyungjo'))
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+
+    def msg_box(self):
+        QtWidgets.QMessageBox.about(self, '안내', '노래를 2곡 선택한 뒤 선택 버튼을 눌러주세요')
 
     def new_window(self, game_window):
         if self.w is None:
@@ -11866,6 +13788,39 @@ class FindSongs(QtWidgets.QWidget):
         self.new_window(GameWindow190())
 
 
+class LoadingGIF(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.window = QtWidgets.QWidget()
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.loading = QtGui.QMovie('loading.gif')
+        self.label = QtWidgets.QLabel()
+        self.label.setMovie(self.loading)
+
+        self.loading_ui()
+
+        timer = QtCore.QTimer()
+        self.animation_start()
+        timer.singleShot(3000, self.animation_stop)
+
+    def loading_ui(self):
+        self.window.setWindowTitle('Loading...')
+        self.window.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
+
+        self.vbox.addWidget(self.label)
+
+        self.window.setLayout(self.vbox)
+        self.window.show()
+
+    def animation_start(self):
+        self.loading.start()
+
+    def animation_stop(self):
+        # self.loading.stop()
+        self.window.close()
+
+
 def resources():
     try:
         os.chdir(sys._MEIPASS)
@@ -11882,8 +13837,8 @@ if __name__ == '__main__':
     app.setStyle('Fusion')
 
     font_db = QtGui.QFontDatabase()
-    font_db.addApplicationFont('웰컴체 Regular.ttf')
-    app.setFont(QtGui.QFont('웰컴체 Regular'))
+    font_db.addApplicationFont('DOSMyungjo.ttf')
+    app.setFont(QtGui.QFont('DOSMyungjo'))
 
     song = FindSongs()
     sys.exit(app.exec_())
