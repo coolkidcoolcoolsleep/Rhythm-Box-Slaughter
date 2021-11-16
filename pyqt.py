@@ -10,13 +10,13 @@ import pafy
 import vlc
 import time
 import winsound
+import ctypes
 from video_manager import Video_Manager
 
 
 class Game(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        # QtWidgets.QWidget.__init__(self)
 
         self.music = QtWidgets.QComboBox()
         self.btn_player_1 = QtWidgets.QRadioButton('1 Player')
@@ -25,12 +25,9 @@ class Game(QtWidgets.QWidget):
 
         self.window = QtWidgets.QWidget()
         self.vbox = QtWidgets.QVBoxLayout()
-        # self.label_empty = QtWidgets.QLabel()
-        # self.label = QtWidgets.QLabel()
 
         self.box_layout()
         self.background()
-        # self.label_text()
         self.window_style()
         self.button()
 
@@ -49,9 +46,7 @@ class Game(QtWidgets.QWidget):
             exit()
 
         while True:
-            _, frame = vidcap.read()  # _: ret
-            # print(_)
-            # 영상 좌우 반전
+            _, frame = vidcap.read()
             frame = cv2.flip(frame, 1)
 
             if frame is None:
@@ -99,6 +94,7 @@ class Game(QtWidgets.QWidget):
             cv2.imshow('Rhythm Box Slaughter', frame)
 
             if cv2.waitKey(15) == 27:
+                ctypes.windll.user32.MessageBoxW(0, '게임을 종료합니다', '안내', 0)
                 break
 
         vidcap.release()
@@ -119,9 +115,7 @@ class Game(QtWidgets.QWidget):
             exit()
 
         while True:
-            _, frame = vidcap.read()  # _: ret
-            # print(_)
-            # 영상 좌우 반전
+            _, frame = vidcap.read()
             frame = cv2.flip(frame, 1)
 
             if frame is None:
@@ -169,6 +163,7 @@ class Game(QtWidgets.QWidget):
             cv2.imshow('Rhythm Box Slaughter', frame)
 
             if cv2.waitKey(15) == 27:
+                ctypes.windll.user32.MessageBoxW(0, '게임을 종료합니다', '안내', 0)
                 break
 
         vidcap.release()
@@ -202,14 +197,8 @@ class Game(QtWidgets.QWidget):
         self.btn_player_1.setToolTip('1인용 게임')
         self.btn_player_2.setToolTip('2인용 게임')
         self.btn_start.setToolTip('누르면 게임을 시작합니다')
+        self.btn_start.setStyleSheet("QPushButton { background-color: rgb(255, 190, 11);}")
 
-        # self.vbox.addWidget(self.label_empty)
-        # self.vbox.addWidget(self.label_empty)
-        # self.vbox.addWidget(self.label_empty)
-        # self.vbox.addWidget(self.label_empty)
-        # self.vbox.addWidget(self.label_empty)
-        #
-        # self.vbox.addWidget(self.label)
         hbox = QtWidgets.QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(self.music)
@@ -228,14 +217,6 @@ class Game(QtWidgets.QWidget):
         palette = QtGui.QPalette()
         palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg_text))
         app.setPalette(palette)
-
-    # def label_text(self):
-    #     self.label_empty.setText(' ')
-    #     self.label.setFont(QtGui.QFont('Arial', 45))
-    #
-    #     self.label.setText('리듬 박스 학살')
-    #     self.label.setFont(QtGui.QFont('DOSMyungjo', 45, weight=QtGui.QFont.Bold))
-    #     self.label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
 
     def window_style(self):
         self.window.setWindowTitle('Rhythm Box Slaughter')
@@ -12455,76 +12436,8 @@ class GameWindow190(Game):
 
 
 class FindSongs(QtWidgets.QWidget):
-    # select_favorite_list_1 = ['(좋아하는 노래를 선택하세요)',
-    #                           '1',
-    #                           '2 study coffee jazz',
-    #                           '3 After The Rain',
-    #                           '4 Relaxing Bossa Nova & Jazz',
-    #                           '5 New York Jazz Lounge',
-    #                           '6',
-    #                           '7',
-    #                           '8',
-    #                           '9',
-    #                           '10']
-    #
-    # select_favorite_list_2 = ['(좋아하는 노래를 선택하세요)',
-    #                           '1',
-    #                           '2 study coffee jazz',
-    #                           '3 After The Rain',
-    #                           '4 Relaxing Bossa Nova & Jazz',
-    #                           '5 New York Jazz Lounge',
-    #                           '6',
-    #                           '7',
-    #                           '8',
-    #                           '9',
-    #                           '10']
-
-    # select_favorite_list_3 = ['(좋아하는 노래를 선택하세요)',
-    #                           '1',
-    #                           '2 study coffee jazz',
-    #                           '3 After The Rain',
-    #                           '4 Relaxing Bossa Nova & Jazz',
-    #                           '5 New York Jazz Lounge',
-    #                           '6',
-    #                           '7',
-    #                           '8',
-    #                           '9',
-    #                           '10']
-    #
-    # select_favorite_list_4 = ['(좋아하는 노래를 선택하세요)',
-    #                           '1',
-    #                           '2 study coffee jazz',
-    #                           '3 After The Rain',
-    #                           '4 Relaxing Bossa Nova & Jazz',
-    #                           '5 New York Jazz Lounge',
-    #                           '6',
-    #                           '7',
-    #                           '8',
-    #                           '9',
-    #                           '10']
-    #
-    # select_favorite_list_5 = ['(좋아하는 노래를 선택하세요)',
-    #                           '1',
-    #                           '2 study coffee jazz',
-    #                           '3 After The Rain',
-    #                           '4 Relaxing Bossa Nova & Jazz',
-    #                           '5 New York Jazz Lounge',
-    #                           '6',
-    #                           '7',
-    #                           '8',
-    #                           '9',
-    #                           '10']
-
     def __init__(self):
         super().__init__()
-        # QtWidgets.QWidget.__init__(self)
-
-        # dropdown style
-        # self.select_song_1 = QtWidgets.QComboBox(self)
-        # self.select_song_2 = QtWidgets.QComboBox(self)
-        # self.select_song_3 = QtWidgets.QComboBox(self)
-        # self.select_song_4 = QtWidgets.QComboBox(self)
-        # self.select_song_5 = QtWidgets.QComboBox(self)
 
         self.window = QtWidgets.QWidget()
         self.vbox = QtWidgets.QVBoxLayout()
@@ -12535,26 +12448,26 @@ class FindSongs(QtWidgets.QWidget):
         self.label_2 = QtWidgets.QLabel()
         self.btn_go = QtWidgets.QPushButton('선택')
 
-        self.song_img_1 = QtWidgets.QRadioButton("안 되는데 - 4Men")
-        self.song_img_2 = QtWidgets.QRadioButton('너와 나 그리고 우리 (You && I) - 이민호')
-        self.song_img_3 = QtWidgets.QRadioButton('보여(still) - Sunday x 김태현(딕펑스)')
-        self.song_img_4 = QtWidgets.QRadioButton('그대 (My Love) - Honey G')
-        self.song_img_5 = QtWidgets.QRadioButton('Punchlines - The Quiett')
-        self.song_img_6 = QtWidgets.QRadioButton('슬피 우는 새 - 아웃사이더')
-        self.song_img_7 = QtWidgets.QRadioButton('비 따라 - 앤츠')
-        self.song_img_8 = QtWidgets.QRadioButton('바보 - Gavy NJ')
-        self.song_img_9 = QtWidgets.QRadioButton('하루라도 - MIO')
-        self.song_img_10 = QtWidgets.QRadioButton('떠오르다 (INTRO) - Noel')
-        self.song_img_11 = QtWidgets.QRadioButton('너와 나의 크리스마스 - PD BLUE')
-        self.song_img_12 = QtWidgets.QRadioButton('Do - Urban Zakapa')
-        self.song_img_13 = QtWidgets.QRadioButton('INTRO - HAHA')
-        self.song_img_14 = QtWidgets.QRadioButton('YA MAN!! - SKULL && HAHA')
-        self.song_img_15 = QtWidgets.QRadioButton('길 - 김나영')
-        self.song_img_16 = QtWidgets.QRadioButton('썩은 미소 - 미생 OST')
-        self.song_img_17 = QtWidgets.QRadioButton('예쁘게 입고 나와 - Boys Republic')
-        self.song_img_18 = QtWidgets.QRadioButton("너의 마음을 내게 준다면 - Girl's Day")
-        self.song_img_19 = QtWidgets.QRadioButton('끝 - 브로콜리 너마저')
-        self.song_img_20 = QtWidgets.QRadioButton("소심한K씨의대범한사랑고백 - T-Ok")
+        self.song_img_1 = QtWidgets.QRadioButton('GFRIEND - 시간을 달려서 (Rough)')
+        self.song_img_2 = QtWidgets.QRadioButton("NU'EST - Love Paint (every afternoon)")
+        self.song_img_3 = QtWidgets.QRadioButton('EXO - Heart Attack')
+        self.song_img_4 = QtWidgets.QRadioButton('Red Velvet - Ice Cream Cake')
+        self.song_img_5 = QtWidgets.QRadioButton('EXO - Monster')
+        self.song_img_6 = QtWidgets.QRadioButton('IU - 스물셋')
+        self.song_img_7 = QtWidgets.QRadioButton('현아 - 빨개요')
+        self.song_img_8 = QtWidgets.QRadioButton('에일리 - 노래가 늘었어')
+        self.song_img_9 = QtWidgets.QRadioButton('INFINITE - 내꺼하자')
+        self.song_img_10 = QtWidgets.QRadioButton('f(x) - Lollipop (feat. SHINee)')
+        self.song_img_11 = QtWidgets.QRadioButton('After School - 너 때문에')
+        self.song_img_12 = QtWidgets.QRadioButton('BoA - One Dream (Feat. HENRY&&KEY)')
+        self.song_img_13 = QtWidgets.QRadioButton('STSTAR - One More Day')
+        self.song_img_14 = QtWidgets.QRadioButton('가인 - 피어나')
+        self.song_img_15 = QtWidgets.QRadioButton('박효신 - 야생화')
+        self.song_img_16 = QtWidgets.QRadioButton('NCT 127 - Switch')
+        self.song_img_17 = QtWidgets.QRadioButton('VIXX - 사슬 (Chained up)')
+        self.song_img_18 = QtWidgets.QRadioButton('BoA - Only One')
+        self.song_img_19 = QtWidgets.QRadioButton('2NE1 - 안녕')
+        self.song_img_20 = QtWidgets.QRadioButton('휘성 - Night and Day')
 
         self.box_layout()
         self.match()
@@ -12564,117 +12477,107 @@ class FindSongs(QtWidgets.QWidget):
 
         self.w = None
 
-    # dropdown style
-    # def add_item_in_combobox(self, select_song, select_favorite_list):
-    #     select_song.move(200, 400)
-    #     for i in select_favorite_list:
-    #         select_song.addItem(i)
-
-    # song img style vbox
     def vbox_style(self, song_img):
         song_img.setIconSize(QtCore.QSize(100, 100))
         song_img.setAutoExclusive(False)
+        # shadow = QtWidgets.QGraphicsDropShadowEffect(blurRadius=5, xOffset=3, yOffset=3)
+        # song_img.setGraphicsEffect(shadow)
 
     def box_layout(self):
-        # dropdown style
-        # self.add_item_in_combobox(self.select_song_1, self.select_favorite_list_1)
-        # self.add_item_in_combobox(self.select_song_2, self.select_favorite_list_2)
-        # self.add_item_in_combobox(self.select_song_3, self.select_favorite_list_3)
-        # self.add_item_in_combobox(self.select_song_4, self.select_favorite_list_4)
-        # self.add_item_in_combobox(self.select_song_5, self.select_favorite_list_5)
-
         self.vbox.addWidget(self.label_1)
         self.vbox.addWidget(self.label_2)
 
         self.btn_go.setFont(QtGui.QFont('DOSMyungjo', 30))
         self.btn_go.setFixedSize(QtCore.QSize(150, 50))
+        self.btn_go.setStyleSheet(
+            "QPushButton {color: black; background-color: rgb(255, 190, 11); border-radius: 5px;}")
 
         vbox_img_1 = QtWidgets.QVBoxLayout()
 
         vbox_img_1.addWidget(self.song_img_1)
-        self.song_img_1.setIcon(QtGui.QIcon('four_men.jpg'))
+        self.song_img_1.setIcon(QtGui.QIcon('rough.jpg'))
         self.vbox_style(self.song_img_1)
 
         vbox_img_1.addWidget(self.song_img_2)
-        self.song_img_2.setIcon(QtGui.QIcon('you_and_i.jpg'))
+        self.song_img_2.setIcon(QtGui.QIcon('love_paint.jpg'))
         self.vbox_style(self.song_img_2)
 
         vbox_img_1.addWidget(self.song_img_3)
-        self.song_img_3.setIcon(QtGui.QIcon('still.jpg'))
+        self.song_img_3.setIcon(QtGui.QIcon('heart_attack.jpg'))
         self.vbox_style(self.song_img_3)
 
         vbox_img_1.addWidget(self.song_img_4)
-        self.song_img_4.setIcon(QtGui.QIcon('my_love.jpg'))
+        self.song_img_4.setIcon(QtGui.QIcon('ice_cream_cake.jpg'))
         self.vbox_style(self.song_img_4)
 
         vbox_img_1.addWidget(self.song_img_5)
-        self.song_img_5.setIcon(QtGui.QIcon('punchlines.jpg'))
+        self.song_img_5.setIcon(QtGui.QIcon('monster.jpg'))
         self.vbox_style(self.song_img_5)
 
         vbox_img_2 = QtWidgets.QVBoxLayout()
 
         vbox_img_2.addWidget(self.song_img_6)
-        self.song_img_6.setIcon(QtGui.QIcon('outsider.jpg'))
+        self.song_img_6.setIcon(QtGui.QIcon('23.jpg'))
         self.vbox_style(self.song_img_6)
 
         vbox_img_2.addWidget(self.song_img_7)
-        self.song_img_7.setIcon(QtGui.QIcon('ants.jpg'))
+        self.song_img_7.setIcon(QtGui.QIcon('red.jpg'))
         self.vbox_style(self.song_img_7)
 
         vbox_img_2.addWidget(self.song_img_8)
-        self.song_img_8.setIcon(QtGui.QIcon('fool.jpg'))
+        self.song_img_8.setIcon(QtGui.QIcon('ailee.jpg'))
         self.vbox_style(self.song_img_8)
 
         vbox_img_2.addWidget(self.song_img_9)
-        self.song_img_9.setIcon(QtGui.QIcon('mio.jpg'))
+        self.song_img_9.setIcon(QtGui.QIcon('be_mine.jpg'))
         self.vbox_style(self.song_img_9)
 
         vbox_img_2.addWidget(self.song_img_10)
-        self.song_img_10.setIcon(QtGui.QIcon('noel.jpg'))
+        self.song_img_10.setIcon(QtGui.QIcon('lollipop.jpg'))
         self.vbox_style(self.song_img_10)
 
         vbox_img_3 = QtWidgets.QVBoxLayout()
 
         vbox_img_3.addWidget(self.song_img_11)
-        self.song_img_11.setIcon(QtGui.QIcon('pd.jpg'))
+        self.song_img_11.setIcon(QtGui.QIcon('after_school.jpg'))
         self.vbox_style(self.song_img_11)
 
         vbox_img_3.addWidget(self.song_img_12)
-        self.song_img_12.setIcon(QtGui.QIcon('do.jpg'))
+        self.song_img_12.setIcon(QtGui.QIcon('one_dream.jpg'))
         self.vbox_style(self.song_img_12)
 
         vbox_img_3.addWidget(self.song_img_13)
-        self.song_img_13.setIcon(QtGui.QIcon('haha.jpg'))
+        self.song_img_13.setIcon(QtGui.QIcon('sistar.jpg'))
         self.vbox_style(self.song_img_13)
 
         vbox_img_3.addWidget(self.song_img_14)
-        self.song_img_14.setIcon(QtGui.QIcon('ya_man.jpg'))
+        self.song_img_14.setIcon(QtGui.QIcon('gain.jpg'))
         self.vbox_style(self.song_img_14)
 
         vbox_img_3.addWidget(self.song_img_15)
-        self.song_img_15.setIcon(QtGui.QIcon('kim_na_young.jpg'))
+        self.song_img_15.setIcon(QtGui.QIcon('wild_flower.jpg'))
         self.vbox_style(self.song_img_15)
 
         vbox_img_4 = QtWidgets.QVBoxLayout()
 
         vbox_img_4.addWidget(self.song_img_16)
-        self.song_img_16.setIcon(QtGui.QIcon('rotten_smile.jpg'))
+        self.song_img_16.setIcon(QtGui.QIcon('switch.jpg'))
         self.vbox_style(self.song_img_16)
 
         vbox_img_4.addWidget(self.song_img_17)
-        self.song_img_17.setIcon(QtGui.QIcon('boys_republic.jpg'))
+        self.song_img_17.setIcon(QtGui.QIcon('chained_up.jpg'))
         self.vbox_style(self.song_img_17)
 
         vbox_img_4.addWidget(self.song_img_18)
-        self.song_img_18.setIcon(QtGui.QIcon('girls_day.jpg'))
+        self.song_img_18.setIcon(QtGui.QIcon('only_one.jpg'))
         self.vbox_style(self.song_img_18)
 
         vbox_img_4.addWidget(self.song_img_19)
-        self.song_img_19.setIcon(QtGui.QIcon('broccoli.jpg'))
+        self.song_img_19.setIcon(QtGui.QIcon('goodbye.jpg'))
         self.vbox_style(self.song_img_19)
 
         vbox_img_4.addWidget(self.song_img_20)
-        self.song_img_20.setIcon(QtGui.QIcon('t-ok.jpg'))
+        self.song_img_20.setIcon(QtGui.QIcon('night_and_day.jpg'))
         self.vbox_style(self.song_img_20)
 
         self.hbox.addLayout(vbox_img_1)
@@ -12686,27 +12589,14 @@ class FindSongs(QtWidgets.QWidget):
         self.grid_layout.addLayout(self.hbox, 1, 0)
         self.grid_layout.addWidget(self.btn_go, 2, 0, alignment=QtCore.Qt.AlignCenter)
 
-        # dropdown style
-        # hbox = QtWidgets.QHBoxLayout()
-        # hbox.addWidget(self.select_song_1)
-        # hbox.addWidget(self.select_song_2)
-        # # hbox.addWidget(self.select_song_3)
-        # # hbox.addWidget(self.select_song_4)
-        # # hbox.addWidget(self.select_song_5)
-        # hbox.addWidget(self.btn_go)
-        # self.vbox.addLayout(hbox)
-
         self.window.setWindowTitle('Rhythm Box Slaughter')
         self.window.setWindowIcon(QtGui.QIcon('sunglasses.png'))
 
         self.window.setLayout(self.grid_layout)
-        self.window.setGeometry(0, 0, 1280, 720)
+        self.window.setGeometry(0, 0, 1550, 800)
         self.window.show()
 
     def match(self):
-        # dropdown style
-        # self.select_song_2.currentIndexChanged.connect(self.current_index)
-
         self.song_img_1.clicked.connect(self.current_index)
         self.song_img_2.clicked.connect(self.current_index)
         self.song_img_3.clicked.connect(self.current_index)
@@ -12729,48 +12619,6 @@ class FindSongs(QtWidgets.QWidget):
         self.song_img_20.clicked.connect(self.current_index)
 
     def current_index(self):
-        # matched_musics = (self.select_song_1.currentIndex(), self.select_song_2.currentIndex())
-        #
-        # def test_list(number):
-        #     test_list = [(number, i) for i in range(1, 11)]
-        #
-        #     return test_list
-
-        # dropdown style 테스트 버전
-        # if matched_musics in test_list(1):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_1)
-        #
-        # elif matched_musics in test_list(2):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_2)
-        #
-        # elif matched_musics in test_list(3):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_3)
-        #
-        # elif matched_musics in test_list(4):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_4)
-        #
-        # elif matched_musics in test_list(5):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_5)
-        #
-        # elif matched_musics in test_list(6):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_6)
-        #
-        # elif matched_musics in test_list(7):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_7)
-        #
-        # elif matched_musics in test_list(8):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_8)
-        #
-        # elif matched_musics in test_list(9):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_9)
-        #
-        # elif matched_musics in test_list(10):
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_10)
-        #
-        # else:
-        #     self.btn_go.clicked.connect(self.btn_go_clicked_1)
-
-        # song img 버전
         if self.song_img_1.isChecked():
             if self.song_img_2.isChecked():
                 self.btn_go.clicked.connect(self.btn_go_clicked_1)
@@ -13191,7 +13039,7 @@ class FindSongs(QtWidgets.QWidget):
 
     def background(self):
         bg = QtGui.QImage('bg_no_text.jpg')
-        scaled_bg = bg.scaled(1280, 720)
+        scaled_bg = bg.scaled(1550, 800)
         palette = QtGui.QPalette()
         palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg))
         app.setPalette(palette)
@@ -13201,7 +13049,6 @@ class FindSongs(QtWidgets.QWidget):
         self.label_1.setFont(QtGui.QFont('DOSMyungjo', 50, weight=QtGui.QFont.Bold))
         self.label_1.setAlignment(QtCore.Qt.AlignCenter)
 
-        # self.label_2.setText('왼쪽부터 순서대로 노래를 선택한 뒤 선택 버튼을 눌러주세요')
         self.label_2.setText('노래를 2곡 선택한 뒤 선택 버튼을 눌러주세요')
         self.label_2.setFont(QtGui.QFont('DOSMyungjo'))
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
@@ -13786,39 +13633,6 @@ class FindSongs(QtWidgets.QWidget):
 
     def btn_go_clicked_190(self):
         self.new_window(GameWindow190())
-
-
-class LoadingGIF(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-
-        self.window = QtWidgets.QWidget()
-        self.vbox = QtWidgets.QVBoxLayout()
-        self.loading = QtGui.QMovie('loading.gif')
-        self.label = QtWidgets.QLabel()
-        self.label.setMovie(self.loading)
-
-        self.loading_ui()
-
-        timer = QtCore.QTimer()
-        self.animation_start()
-        timer.singleShot(3000, self.animation_stop)
-
-    def loading_ui(self):
-        self.window.setWindowTitle('Loading...')
-        self.window.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
-
-        self.vbox.addWidget(self.label)
-
-        self.window.setLayout(self.vbox)
-        self.window.show()
-
-    def animation_start(self):
-        self.loading.start()
-
-    def animation_stop(self):
-        # self.loading.stop()
-        self.window.close()
 
 
 def resources():
