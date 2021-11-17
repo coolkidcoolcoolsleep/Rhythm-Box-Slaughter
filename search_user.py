@@ -17,9 +17,9 @@ def search_user(song1, song2):
 # search_user('HyunA|Red', 'Red Velvet|Ice Cream Cake')
 
 if __name__ == '__main__':
-    search_user('GFRIEND|시간을 달려서 (Rough)', "NU'EST|Love Paint (every afternoon)")           # [16509]
+    search_user('GFRIEND 시간을 달려서 (Rough)', "NU'EST Love Paint (every afternoon)")           # [16509]
     # print(time.time()-start)                                                                  # 0.009406328201293945
-    search_user('HyunA|Red', 'Red Velvet|Ice Cream Cake')                                       # [16565]
+    search_user('HyunA Red', 'Red Velvet Ice Cream Cake')                                       # [16565]
 
 
 
