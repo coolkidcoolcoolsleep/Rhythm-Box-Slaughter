@@ -11,6 +11,7 @@ import vlc
 import time
 import winsound
 import ctypes
+import loading
 from video_manager import Video_Manager
 
 
@@ -71,16 +72,16 @@ class Game(QtWidgets.QWidget):
 
                 # 점수 계산
                 blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = vm.score_calculation(frame,
-                                                                                                              rectangle_seed_num,
-                                                                                                              detection_blue,
-                                                                                                              coordinate_blue,
-                                                                                                              box_seed_num,
-                                                                                                              detection_red,
-                                                                                                              coordinate_red)
+                                                                                                            rectangle_seed_num,
+                                                                                                            detection_blue,
+                                                                                                            coordinate_blue,
+                                                                                                            box_seed_num,
+                                                                                                            detection_red,
+                                                                                                            coordinate_red)
 
                 # 정답 rect 그리기
                 vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
-                                       is_answer_handled_blue)
+                                     is_answer_handled_blue)
 
                 # 점수 표기
                 vm.PlayerGameStats(frame, red_score, blue_score, is_one_player=True)
@@ -197,7 +198,7 @@ class Game(QtWidgets.QWidget):
         self.btn_player_1.setToolTip('1인용 게임')
         self.btn_player_2.setToolTip('2인용 게임')
         self.btn_start.setToolTip('누르면 게임을 시작합니다')
-        self.btn_start.setStyleSheet("QPushButton { background-color: rgb(255, 190, 11);}")
+        self.btn_start.setStyleSheet('QPushButton { background-color: rgb(255, 190, 11);}')
 
         hbox = QtWidgets.QHBoxLayout()
         hbox.addStretch(1)
@@ -216,7 +217,7 @@ class Game(QtWidgets.QWidget):
         scaled_bg_text = bg_text.scaled(1280, 720)
         palette = QtGui.QPalette()
         palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(scaled_bg_text))
-        app.setPalette(palette)
+        self.window.setPalette(palette)
 
     def window_style(self):
         self.window.setWindowTitle('Rhythm Box Slaughter')
@@ -257,11 +258,12 @@ class Game(QtWidgets.QWidget):
             self.music.addItem(i)
         self.music.setToolTip('배경음악을 선택하세요')
         self.music.setFixedSize(200, 30)
+        self.music.setStyleSheet('QComboBox QAbstractItemView {background: white};')
 
         self.btn_player_1.setStyleSheet(
-            'QRadioButton{font: 15pt DOSMyungjo;} QRadioButton::indicator {width: 20px; height: 20px;};')
+            'QRadioButton {font: 15pt DOSMyungjo;} QRadioButton::indicator {width: 20px; height: 20px;};')
         self.btn_player_2.setStyleSheet(
-            'QRadioButton{font: 15pt DOSMyungjo;} QRadioButton::indicator {width: 20px; height: 20px;};')
+            'QRadioButton {font: 15pt DOSMyungjo;} QRadioButton::indicator {width: 20px; height: 20px;};')
 
         self.btn_start.setFixedSize(150, 30)
         self.btn_start.setFont(QtGui.QFont('DOSMyungjo', 15))
@@ -270,6 +272,11 @@ class Game(QtWidgets.QWidget):
         self.music.currentIndexChanged.connect(self.music_play)
 
     def music_thread(self, url):
+        # loading animation
+        loading_thread = threading.Thread(target=lambda: loading.main())
+        loading_thread.daemon = True
+        loading_thread.start()
+
         thread = threading.Thread(target=lambda: self.youtube_play(url))
         thread.daemon = True
         thread.start()
@@ -12480,8 +12487,6 @@ class FindSongs(QtWidgets.QWidget):
     def vbox_style(self, song_img):
         song_img.setIconSize(QtCore.QSize(100, 100))
         song_img.setAutoExclusive(False)
-        # shadow = QtWidgets.QGraphicsDropShadowEffect(blurRadius=5, xOffset=3, yOffset=3)
-        # song_img.setGraphicsEffect(shadow)
 
     def box_layout(self):
         self.vbox.addWidget(self.label_1)
@@ -12490,7 +12495,7 @@ class FindSongs(QtWidgets.QWidget):
         self.btn_go.setFont(QtGui.QFont('DOSMyungjo', 30))
         self.btn_go.setFixedSize(QtCore.QSize(150, 50))
         self.btn_go.setStyleSheet(
-            "QPushButton {color: black; background-color: rgb(255, 190, 11); border-radius: 5px;}")
+            'QPushButton {color: black; background-color: rgb(255, 190, 11); border-radius: 5px;}')
 
         vbox_img_1 = QtWidgets.QVBoxLayout()
 
@@ -12594,6 +12599,7 @@ class FindSongs(QtWidgets.QWidget):
 
         self.window.setLayout(self.grid_layout)
         self.window.setGeometry(0, 0, 1550, 800)
+
         self.window.show()
 
     def match(self):
