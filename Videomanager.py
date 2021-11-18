@@ -4,7 +4,9 @@ import cv2
 import random
 import time
 from PIL import ImageFont, ImageDraw, Image
+from imutils import resize
 import numpy as np
+import cvzone
 
 class Video_Manager:
     def __init__(self):
@@ -19,23 +21,28 @@ class Video_Manager:
         self.red_lower = (-10, 100, 100)
         self.red_upper = (10, 255, 255)
 
-        # (0, 50, 20), (5, 255, 255)
-        # (0, 70, 50), (10, 255, 255)
-        # (175, 70, 50), (180, 255, 255)
-        # (170, 120, 120), (180, 255, 255)
-        # (0, 50, 20), (5, 255, 255)
-        # (153, 46, 82), (166, 33, 55)
+        # 피부가 많이 잡힘
+        # self.red_lower = (0, 70, 50)
+        # self.red_upper = (10, 255, 255)
+
+        # 살짝 피부 많이
+        # self.red_lower = (0, 50, 20)
+        # self.red_upper = (5, 255, 255)
 
         # level
-        self.easy = 200
-        self.norm = 40
-        self.hard = 30
+        self.easy = 300
+        self.norm = 250
+        self.hard = 200
+        self.hell = 170
 
         # color
         self.red_color = (203, 192, 255)
         self.blue_color = (223, 188, 80)
         self.green_color = (0, 255, 0)
         self.white_color = (255, 255, 255)
+
+        self.red_gage_color = (199, 5, 0)
+        self.blue_gage_color = (5, 75, 174)
 
         # score
         self.blue_score = 0
@@ -55,30 +62,296 @@ class Video_Manager:
         self.hard_min_area = self.hard * 30
 
         # display_size
-        self.img_width = 1330
-        self.img_height = 630
+        self.img_width = 1920
+        self.img_height = 1080
 
         # player_num
         self.box_num = 0
         self.rect_num = 0
         self.frame_num = 0
 
-        # winner
-        self.winGameText = 'win!!'
-        self.LoseGameText = 'lose!'
-        self.drawGameText = 'draw'
+        self.gage_loc = [20, 20]
+        self.blue_gage_loc = [1075, 20]
+        self.gage_size = (820, 60)
+        self.text_loc = [845, 0]
+        self.blue_text_loc = [self.img_width//2+5, 0]
+        self.text_size = (100, 100)
 
-        self.blue_score_title = 'BLUE SCORE'
-        self.red_score_title = 'RED SCORE'
-        self.score_title = 'SCORE'
+        # 게이지 사이즈 (85, 920, 4)
+
+        self.emtpy_gage = cv2.imread('data/gage/empty_gage.png', -1)
+        self.emtpy_gage = cv2.resize(self.emtpy_gage, self.gage_size, -1)
+
+        self.red_fill_1 = cv2.imread('data/gage/red_fill_1.png', -1)
+        self.red_fill_1 = cv2.resize(self.red_fill_1, self.gage_size, -1)
+
+        self.red_fill_2 = cv2.imread('data/gage/red_fill_2.png', -1)
+        self.red_fill_2 = cv2.resize(self.red_fill_2, self.gage_size, -1)
+
+        self.red_fill_3 = cv2.imread('data/gage/red_fill_3.png', -1)
+        self.red_fill_3 = cv2.resize(self.red_fill_3, self.gage_size, -1)
+
+        self.red_fill_4 = cv2.imread('data/gage/red_fill_4.png', -1)
+        self.red_fill_4 = cv2.resize(self.red_fill_4, self.gage_size, -1)
+
+        self.red_fill_5 = cv2.imread('data/gage/red_fill_5.png', -1)
+        self.red_fill_5 = cv2.resize(self.red_fill_5, self.gage_size, -1)
+
+        self.red_fill_6 = cv2.imread('data/gage/red_fill_6.png', -1)
+        self.red_fill_6 = cv2.resize(self.red_fill_6, self.gage_size, -1)
+
+        self.red_fill_7 = cv2.imread('data/gage/red_fill_7.png', -1)
+        self.red_fill_7 = cv2.resize(self.red_fill_7, self.gage_size, -1)
+
+        self.red_fill_8 = cv2.imread('data/gage/red_fill_8.png', -1)
+        self.red_fill_8 = cv2.resize(self.red_fill_8, self.gage_size, -1)
+
+        self.red_fill_9 = cv2.imread('data/gage/red_fill_9.png', -1)
+        self.red_fill_9 = cv2.resize(self.red_fill_9, self.gage_size, -1)
+
+        self.red_fill_10 = cv2.imread('data/gage/red_fill_10.png', -1)
+        self.red_fill_10 = cv2.resize(self.red_fill_10, self.gage_size, -1)
+
+        self.blue_fill_1 = cv2.imread('data/gage/blue_fill_1.png', -1)
+        self.blue_fill_1 = cv2.resize(self.blue_fill_1, self.gage_size, -1)
+
+        self.blue_fill_2 = cv2.imread('data/gage/blue_fill_2.png', -1)
+        self.blue_fill_2 = cv2.resize(self.blue_fill_2, self.gage_size, -1)
+
+        self.blue_fill_3 = cv2.imread('data/gage/blue_fill_3.png', -1)
+        self.blue_fill_3 = cv2.resize(self.blue_fill_3, self.gage_size, -1)
+
+        self.blue_fill_4 = cv2.imread('data/gage/blue_fill_4.png', -1)
+        self.blue_fill_4 = cv2.resize(self.blue_fill_4, self.gage_size, -1)
+
+        self.blue_fill_5 = cv2.imread('data/gage/blue_fill_5.png', -1)
+        self.blue_fill_5 = cv2.resize(self.blue_fill_5, self.gage_size, -1)
+
+        self.blue_fill_6 = cv2.imread('data/gage/blue_fill_6.png', -1)
+        self.blue_fill_6 = cv2.resize(self.blue_fill_6, self.gage_size, -1)
+
+        self.blue_fill_7 = cv2.imread('data/gage/blue_fill_7.png', -1)
+        self.blue_fill_7 = cv2.resize(self.blue_fill_7, self.gage_size, -1)
+
+        self.blue_fill_8 = cv2.imread('data/gage/blue_fill_8.png', -1)
+        self.blue_fill_8 = cv2.resize(self.blue_fill_8, self.gage_size, -1)
+
+        self.blue_fill_9 = cv2.imread('data/gage/blue_fill_9.png', -1)
+        self.blue_fill_9 = cv2.resize(self.blue_fill_9, self.gage_size, -1)
+
+        self.blue_fill_10 = cv2.imread('data/gage/blue_fill_10.png', -1)
+        self.blue_fill_10 = cv2.resize(self.blue_fill_10, self.gage_size, -1)
+
+        self.blue_fill_11 = cv2.imread('data/gage/blue_fill_11.png', -1)
+        self.blue_fill_11 = cv2.resize(self.blue_fill_11, self.gage_size, -1)
+
+        self.blue_fill_12 = cv2.imread('data/gage/blue_fill_12.png', -1)
+        self.blue_fill_12 = cv2.resize(self.blue_fill_12, self.gage_size, -1)
+
+        self.blue_fill_13 = cv2.imread('data/gage/blue_fill_13.png', -1)
+        self.blue_fill_13 = cv2.resize(self.blue_fill_13, self.gage_size, -1)
+
+        self.blue_fill_14 = cv2.imread('data/gage/blue_fill_14.png', -1)
+        self.blue_fill_14 = cv2.resize(self.blue_fill_14, self.gage_size, -1)
+
+        self.blue_fill_15 = cv2.imread('data/gage/blue_fill_15.png', -1)
+        self.blue_fill_15 = cv2.resize(self.blue_fill_15, self.gage_size, -1)
+
+        self.blue_fill_16 = cv2.imread('data/gage/blue_fill_16.png', -1)
+        self.blue_fill_16 = cv2.resize(self.blue_fill_16, self.gage_size, -1)
+
+        self.blue_fill_17 = cv2.imread('data/gage/blue_fill_17.png', -1)
+        self.blue_fill_17 = cv2.resize(self.blue_fill_17, self.gage_size, -1)
+
+        self.blue_fill_18 = cv2.imread('data/gage/blue_fill_18.png', -1)
+        self.blue_fill_18 = cv2.resize(self.blue_fill_18, self.gage_size, -1)
+
+        self.blue_fill_19 = cv2.imread('data/gage/blue_fill_19.png', -1)
+        self.blue_fill_19 = cv2.resize(self.blue_fill_19, self.gage_size, -1)
+
+        self.blue_fill_20 = cv2.imread('data/gage/blue_fill_20.png', -1)
+        self.blue_fill_20 = cv2.resize(self.blue_fill_20, self.gage_size, -1)
+
+        self.blue_fill_21 = cv2.imread('data/gage/blue_fill_21.png', -1)
+        self.blue_fill_21 = cv2.resize(self.blue_fill_21, self.gage_size, -1)
+
+        self.blue_fill_22 = cv2.imread('data/gage/blue_fill_22.png', -1)
+        self.blue_fill_22 = cv2.resize(self.blue_fill_22, self.gage_size, -1)
+
+        self.blue_fill_23 = cv2.imread('data/gage/blue_fill_23.png', -1)
+        self.blue_fill_23 = cv2.resize(self.blue_fill_23, self.gage_size, -1)
+
+        self.blue_fill_24 = cv2.imread('data/gage/blue_fill_24.png', -1)
+        self.blue_fill_24 = cv2.resize(self.blue_fill_24, self.gage_size, -1)
+
+        self.blue_fill_25 = cv2.imread('data/gage/blue_fill_25.png', -1)
+        self.blue_fill_25 = cv2.resize(self.blue_fill_25, self.gage_size, -1)
+
+        self.blue_fill_26 = cv2.imread('data/gage/blue_fill_26.png', -1)
+        self.blue_fill_26 = cv2.resize(self.blue_fill_26, self.gage_size, -1)
+
+        self.blue_fill_27 = cv2.imread('data/gage/blue_fill_27.png', -1)
+        self.blue_fill_27 = cv2.resize(self.blue_fill_27, self.gage_size, -1)
+
+        self.blue_fill_28 = cv2.imread('data/gage/blue_fill_28.png', -1)
+        self.blue_fill_28 = cv2.resize(self.blue_fill_28, self.gage_size, -1)
+
+        self.blue_fill_29 = cv2.imread('data/gage/blue_fill_29.png', -1)
+        self.blue_fill_29 = cv2.resize(self.blue_fill_29, self.gage_size, -1)
+
+        self.blue_fill_30 = cv2.imread('data/gage/blue_fill_30.png', -1)
+        self.blue_fill_30 = cv2.resize(self.blue_fill_30, self.gage_size, -1)
+
+        self.red_0 = cv2.imread('data/text/red_0.png', -1)
+        self.red_0 = cv2.resize(self.red_0, self.text_size, -1)
+
+        self.red_1 = cv2.imread('data/text/red_1.png', -1)
+        self.red_1 = cv2.resize(self.red_1, self.text_size, -1)
+
+        self.red_2 = cv2.imread('data/text/red_2.png', -1)
+        self.red_2 = cv2.resize(self.red_2, self.text_size, -1)
+
+        self.red_3 = cv2.imread('data/text/red_3.png', -1)
+        self.red_3 = cv2.resize(self.red_3, self.text_size, -1)
+
+        self.red_4 = cv2.imread('data/text/red_4.png', -1)
+        self.red_4 = cv2.resize(self.red_4, self.text_size, -1)
+
+        self.red_5 = cv2.imread('data/text/red_5.png', -1)
+        self.red_5 = cv2.resize(self.red_5, self.text_size, -1)
+
+        self.red_6 = cv2.imread('data/text/red_6.png', -1)
+        self.red_6 = cv2.resize(self.red_6, self.text_size, -1)
+
+        self.red_7 = cv2.imread('data/text/red_7.png', -1)
+        self.red_7 = cv2.resize(self.red_7, self.text_size, -1)
+
+        self.red_8 = cv2.imread('data/text/red_8.png', -1)
+        self.red_8 = cv2.resize(self.red_8, self.text_size, -1)
+
+        self.red_9 = cv2.imread('data/text/red_9.png', -1)
+        self.red_9 = cv2.resize(self.red_9, self.text_size, -1)
+
+        self.red_10 = cv2.imread('data/text/red_10.png', -1)
+        self.red_10 = cv2.resize(self.red_10, self.text_size, -1)
+
+        self.blue_0 = cv2.imread('data/text/blue_0.png', -1)
+        self.blue_0 = cv2.resize(self.blue_0, self.text_size, -1)
+
+        self.blue_1 = cv2.imread('data/text/blue_1.png', -1)
+        self.blue_1 = cv2.resize(self.blue_1, self.text_size, -1)
+
+        self.blue_2 = cv2.imread('data/text/blue_2.png', -1)
+        self.blue_2 = cv2.resize(self.blue_2, self.text_size, -1)
+
+        self.blue_3 = cv2.imread('data/text/blue_3.png', -1)
+        self.blue_3 = cv2.resize(self.blue_3, self.text_size, -1)
+
+        self.blue_4 = cv2.imread('data/text/blue_4.png', -1)
+        self.blue_4 = cv2.resize(self.blue_4, self.text_size, -1)
+
+        self.blue_5 = cv2.imread('data/text/blue_5.png', -1)
+        self.blue_5 = cv2.resize(self.blue_5, self.text_size, -1)
+
+        self.blue_6 = cv2.imread('data/text/blue_6.png', -1)
+        self.blue_6 = cv2.resize(self.blue_6, self.text_size, -1)
+
+        self.blue_7 = cv2.imread('data/text/blue_7.png', -1)
+        self.blue_7 = cv2.resize(self.blue_7, self.text_size, -1)
+
+        self.blue_8 = cv2.imread('data/text/blue_8.png', -1)
+        self.blue_8 = cv2.resize(self.blue_8, self.text_size, -1)
+
+        self.blue_9 = cv2.imread('data/text/blue_9.png', -1)
+        self.blue_9 = cv2.resize(self.blue_9, self.text_size, -1)
+
+        self.blue_10 = cv2.imread('data/text/blue_10.png', -1)
+        self.blue_10 = cv2.resize(self.blue_10, self.text_size, -1)
+
+        self.blue_11 = cv2.imread('data/text/blue_11.png', -1)
+        self.blue_11 = cv2.resize(self.blue_11, self.text_size, -1)
+
+        self.blue_12 = cv2.imread('data/text/blue_12.png', -1)
+        self.blue_12 = cv2.resize(self.blue_12, self.text_size, -1)
+
+        self.blue_13 = cv2.imread('data/text/blue_13.png', -1)
+        self.blue_13 = cv2.resize(self.blue_13, self.text_size, -1)
+
+        self.blue_14 = cv2.imread('data/text/blue_14.png', -1)
+        self.blue_14 = cv2.resize(self.blue_14, self.text_size, -1)
+
+        self.blue_15 = cv2.imread('data/text/blue_15.png', -1)
+        self.blue_15 = cv2.resize(self.blue_15, self.text_size, -1)
+
+        self.blue_16 = cv2.imread('data/text/blue_16.png', -1)
+        self.blue_16 = cv2.resize(self.blue_16, self.text_size, -1)
+
+        self.blue_17 = cv2.imread('data/text/blue_17.png', -1)
+        self.blue_17 = cv2.resize(self.blue_17, self.text_size, -1)
+
+        self.blue_18 = cv2.imread('data/text/blue_18.png', -1)
+        self.blue_18 = cv2.resize(self.blue_18, self.text_size, -1)
+
+        self.blue_19 = cv2.imread('data/text/blue_19.png', -1)
+        self.blue_19 = cv2.resize(self.blue_19, self.text_size, -1)
+
+        self.blue_20 = cv2.imread('data/text/blue_20.png', -1)
+        self.blue_20 = cv2.resize(self.blue_20, self.text_size, -1)
+
+        self.blue_21 = cv2.imread('data/text/blue_21.png', -1)
+        self.blue_21 = cv2.resize(self.blue_21, self.text_size, -1)
+
+        self.blue_22 = cv2.imread('data/text/blue_22.png', -1)
+        self.blue_22 = cv2.resize(self.blue_22, self.text_size, -1)
+
+        self.blue_23 = cv2.imread('data/text/blue_23.png', -1)
+        self.blue_23 = cv2.resize(self.blue_23, self.text_size, -1)
+
+        self.blue_24 = cv2.imread('data/text/blue_24.png', -1)
+        self.blue_24 = cv2.resize(self.blue_24, self.text_size, -1)
+
+        self.blue_25 = cv2.imread('data/text/blue_25.png', -1)
+        self.blue_25 = cv2.resize(self.blue_25, self.text_size, -1)
+
+        self.blue_26 = cv2.imread('data/text/blue_26.png', -1)
+        self.blue_26 = cv2.resize(self.blue_26, self.text_size, -1)
+
+        self.blue_27 = cv2.imread('data/text/blue_27.png', -1)
+        self.blue_27 = cv2.resize(self.blue_27, self.text_size, -1)
+
+        self.blue_28 = cv2.imread('data/text/blue_28.png', -1)
+        self.blue_28 = cv2.resize(self.blue_28, self.text_size, -1)
+
+        self.blue_29 = cv2.imread('data/text/blue_29.png', -1)
+        self.blue_29 = cv2.resize(self.blue_29, self.text_size, -1)
+
+        self.blue_30 = cv2.imread('data/text/blue_30.png', -1)
+        self.blue_30 = cv2.resize(self.blue_30, self.text_size, -1)
+
+        self.red_win = cv2.imread('data/text/red_win.png', -1)
+        # self.red_win = cv2.resize(self.red_win, (500, 100), -1)
+
+        self.red_lose = cv2.imread('data/text/red_lose.png', -1)
+        # self.red_lose = cv2.resize(self.red_lose, (500, 100), -1)
+
+        self.red_draw = cv2.imread('data/text/red_draw.png', -1)
+        # self.red_draw = cv2.resize(self.red_draw, (500, 100), -1)
+
+        self.blue_win = cv2.imread('data/text/blue_win.png', -1)
+        # self.blue_win = cv2.resize(self.blue_win, (500, 100), -1)
+
+        self.blue_lose = cv2.imread('data/text/blue_lose.png', -1)
+        # self.blue_lose = cv2.resize(self.blue_lose, (500, 100), -1)
+
+        self.blue_draw = cv2.imread('data/text/blue_draw.png', -1)
+        # self.blue_draw = cv2.resize(self.blue_draw, (500, 100), -1)
 
     def load_video(self):
-        # image_resizing
-        img_width = self.img_width
-        img_height = self.img_height
-
         # load_video
+        # vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+1)
         vidcap = cv2.VideoCapture(0)
+
+        # print(self.red_win.shape)
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
@@ -93,10 +366,10 @@ class Video_Manager:
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(self.img_width, self.img_height))
+            frame = cv2.resize(frame, (self.img_width, self.img_height))
 
             if self.game_finish == False:
-                box_seed_num = self.box_num // 90
+                box_seed_num = self.box_num // 30
                 random.seed(box_seed_num)
                 self.box_num += 1
 
@@ -119,13 +392,13 @@ class Video_Manager:
                                   is_answer_handled_blue)
 
                 # 점수 표기
-                self.PlayerGameStats(frame, red_score, blue_score, is_one_player=False)
+                frame = self.PlayerGameStats(frame, red_score, blue_score)
 
                 self.frame_num = self.frame_num + 1
-                if self.frame_num == 900:
+                if self.frame_num == 60:
                     self.game_finish = True
             else:
-                self.Winner_effect(frame, red_score, blue_score, is_one_player=False)
+                frame = self.Winner_effect(frame, red_score, blue_score, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -183,27 +456,27 @@ class Video_Manager:
         area = frame
         display_areas = []
         # for area in game_areas:
-        y, x, _ = area.shape  # (126, 266, 3)
+        # print(area.shape)
+        y, x, _ = area.shape  # (1080, 1920, 3)
         if level == 'easy':
-            area1 = (0, 0), (x // 2 - self.easy, y - self.easy)  # (0, 0), (103, 96)
-            area2 = (x // 2, 0), (x - self.easy, y - self.easy)  # (133, 0), (236, 96)
+            area1 = (0, 80), (x // 2 - self.easy, y - self.easy)  # (0, 0), (760, 880)
+            area2 = (x // 2, 80), (x - self.easy, y - self.easy)  # (960, 0), (1720, 880)
             # print(area1, area2)
             display_areas.append((area1, area2))
         if level == 'norm':
-            area1 = (0, 0), (x // 2 - self.norm, y - self.norm)  # (0, 0), (113, 106)
-            area2 = (x // 2, 0), (x - self.norm, y - self.norm)  # (133, 0), (246, 106)
+            area1 = (0, 80), (x // 2 - self.norm, y - self.norm)  # (0, 0), (113, 106)
+            area2 = (x // 2, 80), (x - self.norm, y - self.norm)  # (133, 0), (246, 106)
             # print(area1, area2)
             display_areas.append((area1, area2))
         if level == 'hard':
-            area1 = (0, 0), (x // 2 - self.hard, y - self.hard)  # (0, 0), (118, 111)
-            area2 = (x // 2, 0), (x - self.hard, y - self.hard)  # (133, 0), (251, 111)
+            area1 = (0, 80), (x // 2 - self.hard, y - self.hard)  # (0, 0), (118, 111)
+            area2 = (x // 2, 80), (x - self.hard, y - self.hard)  # (133, 0), (251, 111)
             # print(area1, area2)
             display_areas.append((area1, area2))
         return display_areas
 
     def random_box(self, level, frame, is_one_player=True):
         # img = self.load_data()[0]
-
         img = frame
         areas = self.rhythm_box_display_area(level, frame)
         coordinate_red, coordinate_blue = [], []
@@ -270,53 +543,223 @@ class Video_Manager:
             cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                           (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
-    def PlayerGameStats(self, frame, red_score, blue_score, is_one_player=False):
-        if not is_one_player:
-            blue_score = str(blue_score)
-            red_score = str(red_score)
-
-            cv2.putText(frame, self.red_score_title, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
-            cv2.putText(frame, self.blue_score_title, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), cv2.LINE_4)
-
-            cv2.putText(frame, red_score, (80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 255),cv2.LINE_8)
-            cv2.putText(frame, blue_score, (self.img_width-130, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 0), cv2.LINE_8)
-
-        else:
-            one_player_score = str(blue_score + red_score)
-
-            cv2.putText(frame, self.score_title, (self.img_width - 120, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0),
-                        cv2.LINE_4)
-            cv2.putText(frame, one_player_score, (self.img_width - 80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0),
-                        cv2.LINE_8)
-
     def Winner_effect(self, frame, red_score, blue_score, is_one_player=False):
         if not is_one_player:
             img = frame
             img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
             if red_score > blue_score:
                 # red 영역 화면 출력
-                cv2.putText(frame, self.winGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
+                frame = cvzone.overlayPNG(frame, self.red_win, [(1920 // 4) - 200, (1080 // 2) - 100])
                 # blue 영역 화면 출력
-                cv2.putText(frame, self.LoseGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0),
-                            cv2.LINE_4)
+                frame = cvzone.overlayPNG(frame, self.blue_lose, [(1920 // 2) + 200, (1080 // 2) - 100])
             elif red_score < blue_score:
-                # blue 영역 화면 출력
-                cv2.putText(frame, self.winGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1,
-                            (255, 0, 0),
-                            cv2.LINE_4)
                 # red 영역 화면 출력
-                cv2.putText(frame, self.LoseGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
+                frame = cvzone.overlayPNG(frame, self.red_lose, [(1920 // 4) - 200, (1080 // 2) - 100])
+                # blue 영역 화면 출력
+                frame = cvzone.overlayPNG(frame, self.blue_win, [(1920 // 2) + 200, (1080 // 2) - 100])
             elif red_score == blue_score:
-                # blue 영역 화면 출력
-                cv2.putText(frame, self.drawGameText, (self.img_width - 220, 40), cv2.FONT_HERSHEY_DUPLEX, 1,
-                            (255, 0, 0),
-                            cv2.LINE_4)
                 # red 영역 화면 출력
-                cv2.putText(frame, self.drawGameText, (20, 40), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), cv2.LINE_4)
+                frame = cvzone.overlayPNG(frame, self.red_draw, [(1920 // 4) - 200, (1080 // 2) - 100])
+                # blue 영역 화면 출력
+                frame = cvzone.overlayPNG(frame, self.blue_draw, [(1920 // 2) + 200, (1080 // 2) - 100])
         else:
             # 화면 중앙에 출력
             cv2.putText(frame, self.winGameText, (self.img_width - 80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0),
                         cv2.LINE_8)
+
+        return frame
+
+    def PlayerGameStats(self, frame, red_score, blue_score):
+        if red_score == 0:
+            # 왼쪽 숫자
+            frame = cvzone.overlayPNG(frame, self.emtpy_gage, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_0, self.text_loc)
+        elif red_score == 1:
+            frame = cvzone.overlayPNG(frame, self.red_fill_1, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_1, self.text_loc)
+        elif red_score == 2:
+            frame = cvzone.overlayPNG(frame, self.red_fill_2, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_2, self.text_loc)
+        elif red_score == 3:
+            frame = cvzone.overlayPNG(frame, self.red_fill_3, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_3, self.text_loc)
+        elif red_score == 4:
+            frame = cvzone.overlayPNG(frame, self.red_fill_4, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_4, self.text_loc)
+        elif red_score == 5:
+            frame = cvzone.overlayPNG(frame, self.red_fill_5, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_5, self.text_loc)
+        elif red_score == 6:
+            frame = cvzone.overlayPNG(frame, self.red_fill_6, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_6, self.text_loc)
+        elif red_score == 7:
+            frame = cvzone.overlayPNG(frame, self.red_fill_7, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_7, self.text_loc)
+        elif red_score == 8:
+            frame = cvzone.overlayPNG(frame, self.red_fill_8, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_8, self.text_loc)
+        elif red_score == 9:
+            frame = cvzone.overlayPNG(frame, self.red_fill_9, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_9, self.text_loc)
+        elif red_score == 10:
+            frame = cvzone.overlayPNG(frame, self.red_fill_10, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_10, self.text_loc)
+        elif red_score == 11:
+            frame = cvzone.overlayPNG(frame, self.red_fill_11, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_11, self.text_loc)
+        elif red_score == 12:
+            frame = cvzone.overlayPNG(frame, self.red_fill_12, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_12, self.text_loc)
+        elif red_score == 13:
+            frame = cvzone.overlayPNG(frame, self.red_fill_13, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_13, self.text_loc)
+        elif red_score == 14:
+            frame = cvzone.overlayPNG(frame, self.red_fill_14, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_14, self.text_loc)
+        elif red_score == 15:
+            frame = cvzone.overlayPNG(frame, self.red_fill_15, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_15, self.text_loc)
+        elif red_score == 16:
+            frame = cvzone.overlayPNG(frame, self.red_fill_16, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_16, self.text_loc)
+        elif red_score == 17:
+            frame = cvzone.overlayPNG(frame, self.red_fill_17, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_17, self.text_loc)
+        elif red_score == 18:
+            frame = cvzone.overlayPNG(frame, self.red_fill_18, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_18, self.text_loc)
+        elif red_score == 19:
+            frame = cvzone.overlayPNG(frame, self.red_fill_19, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_19, self.text_loc)
+        elif red_score == 20:
+            frame = cvzone.overlayPNG(frame, self.red_fill_20, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_20, self.text_loc)
+        elif red_score == 21:
+            frame = cvzone.overlayPNG(frame, self.red_fill_21, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_21, self.text_loc)
+        elif red_score == 22:
+            frame = cvzone.overlayPNG(frame, self.red_fill_22, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_22, self.text_loc)
+        elif red_score == 23:
+            frame = cvzone.overlayPNG(frame, self.red_fill_23, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_23, self.text_loc)
+        elif red_score == 24:
+            frame = cvzone.overlayPNG(frame, self.red_fill_24, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_24, self.text_loc)
+        elif red_score == 25:
+            frame = cvzone.overlayPNG(frame, self.red_fill_25, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_25, self.text_loc)
+        elif red_score == 26:
+            frame = cvzone.overlayPNG(frame, self.red_fill_26, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_26, self.text_loc)
+        elif red_score == 27:
+            frame = cvzone.overlayPNG(frame, self.red_fill_27, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_27, self.text_loc)
+        elif red_score == 28:
+            frame = cvzone.overlayPNG(frame, self.red_fill_28, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_28, self.text_loc)
+        elif red_score == 29:
+            frame = cvzone.overlayPNG(frame, self.red_fill_29, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_29, self.text_loc)
+        elif red_score == 30:
+            frame = cvzone.overlayPNG(frame, self.red_fill_30, self.gage_loc)
+            frame = cvzone.overlayPNG(frame, self.red_30, self.text_loc)
+
+        if blue_score == 0:
+            frame = cvzone.overlayPNG(frame, self.emtpy_gage, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_0, self.blue_text_loc)
+        elif blue_score == 1:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_1, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_1, self.blue_text_loc)
+        elif blue_score == 2:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_2, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_2, self.blue_text_loc)
+        elif blue_score == 3:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_3, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_3, self.blue_text_loc)
+        elif blue_score == 4:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_4, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_4, self.blue_text_loc)
+        elif blue_score == 5:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_5, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_5, self.blue_text_loc)
+        elif blue_score == 6:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_6, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_6, self.blue_text_loc)
+        elif blue_score == 7:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_7, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_7, self.blue_text_loc)
+        elif blue_score == 8:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_8, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_8, self.blue_text_loc)
+        elif blue_score == 9:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_9, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_9, self.blue_text_loc)
+        elif blue_score == 10:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_10, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_10, self.blue_text_loc)
+        elif blue_score == 11:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_11, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_11, self.blue_text_loc)
+        elif blue_score == 12:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_12, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_12, self.blue_text_loc)
+        elif blue_score == 13:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_13, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_13, self.blue_text_loc)
+        elif blue_score == 14:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_14, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_14, self.blue_text_loc)
+        elif blue_score == 15:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_15, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_15, self.blue_text_loc)
+        elif blue_score == 16:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_16, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_16, self.blue_text_loc)
+        elif blue_score == 17:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_17, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_17, self.blue_text_loc)
+        elif blue_score == 18:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_18, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_18, self.blue_text_loc)
+        elif blue_score == 19:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_19, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_19, self.blue_text_loc)
+        elif blue_score == 20:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_20, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_20, self.blue_text_loc)
+        elif blue_score == 21:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_21, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_21, self.blue_text_loc)
+        elif blue_score == 22:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_22, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_22, self.blue_text_loc)
+        elif blue_score == 23:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_23, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_23, self.blue_text_loc)
+        elif blue_score == 24:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_24, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_24, self.blue_text_loc)
+        elif blue_score == 25:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_25, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_25, self.blue_text_loc)
+        elif blue_score == 26:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_26, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_26, self.blue_text_loc)
+        elif blue_score == 27:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_27, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_27, self.blue_text_loc)
+        elif blue_score == 28:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_28, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_28, self.blue_text_loc)
+        elif blue_score == 29:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_29, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_29, self.blue_text_loc)
+        elif blue_score == 30:
+            frame = cvzone.overlayPNG(frame, self.blue_fill_30, self.blue_gage_loc)
+            frame = cvzone.overlayPNG(frame, self.blue_30, self.blue_text_loc)
+
+        return frame
 
 if __name__ == '__main__':
     v = Video_Manager()
