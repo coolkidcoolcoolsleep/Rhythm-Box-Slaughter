@@ -35,28 +35,29 @@ class Game(QtWidgets.QWidget):
     def player_1(self, mode):
         vm = Video_Manager()
 
-        # image_resizing
-        img_width = vm.img_width
-        img_height = vm.img_height
-
         # load_video
-        vidcap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)
+        vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+0)
+        # vidcap = cv2.VideoCapture(0)
+
+        # print(vm.red_win.shape)
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            exit()
+            vidcap = cv2.VideoCapture(0)
 
         while True:
-            _, frame = vidcap.read()
+            _, frame = vidcap.read()  # _: ret
+            # print(_)
+            # 영상 좌우 반전
             frame = cv2.flip(frame, 1)
 
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(vm.img_width, vm.img_height))
+            frame = cv2.resize(frame, (vm.img_width, vm.img_height))
 
             if vm.game_finish == False:
-                box_seed_num = vm.box_num // 90
+                box_seed_num = vm.box_num // 30
                 random.seed(box_seed_num)
                 vm.box_num += 1
 
@@ -72,25 +73,32 @@ class Game(QtWidgets.QWidget):
 
                 # 점수 계산
                 blue_score, red_score, is_answer_handled_red, is_answer_handled_blue = vm.score_calculation(frame,
-                                                                                                            rectangle_seed_num,
-                                                                                                            detection_blue,
-                                                                                                            coordinate_blue,
-                                                                                                            box_seed_num,
-                                                                                                            detection_red,
-                                                                                                            coordinate_red)
+                                                                                                              rectangle_seed_num,
+                                                                                                              detection_blue,
+                                                                                                              coordinate_blue,
+                                                                                                              box_seed_num,
+                                                                                                              detection_red,
+                                                                                                              coordinate_red)
 
                 # 정답 rect 그리기
                 vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
-                                     is_answer_handled_blue)
+                                       is_answer_handled_blue)
 
                 # 점수 표기
-                vm.PlayerGameStats(frame, red_score, blue_score, is_one_player=True)
+                frame = vm.PlayerGameStats(frame, red_score, blue_score)
 
                 vm.frame_num = vm.frame_num + 1
-                if vm.frame_num == 900:
+                if vm.frame_num == 60:
                     vm.game_finish = True
+
+                if red_score > blue_score:
+                    vm.red_win = True
+                elif red_score < blue_score:
+                    vm.blue_win = True
+                elif red_score == blue_score:
+                    vm.draw = True
             else:
-                vm.Winner_effect(frame, red_score, blue_score, is_one_player=True)
+                frame = vm.Winner_effect(frame, vm.red_win, vm.blue_win, vm.draw, is_one_player=True)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -104,28 +112,29 @@ class Game(QtWidgets.QWidget):
     def player_2(self, mode):
         vm = Video_Manager()
 
-        # image_resizing
-        img_width = vm.img_width
-        img_height = vm.img_height
-
         # load_video
-        vidcap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)
+        vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+0)
+        # vidcap = cv2.VideoCapture(0)
+
+        # print(vm.red_win.shape)
 
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
-            exit()
+            vidcap = cv2.VideoCapture(0)
 
         while True:
-            _, frame = vidcap.read()
+            _, frame = vidcap.read()  # _: ret
+            # print(_)
+            # 영상 좌우 반전
             frame = cv2.flip(frame, 1)
 
             if frame is None:
                 break
 
-            frame = cv2.resize(frame, dsize=(vm.img_width, vm.img_height))
+            frame = cv2.resize(frame, (vm.img_width, vm.img_height))
 
             if vm.game_finish == False:
-                box_seed_num = vm.box_num // 90
+                box_seed_num = vm.box_num // 30
                 random.seed(box_seed_num)
                 vm.box_num += 1
 
@@ -153,13 +162,20 @@ class Game(QtWidgets.QWidget):
                                      is_answer_handled_blue)
 
                 # 점수 표기
-                vm.PlayerGameStats(frame, red_score, blue_score, is_one_player=False)
+                frame = vm.PlayerGameStats(frame, red_score, blue_score)
 
                 vm.frame_num = vm.frame_num + 1
-                if vm.frame_num == 900:
+                if vm.frame_num == 60:
                     vm.game_finish = True
+
+                if red_score > blue_score:
+                    vm.red_win = True
+                elif red_score < blue_score:
+                    vm.blue_win = True
+                elif red_score == blue_score:
+                    vm.draw = True
             else:
-                vm.Winner_effect(frame, red_score, blue_score, is_one_player=False)
+                frame = vm.Winner_effect(frame, vm.red_win, vm.blue_win, vm.draw, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -273,9 +289,9 @@ class Game(QtWidgets.QWidget):
 
     def music_thread(self, url):
         # loading animation
-        loading_thread = threading.Thread(target=lambda: loading.main())
-        loading_thread.daemon = True
-        loading_thread.start()
+        # loading_thread = threading.Thread(target=lambda: loading.main())
+        # loading_thread.daemon = True
+        # loading_thread.start()
 
         thread = threading.Thread(target=lambda: self.youtube_play(url))
         thread.daemon = True
@@ -284,7 +300,7 @@ class Game(QtWidgets.QWidget):
 
 class GameWindow1(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 1',
+                  '여자친구(GFRIEND) - 시간을 달려서(Rough)',
                   'cute',
                   'tenderness',
                   'acoustic breeze',
@@ -306,7 +322,7 @@ class GameWindow1(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=lXDyWT3VlKg&ab_channel=M2')
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
@@ -860,16 +876,16 @@ class GameWindow9(Game):
 
 class GameWindow10(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 10',
-                  'cute 10',
-                  'tenderness 10',
-                  'acoustic breeze 10',
-                  'better days 10',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '여자친구(GFRIEND) - 시간을 달려서(rough)',
+                  'After School - 너 때문에',
+                  'SHINee - WOWOWOW',
+                  'SHINee - 3 2 1',
+                  'SHINee - 하나',
+                  '잔나비 - Goodnight',
+                  '엠버 - Borders',
+                  '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래',
+                  'INFINITE - Follow Me',
+                  'SUPER JUNIOR - A-Oh!']
 
     def __init__(self):
         super().__init__()
@@ -882,43 +898,43 @@ class GameWindow10(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/Hq2yWd5wG_M')
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/XwlCnxFL3ik')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/zWI-vJXkeXA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/et9u7hPESCo')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/1Xr5IhcE2pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/bNT-zFJKifI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/KJSXolyj4DM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/t902Fc_gABM')
+            self.music_thread('https://youtu.be/hoRbO-PiXgU')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
