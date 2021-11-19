@@ -14,6 +14,9 @@ class Video_Manager:
         self.is_answer_handled_red = False
         self.is_answer_handled_blue = False
         self.game_finish = False
+        self.win_red = False
+        self.win_blue = False
+        self.all_draw = False
 
         # drawing_color
         self.blue_lower = (100, 150, 0)
@@ -346,6 +349,14 @@ class Video_Manager:
         self.blue_draw = cv2.imread('data/text/blue_draw.png', -1)
         # self.blue_draw = cv2.resize(self.blue_draw, (500, 100), -1)
 
+        self.peace_r = cv2.imread('data/text/peace_r.png', -1)
+        self.peace_r = cv2.resize(self.peace_r, (200, 200), -1)
+        self.peace_l = cv2.imread('data/text/peace_l.png', -1)
+        self.peace_l = cv2.resize(self.peace_l, (200, 200), -1)
+
+        self.clap_r = cv2.imread('data/text/clap_r.png', -1)
+        self.clap_l = cv2.imread('data/text/clap_l.png', -1)
+
     def load_video(self):
         # load_video
         # vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+1)
@@ -392,13 +403,19 @@ class Video_Manager:
                                   is_answer_handled_blue)
 
                 # 점수 표기
-                frame = self.PlayerGameStats(frame, red_score, blue_score)
+                frame = self.PlayerGameStats(frame, red_score, blue_score, is_one_player=False)
 
                 self.frame_num = self.frame_num + 1
                 if self.frame_num == 60:
                     self.game_finish = True
+                if red_score > blue_score:
+                    self.win_red = True
+                elif red_score < blue_score:
+                    self.win_blue = True
+                elif red_score == blue_score:
+                    self.all_draw = True
             else:
-                frame = self.Winner_effect(frame, red_score, blue_score, is_one_player=False)
+                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -475,7 +492,7 @@ class Video_Manager:
             display_areas.append((area1, area2))
         return display_areas
 
-    def random_box(self, level, frame, is_one_player=True):
+    def random_box(self, level, frame, is_one_player=False):
         # img = self.load_data()[0]
         img = frame
         areas = self.rhythm_box_display_area(level, frame)
@@ -543,33 +560,42 @@ class Video_Manager:
             cv2.rectangle(frame, (coordinate_red[0][0], coordinate_red[0][1]),
                           (coordinate_red[0][2], coordinate_red[0][3]), self.green_color, 3)
 
-    def Winner_effect(self, frame, red_score, blue_score, is_one_player=False):
+    def Winner_effect(self, frame, win_red, win_blue, all_draw, is_one_player=False):
         if not is_one_player:
             img = frame
             img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
-            if red_score > blue_score:
+            if win_red:
                 # red 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.red_win, [(1920 // 4) - 200, (1080 // 2) - 100])
+                frame = cvzone.overlayPNG(frame, self.clap_l, [(1920 // 4) - 400, (1080 // 2) - 100])
                 # blue 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.blue_lose, [(1920 // 2) + 200, (1080 // 2) - 100])
-            elif red_score < blue_score:
+            elif win_blue:
                 # red 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.red_lose, [(1920 // 4) - 200, (1080 // 2) - 100])
                 # blue 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.blue_win, [(1920 // 2) + 200, (1080 // 2) - 100])
-            elif red_score == blue_score:
+                frame = cvzone.overlayPNG(frame, self.clap_r, [(1920 // 4) + 600, (1080 // 2) - 100])
+            elif all_draw:
                 # red 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.red_draw, [(1920 // 4) - 200, (1080 // 2) - 100])
+                frame = cvzone.overlayPNG(frame, self.peace_l, [self.img_width // 2-300, self.img_height // 2 - 200])
                 # blue 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.blue_draw, [(1920 // 2) + 200, (1080 // 2) - 100])
-        else:
-            # 화면 중앙에 출력
-            cv2.putText(frame, self.winGameText, (self.img_width - 80, 100), cv2.FONT_HERSHEY_TRIPLEX, 2, (0, 0, 0),
-                        cv2.LINE_8)
-
+                frame = cvzone.overlayPNG(frame, self.peace_r, [self.img_width // 2+100, self.img_height // 2 - 200])
+        # else:
+        #     # 0-19:Poor
+        #     if 0 < self.sum_score < 20:
+        #         frame = cvzone.overlayPNG(frame, self.poor, [self.img_width // 2, self.img_height // 2])
+        #     # 20-29:Not Bad
+        #     if 20 < self.sum_score < 29:
+        #         frame = cvzone.overlayPNG(frame, self.not_bad, [self.img_width // 2, self.img_height // 2])
+            # 30-49:Good
+            # 50-59:Excellent
+            # 60:Splendid
         return frame
 
-    def PlayerGameStats(self, frame, red_score, blue_score):
+    def PlayerGameStats(self, frame, red_score, blue_score, is_one_player=False):
         if red_score == 0:
             # 왼쪽 숫자
             frame = cvzone.overlayPNG(frame, self.emtpy_gage, self.gage_loc)
