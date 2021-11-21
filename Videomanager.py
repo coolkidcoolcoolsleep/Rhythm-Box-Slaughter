@@ -74,10 +74,15 @@ class Video_Manager:
 
         self.gage_loc = [20, 20]
         self.blue_gage_loc = [1075, 20]
+        self.purple_gage_loc = [150, 30]
         self.gage_size = (820, 60)
+        self.gage_size_1p = (1720, 60)
         self.text_loc = [850, 0]
+        self.text_loc_1p = [30, 10]
         self.blue_text_loc = [self.img_width//2+5, 0]
         self.text_size = (100, 100)
+        self.text_size_1p = (100, 100)
+
 
         # 게이지 사이즈 (85, 920, 4)
 
@@ -263,6 +268,190 @@ class Video_Manager:
 
         self.blue_fill_30 = cv2.imread('data/gage/blue_fill_30.png', -1)
         self.blue_fill_30 = cv2.resize(self.blue_fill_30, self.gage_size, -1)
+
+        # (80, 1500, 4)
+        self.purple_fill_0 = cv2.imread('data/gage/purple_0.png', -1)
+        self.purple_fill_0 = cv2.resize(self.purple_fill_0, self.gage_size_1p, -1)
+
+        self.purple_fill_1 = cv2.imread('data/gage/purple_1.png', -1)
+        self.purple_fill_1 = cv2.resize(self.purple_fill_1, self.gage_size_1p, -1)
+
+        self.purple_fill_2 = cv2.imread('data/gage/purple_2.png', -1)
+        self.purple_fill_2 = cv2.resize(self.purple_fill_2, self.gage_size_1p, -1)
+
+        self.purple_fill_3 = cv2.imread('data/gage/purple_3.png', -1)
+        self.purple_fill_3 = cv2.resize(self.purple_fill_3, self.gage_size_1p, -1)
+
+        self.purple_fill_4 = cv2.imread('data/gage/purple_4.png', -1)
+        self.purple_fill_4 = cv2.resize(self.purple_fill_4, self.gage_size_1p, -1)
+
+        self.purple_fill_5 = cv2.imread('data/gage/purple_5.png', -1)
+        self.purple_fill_5 = cv2.resize(self.purple_fill_5, self.gage_size_1p, -1)
+
+        self.purple_fill_6 = cv2.imread('data/gage/purple_6.png', -1)
+        self.purple_fill_6 = cv2.resize(self.purple_fill_6, self.gage_size_1p, -1)
+
+        self.purple_fill_7 = cv2.imread('data/gage/purple_7.png', -1)
+        self.purple_fill_7 = cv2.resize(self.purple_fill_7, self.gage_size_1p, -1)
+
+        self.purple_fill_8 = cv2.imread('data/gage/purple_8.png', -1)
+        self.purple_fill_8 = cv2.resize(self.purple_fill_8, self.gage_size_1p, -1)
+
+        self.purple_fill_9 = cv2.imread('data/gage/purple_9.png', -1)
+        self.purple_fill_9 = cv2.resize(self.purple_fill_9, self.gage_size_1p, -1)
+
+        self.purple_fill_10 = cv2.imread('data/gage/purple_10.png', -1)
+        self.purple_fill_10 = cv2.resize(self.purple_fill_10, self.gage_size_1p, -1)
+
+        self.purple_fill_11 = cv2.imread('data/gage/purple_11.png', -1)
+        self.purple_fill_11 = cv2.resize(self.purple_fill_11, self.gage_size_1p, -1)
+
+        self.purple_fill_12 = cv2.imread('data/gage/purple_12.png', -1)
+        self.purple_fill_12 = cv2.resize(self.purple_fill_12, self.gage_size_1p, -1)
+
+        self.purple_fill_13 = cv2.imread('data/gage/purple_13.png', -1)
+        self.purple_fill_13 = cv2.resize(self.purple_fill_13, self.gage_size_1p, -1)
+
+        self.purple_fill_14 = cv2.imread('data/gage/purple_14.png', -1)
+        self.purple_fill_14 = cv2.resize(self.purple_fill_14, self.gage_size_1p, -1)
+
+        self.purple_fill_15 = cv2.imread('data/gage/purple_15.png', -1)
+        self.purple_fill_15 = cv2.resize(self.purple_fill_15, self.gage_size_1p, -1)
+
+        self.purple_fill_16 = cv2.imread('data/gage/purple_16.png', -1)
+        self.purple_fill_16 = cv2.resize(self.purple_fill_16, self.gage_size_1p, -1)
+
+        self.purple_fill_17 = cv2.imread('data/gage/purple_17.png', -1)
+        self.purple_fill_17 = cv2.resize(self.purple_fill_17, self.gage_size_1p, -1)
+
+        self.purple_fill_18 = cv2.imread('data/gage/purple_18.png', -1)
+        self.purple_fill_18 = cv2.resize(self.purple_fill_18, self.gage_size_1p, -1)
+
+        self.purple_fill_19 = cv2.imread('data/gage/purple_19.png', -1)
+        self.purple_fill_19 = cv2.resize(self.purple_fill_19, self.gage_size_1p, -1)
+
+        self.purple_fill_20 = cv2.imread('data/gage/purple_20.png', -1)
+        self.purple_fill_20 = cv2.resize(self.purple_fill_20, self.gage_size_1p, -1)
+
+        self.purple_fill_21 = cv2.imread('data/gage/purple_21.png', -1)
+        self.purple_fill_21 = cv2.resize(self.purple_fill_21, self.gage_size_1p, -1)
+
+        self.purple_fill_22 = cv2.imread('data/gage/purple_22.png', -1)
+        self.purple_fill_22 = cv2.resize(self.purple_fill_22, self.gage_size_1p, -1)
+
+        self.purple_fill_23 = cv2.imread('data/gage/purple_23.png', -1)
+        self.purple_fill_23 = cv2.resize(self.purple_fill_23, self.gage_size_1p, -1)
+
+        self.purple_fill_24 = cv2.imread('data/gage/purple_24.png', -1)
+        self.purple_fill_24 = cv2.resize(self.purple_fill_24, self.gage_size_1p, -1)
+
+        self.purple_fill_25 = cv2.imread('data/gage/purple_25.png', -1)
+        self.purple_fill_25 = cv2.resize(self.purple_fill_25, self.gage_size_1p, -1)
+
+        self.purple_fill_26 = cv2.imread('data/gage/purple_26.png', -1)
+        self.purple_fill_26 = cv2.resize(self.purple_fill_26, self.gage_size_1p, -1)
+
+        self.purple_fill_27 = cv2.imread('data/gage/purple_27.png', -1)
+        self.purple_fill_27 = cv2.resize(self.purple_fill_27, self.gage_size_1p, -1)
+
+        self.purple_fill_28 = cv2.imread('data/gage/purple_28.png', -1)
+        self.purple_fill_28 = cv2.resize(self.purple_fill_28, self.gage_size_1p, -1)
+
+        self.purple_fill_29 = cv2.imread('data/gage/purple_29.png', -1)
+        self.purple_fill_29 = cv2.resize(self.purple_fill_29, self.gage_size_1p, -1)
+
+        self.purple_fill_30 = cv2.imread('data/gage/purple_30.png', -1)
+        self.purple_fill_30 = cv2.resize(self.purple_fill_30, self.gage_size_1p, -1)
+
+        self.purple_fill_31 = cv2.imread('data/gage/purple_31.png', -1)
+        self.purple_fill_31 = cv2.resize(self.purple_fill_31, self.gage_size_1p, -1)
+
+        self.purple_fill_32 = cv2.imread('data/gage/purple_32.png', -1)
+        self.purple_fill_32 = cv2.resize(self.purple_fill_32, self.gage_size_1p, -1)
+
+        self.purple_fill_33 = cv2.imread('data/gage/purple_33.png', -1)
+        self.purple_fill_33 = cv2.resize(self.purple_fill_33, self.gage_size_1p, -1)
+
+        self.purple_fill_34 = cv2.imread('data/gage/purple_34.png', -1)
+        self.purple_fill_34 = cv2.resize(self.purple_fill_34, self.gage_size_1p, -1)
+
+        self.purple_fill_35 = cv2.imread('data/gage/purple_35.png', -1)
+        self.purple_fill_35 = cv2.resize(self.purple_fill_35, self.gage_size_1p, -1)
+
+        self.purple_fill_36 = cv2.imread('data/gage/purple_36.png', -1)
+        self.purple_fill_36 = cv2.resize(self.purple_fill_36, self.gage_size_1p, -1)
+
+        self.purple_fill_37 = cv2.imread('data/gage/purple_37.png', -1)
+        self.purple_fill_37 = cv2.resize(self.purple_fill_37, self.gage_size_1p, -1)
+
+        self.purple_fill_38 = cv2.imread('data/gage/purple_38.png', -1)
+        self.purple_fill_38 = cv2.resize(self.purple_fill_38, self.gage_size_1p, -1)
+
+        self.purple_fill_39 = cv2.imread('data/gage/purple_39.png', -1)
+        self.purple_fill_39 = cv2.resize(self.purple_fill_39, self.gage_size_1p, -1)
+
+        self.purple_fill_40 = cv2.imread('data/gage/purple_40.png', -1)
+        self.purple_fill_40 = cv2.resize(self.purple_fill_40, self.gage_size_1p, -1)
+
+        self.purple_fill_41 = cv2.imread('data/gage/purple_41.png', -1)
+        self.purple_fill_41 = cv2.resize(self.purple_fill_41, self.gage_size_1p, -1)
+
+        self.purple_fill_42 = cv2.imread('data/gage/purple_42.png', -1)
+        self.purple_fill_42 = cv2.resize(self.purple_fill_42, self.gage_size_1p, -1)
+
+        self.purple_fill_43 = cv2.imread('data/gage/purple_43.png', -1)
+        self.purple_fill_43 = cv2.resize(self.purple_fill_43, self.gage_size_1p, -1)
+
+        self.purple_fill_44 = cv2.imread('data/gage/purple_44.png', -1)
+        self.purple_fill_44 = cv2.resize(self.purple_fill_44, self.gage_size_1p, -1)
+
+        self.purple_fill_45 = cv2.imread('data/gage/purple_45.png', -1)
+        self.purple_fill_45 = cv2.resize(self.purple_fill_45, self.gage_size_1p, -1)
+
+        self.purple_fill_46 = cv2.imread('data/gage/purple_46.png', -1)
+        self.purple_fill_46 = cv2.resize(self.purple_fill_46, self.gage_size_1p, -1)
+
+        self.purple_fill_47 = cv2.imread('data/gage/purple_47.png', -1)
+        self.purple_fill_47 = cv2.resize(self.purple_fill_47, self.gage_size_1p, -1)
+
+        self.purple_fill_48 = cv2.imread('data/gage/purple_48.png', -1)
+        self.purple_fill_48 = cv2.resize(self.purple_fill_48, self.gage_size_1p, -1)
+
+        self.purple_fill_49 = cv2.imread('data/gage/purple_49.png', -1)
+        self.purple_fill_49 = cv2.resize(self.purple_fill_49, self.gage_size_1p, -1)
+
+        self.purple_fill_50 = cv2.imread('data/gage/purple_50.png', -1)
+        self.purple_fill_50 = cv2.resize(self.purple_fill_50, self.gage_size_1p, -1)
+
+        self.purple_fill_51 = cv2.imread('data/gage/purple_51.png', -1)
+        self.purple_fill_51 = cv2.resize(self.purple_fill_51, self.gage_size_1p, -1)
+
+        self.purple_fill_52 = cv2.imread('data/gage/purple_52.png', -1)
+        self.purple_fill_52 = cv2.resize(self.purple_fill_52, self.gage_size_1p, -1)
+
+        self.purple_fill_53 = cv2.imread('data/gage/purple_53.png', -1)
+        self.purple_fill_53 = cv2.resize(self.purple_fill_53, self.gage_size_1p, -1)
+
+        self.purple_fill_54 = cv2.imread('data/gage/purple_54.png', -1)
+        self.purple_fill_54 = cv2.resize(self.purple_fill_54, self.gage_size_1p, -1)
+
+        self.purple_fill_55 = cv2.imread('data/gage/purple_55.png', -1)
+        self.purple_fill_55 = cv2.resize(self.purple_fill_55, self.gage_size_1p, -1)
+
+        self.purple_fill_56 = cv2.imread('data/gage/purple_56.png', -1)
+        self.purple_fill_56 = cv2.resize(self.purple_fill_56, self.gage_size_1p, -1)
+
+        self.purple_fill_57 = cv2.imread('data/gage/purple_57.png', -1)
+        self.purple_fill_57 = cv2.resize(self.purple_fill_57, self.gage_size_1p, -1)
+
+        self.purple_fill_58 = cv2.imread('data/gage/purple_58.png', -1)
+        self.purple_fill_58 = cv2.resize(self.purple_fill_58, self.gage_size_1p, -1)
+
+        self.purple_fill_59 = cv2.imread('data/gage/purple_59.png', -1)
+        self.purple_fill_59 = cv2.resize(self.purple_fill_59, self.gage_size_1p, -1)
+
+        self.purple_fill_60 = cv2.imread('data/gage/purple_10.png', -1)
+        self.purple_fill_60 = cv2.resize(self.purple_fill_60, self.gage_size_1p, -1)
 
         self.red_0 = cv2.imread('data/text/red_0.png', -1)
         self.red_0 = cv2.resize(self.red_0, self.text_size, -1)
@@ -453,23 +642,204 @@ class Video_Manager:
         self.blue_30 = cv2.imread('data/text/blue_30.png', -1)
         self.blue_30 = cv2.resize(self.blue_30, self.text_size, -1)
 
+        self.purple_0 = cv2.imread('data/text/blue_30.png', -1)
+        self.blue_30 = cv2.resize(self.blue_30, self.text_size, -1)
+
+        self.purple_0 = cv2.imread('data/text/purple_0.png', -1)
+        self.purple_0 = cv2.resize(self.purple_0, self.text_size_1p, -1)
+
+        self.purple_1 = cv2.imread('data/text/purple_1.png', -1)
+        self.purple_1 = cv2.resize(self.purple_1, self.text_size_1p, -1)
+
+        self.purple_2 = cv2.imread('data/text/purple_2.png', -1)
+        self.purple_2 = cv2.resize(self.purple_2, self.text_size_1p, -1)
+
+        self.purple_3 = cv2.imread('data/text/purple_3.png', -1)
+        self.purple_3 = cv2.resize(self.purple_3, self.text_size_1p, -1)
+
+        self.purple_4 = cv2.imread('data/text/purple_4.png', -1)
+        self.purple_4 = cv2.resize(self.purple_4, self.text_size_1p, -1)
+
+        self.purple_5 = cv2.imread('data/text/purple_5.png', -1)
+        self.purple_5 = cv2.resize(self.purple_5, self.text_size_1p, -1)
+
+        self.purple_6 = cv2.imread('data/text/purple_6.png', -1)
+        self.purple_6 = cv2.resize(self.purple_6, self.text_size_1p, -1)
+
+        self.purple_7 = cv2.imread('data/text/purple_7.png', -1)
+        self.purple_7 = cv2.resize(self.purple_7, self.text_size_1p, -1)
+
+        self.purple_8 = cv2.imread('data/text/purple_8.png', -1)
+        self.purple_8 = cv2.resize(self.purple_8, self.text_size_1p, -1)
+
+        self.purple_9 = cv2.imread('data/text/purple_9.png', -1)
+        self.purple_9 = cv2.resize(self.purple_9, self.text_size_1p, -1)
+
+        self.purple_10 = cv2.imread('data/text/purple_10.png', -1)
+        self.purple_10 = cv2.resize(self.purple_10, self.text_size_1p, -1)
+
+        self.purple_11 = cv2.imread('data/text/purple_11.png', -1)
+        self.purple_11 = cv2.resize(self.purple_11, self.text_size_1p, -1)
+
+        self.purple_12 = cv2.imread('data/text/purple_12.png', -1)
+        self.purple_12 = cv2.resize(self.purple_12, self.text_size_1p, -1)
+
+        self.purple_13 = cv2.imread('data/text/purple_13.png', -1)
+        self.purple_13 = cv2.resize(self.purple_13, self.text_size_1p, -1)
+
+        self.purple_14 = cv2.imread('data/text/purple_14.png', -1)
+        self.purple_14 = cv2.resize(self.purple_14, self.text_size_1p, -1)
+
+        self.purple_15 = cv2.imread('data/text/purple_15.png', -1)
+        self.purple_15 = cv2.resize(self.purple_15, self.text_size_1p, -1)
+
+        self.purple_16 = cv2.imread('data/text/purple_16.png', -1)
+        self.purple_16 = cv2.resize(self.purple_16, self.text_size_1p, -1)
+
+        self.purple_17 = cv2.imread('data/text/purple_17.png', -1)
+        self.purple_17 = cv2.resize(self.purple_17, self.text_size_1p, -1)
+
+        self.purple_18 = cv2.imread('data/text/purple_18.png', -1)
+        self.purple_18 = cv2.resize(self.purple_18, self.text_size_1p, -1)
+
+        self.purple_19 = cv2.imread('data/text/purple_19.png', -1)
+        self.purple_19 = cv2.resize(self.purple_19, self.text_size_1p, -1)
+
+        self.purple_20 = cv2.imread('data/text/purple_20.png', -1)
+        self.purple_20 = cv2.resize(self.purple_20, self.text_size_1p, -1)
+
+        self.purple_21 = cv2.imread('data/text/purple_21.png', -1)
+        self.purple_21 = cv2.resize(self.purple_21, self.text_size_1p, -1)
+
+        self.purple_22 = cv2.imread('data/text/purple_22.png', -1)
+        self.purple_22 = cv2.resize(self.purple_22, self.text_size_1p, -1)
+
+        self.purple_23 = cv2.imread('data/text/purple_23.png', -1)
+        self.purple_23 = cv2.resize(self.purple_23, self.text_size_1p, -1)
+
+        self.purple_24 = cv2.imread('data/text/purple_24.png', -1)
+        self.purple_24 = cv2.resize(self.purple_24, self.text_size_1p, -1)
+
+        self.purple_25 = cv2.imread('data/text/purple_25.png', -1)
+        self.purple_25 = cv2.resize(self.purple_25, self.text_size_1p, -1)
+
+        self.purple_26 = cv2.imread('data/text/purple_26.png', -1)
+        self.purple_26 = cv2.resize(self.purple_26, self.text_size_1p, -1)
+
+        self.purple_27 = cv2.imread('data/text/purple_27.png', -1)
+        self.purple_27 = cv2.resize(self.purple_27, self.text_size_1p, -1)
+
+        self.purple_28 = cv2.imread('data/text/purple_28.png', -1)
+        self.purple_28 = cv2.resize(self.purple_28, self.text_size_1p, -1)
+
+        self.purple_29 = cv2.imread('data/text/purple_29.png', -1)
+        self.purple_29 = cv2.resize(self.purple_29, self.text_size_1p, -1)
+
+        self.purple_30 = cv2.imread('data/text/purple_30.png', -1)
+        self.purple_30 = cv2.resize(self.purple_30, self.text_size_1p, -1)
+
+        self.purple_31 = cv2.imread('data/text/purple_31.png', -1)
+        self.purple_31 = cv2.resize(self.purple_31, self.text_size_1p, -1)
+
+        self.purple_32 = cv2.imread('data/text/purple_32.png', -1)
+        self.purple_32 = cv2.resize(self.purple_32, self.text_size_1p, -1)
+
+        self.purple_33 = cv2.imread('data/text/purple_33.png', -1)
+        self.purple_33 = cv2.resize(self.purple_33, self.text_size_1p, -1)
+
+        self.purple_34 = cv2.imread('data/text/purple_34.png', -1)
+        self.purple_34 = cv2.resize(self.purple_34, self.text_size_1p, -1)
+
+        self.purple_35 = cv2.imread('data/text/purple_35.png', -1)
+        self.purple_35 = cv2.resize(self.purple_35, self.text_size_1p, -1)
+
+        self.purple_36 = cv2.imread('data/text/purple_36.png', -1)
+        self.purple_36 = cv2.resize(self.purple_36, self.text_size_1p, -1)
+
+        self.purple_37 = cv2.imread('data/text/purple_37.png', -1)
+        self.purple_37 = cv2.resize(self.purple_37, self.text_size_1p, -1)
+
+        self.purple_38 = cv2.imread('data/text/purple_38.png', -1)
+        self.purple_38 = cv2.resize(self.purple_38, self.text_size_1p, -1)
+
+        self.purple_39 = cv2.imread('data/text/purple_39.png', -1)
+        self.purple_39 = cv2.resize(self.purple_39, self.text_size_1p, -1)
+
+        self.purple_40 = cv2.imread('data/text/purple_40.png', -1)
+        self.purple_40 = cv2.resize(self.purple_40, self.text_size_1p, -1)
+
+        self.purple_41 = cv2.imread('data/text/purple_41.png', -1)
+        self.purple_41 = cv2.resize(self.purple_41, self.text_size_1p, -1)
+
+        self.purple_42 = cv2.imread('data/text/purple_42.png', -1)
+        self.purple_42 = cv2.resize(self.purple_42, self.text_size_1p, -1)
+
+        self.purple_43 = cv2.imread('data/text/purple_43.png', -1)
+        self.purple_43 = cv2.resize(self.purple_43, self.text_size_1p, -1)
+
+        self.purple_44 = cv2.imread('data/text/purple_44.png', -1)
+        self.purple_44 = cv2.resize(self.purple_44, self.text_size_1p, -1)
+
+        self.purple_45 = cv2.imread('data/text/purple_45.png', -1)
+        self.purple_45 = cv2.resize(self.purple_45, self.text_size_1p, -1)
+
+        self.purple_46 = cv2.imread('data/text/purple_46.png', -1)
+        self.purple_46 = cv2.resize(self.purple_46, self.text_size_1p, -1)
+
+        self.purple_47 = cv2.imread('data/text/purple_47.png', -1)
+        self.purple_47 = cv2.resize(self.purple_47, self.text_size_1p, -1)
+
+        self.purple_48 = cv2.imread('data/text/purple_48.png', -1)
+        self.purple_48 = cv2.resize(self.purple_48, self.text_size_1p, -1)
+
+        self.purple_49 = cv2.imread('data/text/purple_49.png', -1)
+        self.purple_49 = cv2.resize(self.purple_49, self.text_size_1p, -1)
+
+        self.purple_50 = cv2.imread('data/text/purple_50.png', -1)
+        self.purple_50 = cv2.resize(self.purple_50, self.text_size_1p, -1)
+
+        self.purple_51 = cv2.imread('data/text/purple_51.png', -1)
+        self.purple_51 = cv2.resize(self.purple_51, self.text_size_1p, -1)
+
+        self.purple_52 = cv2.imread('data/text/purple_52.png', -1)
+        self.purple_52 = cv2.resize(self.purple_52, self.text_size_1p, -1)
+
+        self.purple_53 = cv2.imread('data/text/purple_53.png', -1)
+        self.purple_53 = cv2.resize(self.purple_53, self.text_size_1p, -1)
+
+        self.purple_54 = cv2.imread('data/text/purple_54.png', -1)
+        self.purple_54 = cv2.resize(self.purple_54, self.text_size_1p, -1)
+
+        self.purple_55 = cv2.imread('data/text/purple_55.png', -1)
+        self.purple_55 = cv2.resize(self.purple_55, self.text_size_1p, -1)
+
+        self.purple_56 = cv2.imread('data/text/purple_56.png', -1)
+        self.purple_56 = cv2.resize(self.purple_56, self.text_size_1p, -1)
+
+        self.purple_57 = cv2.imread('data/text/purple_57.png', -1)
+        self.purple_57 = cv2.resize(self.purple_57, self.text_size_1p, -1)
+
+        self.purple_58 = cv2.imread('data/text/purple_58.png', -1)
+        self.purple_58 = cv2.resize(self.purple_58, self.text_size_1p, -1)
+
+        self.purple_59 = cv2.imread('data/text/purple_59.png', -1)
+        self.purple_59 = cv2.resize(self.purple_59, self.text_size_1p, -1)
+
+        self.purple_60 = cv2.imread('data/text/purple_10.png', -1)
+        self.purple_60 = cv2.resize(self.purple_60, self.text_size_1p, -1)
+
+        # (200, 400, 4)
         self.red_win = cv2.imread('data/text/red_win.png', -1)
-        # self.red_win = cv2.resize(self.red_win, (500, 100), -1)
 
         self.red_lose = cv2.imread('data/text/red_lose.png', -1)
-        # self.red_lose = cv2.resize(self.red_lose, (500, 100), -1)
 
         self.red_draw = cv2.imread('data/text/red_draw.png', -1)
-        # self.red_draw = cv2.resize(self.red_draw, (500, 100), -1)
 
         self.blue_win = cv2.imread('data/text/blue_win.png', -1)
-        # self.blue_win = cv2.resize(self.blue_win, (500, 100), -1)
 
         self.blue_lose = cv2.imread('data/text/blue_lose.png', -1)
-        # self.blue_lose = cv2.resize(self.blue_lose, (500, 100), -1)
 
         self.blue_draw = cv2.imread('data/text/blue_draw.png', -1)
-        # self.blue_draw = cv2.resize(self.blue_draw, (500, 100), -1)
 
         self.peace_r = cv2.imread('data/text/peace_r.png', -1)
         self.peace_r = cv2.resize(self.peace_r, (200, 200), -1)
@@ -479,25 +849,26 @@ class Video_Manager:
         self.clap_r = cv2.imread('data/text/clap_r.png', -1)
         self.clap_l = cv2.imread('data/text/clap_l.png', -1)
 
+        # (600, 1000, 4)
         self.poor = cv2.imread('data/text/poor.png', -1)
-        # 사이즈 조정해야 함
-        self.poor = cv2.resize(self.poor, (500, 100), -1)
+        self.poor = cv2.resize(self.poor, (500, 300), -1)
 
         self.not_bad = cv2.imread('data/text/not_bad.png', -1)
+        self.not_bad = cv2.resize(self.not_bad, (500, 300), -1)
 
         self.good = cv2.imread('data/text/good.png', -1)
+        self.good = cv2.resize(self.good, (500, 300), -1)
 
         self.excellent = cv2.imread('data/text/excellent.png', -1)
+        self.excellent = cv2.resize(self.excellent, (500, 300), -1)
 
         self.splendid = cv2.imread('data/text/splendid.png', -1)
-
-        # self.
+        self.splendid = cv2.resize(self.splendid, (500, 300), -1)
 
     def load_video(self):
         # load_video
         # vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+1)
         vidcap = cv2.VideoCapture(0)
-
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
             exit()
@@ -541,7 +912,7 @@ class Video_Manager:
                 frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
 
                 self.frame_num = self.frame_num + 1
-                if self.frame_num == 30:
+                if self.frame_num == 900:
                     self.game_finish = True
 
                 # 승자 결정
@@ -888,11 +1259,192 @@ class Video_Manager:
                 frame = cvzone.overlayPNG(frame, self.blue_30, self.blue_text_loc)
         else:
             if sum_score == 0:
-            # while self.frame_num < 901:
-            #     print(sum_score)
-                frame = cvzone.overlayPNG(frame, self.blue_fill_30, self.blue_gage_loc)
-            #     frame = cvzone.overlayPNG(frame, self.puple+sum_score, self.blue_gage_loc)
-            #     frame = cvzone.overlayPNG(frame, self.blue_fill_27, self.blue_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_fill_0, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_0, self.text_loc_1p)
+            elif sum_score == 1:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_1, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_1, self.text_loc_1p)
+            elif sum_score == 2:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_2, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_2, self.text_loc_1p)
+            elif sum_score == 3:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_3, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_3, self.text_loc_1p)
+            elif sum_score == 4:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_4, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_4, self.text_loc_1p)
+            elif sum_score == 5:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_5, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_5, self.text_loc_1p)
+            elif sum_score == 6:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_6, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_6, self.text_loc_1p)
+            elif sum_score == 7:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_7, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_7, self.text_loc_1p)
+            elif sum_score == 8:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_8, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_8, self.text_loc_1p)
+            elif sum_score == 9:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_9, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_9, self.text_loc_1p)
+            elif sum_score == 10:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_10, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_10, self.text_loc_1p)
+            elif sum_score == 11:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_11, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_11, self.text_loc_1p)
+            elif sum_score == 12:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_12, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_12, self.text_loc_1p)
+            elif sum_score == 13:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_13, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_13, self.text_loc_1p)
+            elif sum_score == 14:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_14, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_14, self.text_loc_1p)
+            elif sum_score == 15:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_15, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_15, self.text_loc_1p)
+            elif sum_score == 16:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_16, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_16, self.text_loc_1p)
+            elif sum_score == 17:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_17, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_17, self.text_loc_1p)
+            elif sum_score == 18:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_18, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_18, self.text_loc_1p)
+            elif sum_score == 19:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_19, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_19, self.text_loc_1p)
+            elif sum_score == 20:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_20, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_20, self.text_loc_1p)
+            elif sum_score == 21:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_21, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_21, self.text_loc_1p)
+            elif sum_score == 22:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_22, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_22, self.text_loc_1p)
+            elif sum_score == 23:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_23, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_23, self.text_loc_1p)
+            elif sum_score == 24:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_24, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_24, self.text_loc_1p)
+            elif sum_score == 25:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_25, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_25, self.text_loc_1p)
+            elif sum_score == 26:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_26, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_26, self.text_loc_1p)
+            elif sum_score == 27:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_27, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_27, self.text_loc_1p)
+            elif sum_score == 28:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_28, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_28, self.text_loc_1p)
+            elif sum_score == 29:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_29, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_29, self.text_loc_1p)
+            elif sum_score == 30:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_30, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_30, self.text_loc_1p)
+            elif sum_score == 31:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_31, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_31, self.text_loc_1p)
+            elif sum_score == 32:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_32, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_32, self.text_loc_1p)
+            elif sum_score == 33:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_33, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_33, self.text_loc_1p)
+            elif sum_score == 34:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_34, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_34, self.text_loc_1p)
+            elif sum_score == 35:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_35, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_35, self.text_loc_1p)
+            elif sum_score == 36:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_36, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_36, self.text_loc_1p)
+            elif sum_score == 37:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_37, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_37, self.text_loc_1p)
+            elif sum_score == 38:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_38, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_38, self.text_loc_1p)
+            elif sum_score == 39:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_39, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_39, self.text_loc_1p)
+            elif sum_score == 40:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_40, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_40, self.text_loc_1p)
+            elif sum_score == 41:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_41, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_41, self.text_loc_1p)
+            elif sum_score == 42:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_42, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_42, self.text_loc_1p)
+            elif sum_score == 43:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_43, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_43, self.text_loc_1p)
+            elif sum_score == 44:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_44, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_44, self.text_loc_1p)
+            elif sum_score == 45:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_45, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_45, self.text_loc_1p)
+            elif sum_score == 46:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_46, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_46, self.text_loc_1p)
+            elif sum_score == 47:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_47, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_47, self.text_loc_1p)
+            elif sum_score == 48:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_48, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_48, self.text_loc_1p)
+            elif sum_score == 49:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_49, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_49, self.text_loc_1p)
+            elif sum_score == 50:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_50, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_50, self.text_loc_1p)
+            elif sum_score == 51:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_51, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_51, self.text_loc_1p)
+            elif sum_score == 52:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_52, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_52, self.text_loc_1p)
+            elif sum_score == 53:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_53, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_53, self.text_loc_1p)
+            elif sum_score == 54:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_54, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_54, self.text_loc_1p)
+            elif sum_score == 55:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_55, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_55, self.text_loc_1p)
+            elif sum_score == 56:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_56, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_56, self.text_loc_1p)
+            elif sum_score == 57:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_57, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_57, self.text_loc_1p)
+            elif sum_score == 58:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_58, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_58, self.text_loc_1p)
+            elif sum_score == 59:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_59, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_59, self.text_loc_1p)
+            elif sum_score == 60:
+                frame = cvzone.overlayPNG(frame, self.purple_fill_60, self.purple_gage_loc)
+                frame = cvzone.overlayPNG(frame, self.purple_60, self.text_loc_1p)
+
+                # while self.frame_num < 901:
+                #     frame = cvzone.overlayPNG(frame, self.puple+sum_score, self.blue_gage_loc)
+                #     frame = cvzone.overlayPNG(frame, self.blue_fill_27, self.blue_gage_loc)
 
         return frame
 
