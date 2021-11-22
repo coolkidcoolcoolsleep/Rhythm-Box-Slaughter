@@ -19,7 +19,7 @@ class Video_Manager:
         self.all_draw = False
         self.one_player_result = 0
 
-        # drawing_color
+        # detection_color
         self.blue_lower = (100, 150, 0)
         self.blue_upper = (140, 255, 255)
         self.red_lower = (-10, 100, 100)
@@ -37,16 +37,13 @@ class Video_Manager:
         self.easy = 300
         self.norm = 250
         self.hard = 200
-        self.hell = 170
+        # self.hell = 170
 
         # color
         self.red_color = (203, 192, 255)
         self.blue_color = (223, 188, 80)
         self.green_color = (0, 255, 0)
         self.white_color = (255, 255, 255)
-
-        self.red_gage_color = (199, 5, 0)
-        self.blue_gage_color = (5, 75, 174)
 
         # box
         self.BoxThreshold = 6
@@ -55,8 +52,6 @@ class Video_Manager:
         self.blue_score = 0
         self.red_score = 0
         self.sum_score = 0
-        self.one_player_score = 0
-
 
         # area
         self.easy_min_area = self.easy * 30
@@ -72,6 +67,7 @@ class Video_Manager:
         self.rect_num = 0
         self.frame_num = 0
 
+        # resize
         self.gage_loc = [20, 20]
         self.blue_gage_loc = [1075, 20]
         self.purple_gage_loc = [150, 30]
@@ -82,10 +78,11 @@ class Video_Manager:
         self.blue_text_loc = [self.img_width//2+5, 0]
         self.text_size = (100, 100)
         self.text_size_1p = (100, 100)
+        self.one_player_effect_loc = [self.img_width // 2 - 250, 0]
 
-
-        # 게이지 사이즈 (85, 920, 4)
-
+        # score_text
+        # 2 player
+        # (920, 85)
         self.emtpy_gage = cv2.imread('data/gage/empty_gage.png', -1)
         self.emtpy_gage = cv2.resize(self.emtpy_gage, self.gage_size, -1)
 
@@ -269,7 +266,7 @@ class Video_Manager:
         self.blue_fill_30 = cv2.imread('data/gage/blue_fill_30.png', -1)
         self.blue_fill_30 = cv2.resize(self.blue_fill_30, self.gage_size, -1)
 
-        # (80, 1500, 4)
+        # (1500, 80)
         self.purple_fill_0 = cv2.imread('data/gage/purple_0.png', -1)
         self.purple_fill_0 = cv2.resize(self.purple_fill_0, self.gage_size_1p, -1)
 
@@ -452,6 +449,9 @@ class Video_Manager:
 
         self.purple_fill_60 = cv2.imread('data/gage/purple_10.png', -1)
         self.purple_fill_60 = cv2.resize(self.purple_fill_60, self.gage_size_1p, -1)
+
+        # score_text
+        # 2 player
 
         self.red_0 = cv2.imread('data/text/red_0.png', -1)
         self.red_0 = cv2.resize(self.red_0, self.text_size, -1)
@@ -645,6 +645,8 @@ class Video_Manager:
         self.purple_0 = cv2.imread('data/text/blue_30.png', -1)
         self.blue_30 = cv2.resize(self.blue_30, self.text_size, -1)
 
+        # 1 player
+
         self.purple_0 = cv2.imread('data/text/purple_0.png', -1)
         self.purple_0 = cv2.resize(self.purple_0, self.text_size_1p, -1)
 
@@ -828,27 +830,8 @@ class Video_Manager:
         self.purple_60 = cv2.imread('data/text/purple_10.png', -1)
         self.purple_60 = cv2.resize(self.purple_60, self.text_size_1p, -1)
 
-        # (200, 400, 4)
-        self.red_win = cv2.imread('data/text/red_win.png', -1)
-
-        self.red_lose = cv2.imread('data/text/red_lose.png', -1)
-
-        self.red_draw = cv2.imread('data/text/red_draw.png', -1)
-
-        self.blue_win = cv2.imread('data/text/blue_win.png', -1)
-
-        self.blue_lose = cv2.imread('data/text/blue_lose.png', -1)
-
-        self.blue_draw = cv2.imread('data/text/blue_draw.png', -1)
-
-        self.peace_r = cv2.imread('data/text/peace_r.png', -1)
-        self.peace_r = cv2.resize(self.peace_r, (200, 200), -1)
-        self.peace_l = cv2.imread('data/text/peace_l.png', -1)
-        self.peace_l = cv2.resize(self.peace_l, (200, 200), -1)
-
-        self.clap_r = cv2.imread('data/text/clap_r.png', -1)
-        self.clap_l = cv2.imread('data/text/clap_l.png', -1)
-
+        # Winner_effect
+        # 1 player
         # (600, 1000, 4)
         self.poor = cv2.imread('data/text/poor.png', -1)
         self.poor = cv2.resize(self.poor, (500, 300), -1)
@@ -865,9 +848,70 @@ class Video_Manager:
         self.splendid = cv2.imread('data/text/splendid.png', -1)
         self.splendid = cv2.resize(self.splendid, (500, 300), -1)
 
+        # 2 player
+        # (400, 200)
+        self.red_win = cv2.imread('data/text/red_win.png', -1)
+
+        self.red_lose = cv2.imread('data/text/red_lose.png', -1)
+
+        self.red_draw = cv2.imread('data/text/red_draw.png', -1)
+
+        self.blue_win = cv2.imread('data/text/blue_win.png', -1)
+
+        self.blue_lose = cv2.imread('data/text/blue_lose.png', -1)
+
+        self.blue_draw = cv2.imread('data/text/blue_draw.png', -1)
+
+        # effect
+        self.poor_l = cv2.imread('data/text/poor_l.png', -1)
+        self.poor_r = cv2.imread('data/text/poor_r.png', -1)
+
+        self.not_bad_l = cv2.imread('data/text/not_bad_l.png', -1)
+        self.not_bad_r = cv2.imread('data/text/not_bad_r.png', -1)
+
+        self.good_l = cv2.imread('data/text/good_l.png', -1)
+        self.good_r = cv2.imread('data/text/good_r.png', -1)
+
+        self.excellent_l = cv2.imread('data/text/excellent_l.png', -1)
+        self.excellent_r = cv2.imread('data/text/excellent_r.png', -1)
+
+        self.splendid_l = cv2.imread('data/text/splendid_l.png', -1)
+        self.splendid_r = cv2.imread('data/text/splendid_r.png', -1)
+
+        self.happy_l = cv2.imread('data/text/happy_l.png', -1)
+        self.happy_r = cv2.imread('data/text/happy_r.png', -1)
+
+        self.peace_r = cv2.imread('data/text/peace_r.png', -1)
+        self.peace_l = cv2.imread('data/text/peace_l.png', -1)
+
+        self.clap_r = cv2.imread('data/text/clap_r.png', -1)
+        self.clap_l = cv2.imread('data/text/clap_l.png', -1)
+
+        self.sad_r = cv2.imread('data/text/sad_r.png', -1)
+        self.sad_l = cv2.imread('data/text/sad_l.png', -1)
+
+        self.ok_r = cv2.imread('data/text/ok_r.png', -1)
+        self.ok_l = cv2.imread('data/text/ok_l.png', -1)
+
+        self.hi_r = cv2.imread('data/text/hi_r.png', -1)
+        self.hi_l = cv2.imread('data/text/hi_l.png', -1)
+
+        self.heart_1 = cv2.imread('data/text/heart_1.png', -1)
+        self.heart_2 = cv2.imread('data/text/heart_2.png', -1)
+        self.heart_3 = cv2.imread('data/text/heart_3.png', -1)
+        self.heart_4 = cv2.imread('data/text/heart_4.png', -1)
+        self.heart_5 = cv2.imread('data/text/heart_5.png', -1)
+
+        self.bad_1 = cv2.imread('data/text/bad_1.png', -1)
+        self.bad_2 = cv2.imread('data/text/bad_2.png', -1)
+        self.bad_3 = cv2.imread('data/text/bad_3.png', -1)
+        self.bad_4 = cv2.imread('data/text/bad_4.png', -1)
+        self.bad_5 = cv2.imread('data/text/bad_5.png', -1)
+
     def load_video(self):
         # load_video
         # vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+1)
+
         vidcap = cv2.VideoCapture(0)
         if not vidcap.isOpened():
             print('카메라를 열 수 없습니다.')
@@ -890,7 +934,7 @@ class Video_Manager:
                 self.box_num += 1
 
                 detection_blue, detection_red = self.tracking_ball(frame)
-                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=True)
+                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
                 if box_seed_num != self.current_seed:
                     self.is_answer_handled_red = False
@@ -909,18 +953,18 @@ class Video_Manager:
                                   is_answer_handled_blue)
 
                 # 점수 표기
-                frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
+                frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=False)
 
                 self.frame_num = self.frame_num + 1
-                if self.frame_num == 900:
+                if self.frame_num == 30:
                     self.game_finish = True
 
                 # 승자 결정
-                self.game_result(red_score, blue_score, sum_score, is_one_player=True)
+                self.game_result(red_score, blue_score, sum_score, is_one_player=False)
 
             else:
                 # 승자 효과
-                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=True)
+                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -1474,36 +1518,151 @@ class Video_Manager:
             img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
             if win_red:
                 # red 영역 화면 출력
-                frame = cvzone.overlayPNG(frame, self.red_win, [(1920 // 4) - 200, (1080 // 2) - 100])
+                frame = cvzone.overlayPNG(frame, self.red_win, [(1920 // 4) - 200, (1080 // 2) - 500])
                 frame = cvzone.overlayPNG(frame, self.clap_l, [(1920 // 4) - 400, (1080 // 2) - 100])
+                # left
+                frame = cvzone.overlayPNG(frame, self.heart_1, [30, 40])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
+
                 # blue 영역 화면 출력
-                frame = cvzone.overlayPNG(frame, self.blue_lose, [(1920 // 2) + 200, (1080 // 2) - 100])
+                frame = cvzone.overlayPNG(frame, self.blue_lose, [(1920 // 2) + 200, (1080 // 2) - 500])
+                # right
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 230, 40])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 250])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 230, 430])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 230, 610])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 230, 790])
             elif win_blue:
                 # red 영역 화면 출력
-                frame = cvzone.overlayPNG(frame, self.red_lose, [(1920 // 4) - 200, (1080 // 2) - 100])
+                frame = cvzone.overlayPNG(frame, self.red_lose, [(1920 // 4) - 200, (1080 // 2) - 500])
+                # left
+                frame = cvzone.overlayPNG(frame, self.bad_1, [30, 40])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [30, 790])
+
                 # blue 영역 화면 출력
-                frame = cvzone.overlayPNG(frame, self.blue_win, [(1920 // 2) + 200, (1080 // 2) - 100])
+                frame = cvzone.overlayPNG(frame, self.blue_win, [(1920 // 2) + 200, (1080 // 2) - 500])
                 frame = cvzone.overlayPNG(frame, self.clap_r, [(1920 // 4) + 600, (1080 // 2) - 100])
+                # right
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width-230, 40])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width-230, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width-230, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width-230, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width-230, 790])
             elif all_draw:
                 # red 영역 화면 출력
-                frame = cvzone.overlayPNG(frame, self.red_draw, [(1920 // 4) - 200, (1080 // 2) - 100])
-                frame = cvzone.overlayPNG(frame, self.peace_l, [self.img_width // 2-300, self.img_height // 2 - 200])
+                frame = cvzone.overlayPNG(frame, self.red_draw, [(1920 // 4) - 200, (1080 // 2) - 500])
+                frame = cvzone.overlayPNG(frame, self.peace_l, [100, self.img_height // 2 - 500])
+                frame = cvzone.overlayPNG(frame, self.peace_r, [670, self.img_height // 2 - 500])
+
+                # left
+                frame = cvzone.overlayPNG(frame, self.clap_l, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.hi_l, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.clap_l, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.hi_l, [30, 790])
+
                 # blue 영역 화면 출력
-                frame = cvzone.overlayPNG(frame, self.blue_draw, [(1920 // 2) + 200, (1080 // 2) - 100])
-                frame = cvzone.overlayPNG(frame, self.peace_r, [self.img_width // 2+100, self.img_height // 2 - 200])
+                frame = cvzone.overlayPNG(frame, self.blue_draw, [(1920 // 2) + 200, (1080 // 2) - 500])
+                frame = cvzone.overlayPNG(frame, self.peace_l, [self.img_width // 2+20, self.img_height // 2 - 500])
+                frame = cvzone.overlayPNG(frame, self.peace_r, [self.img_width // 2+600, self.img_height // 2 - 500])
+
+                # right
+                frame = cvzone.overlayPNG(frame, self.clap_r, [self.img_width-230, 250])
+                frame = cvzone.overlayPNG(frame, self.hi_r, [self.img_width-230, 430])
+                frame = cvzone.overlayPNG(frame, self.clap_r, [self.img_width-230, 610])
+                frame = cvzone.overlayPNG(frame, self.hi_r, [self.img_width-230, 790])
         else:
             # 0-19:Poor
+            img = frame
+            img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
             if self.one_player_result == 'Poor':
-                frame = cvzone.overlayPNG(frame, self.poor, [self.img_width // 2, self.img_height // 2])
+                frame = cvzone.overlayPNG(frame, self.poor, self.one_player_effect_loc)
+                frame = cvzone.overlayPNG(frame, self.poor_l, [630, 10])
+                frame = cvzone.overlayPNG(frame, self.poor_r, [1100, 10])
+                # left
+                frame = cvzone.overlayPNG(frame, self.bad_1, [30, 40])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [30, 790])
+                # right
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 230, 40])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 250])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 230, 430])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 230, 610])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 230, 790])
             # 20-29:Not Bad
             elif self.one_player_result == 'Not Bad':
-                frame = cvzone.overlayPNG(frame, self.Not_Bad, [self.img_width // 2, self.img_height // 2])
+                frame = cvzone.overlayPNG(frame, self.not_bad, self.one_player_effect_loc)
+                frame = cvzone.overlayPNG(frame, self.not_bad_l, [560, 30])
+                frame = cvzone.overlayPNG(frame, self.not_bad_r, [1160, 30])
+                # left
+                frame = cvzone.overlayPNG(frame, self.bad_1, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [30, 790])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [30, 790])
+                # right
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 230, 40])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 250])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 230, 430])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 230, 610])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 230, 790])
+            # 30-49:Good
             elif self.one_player_result == 'Good':
-                frame = cvzone.overlayPNG(frame, self.Good, [self.img_width // 2, self.img_height // 2])
+                frame = cvzone.overlayPNG(frame, self.good, self.one_player_effect_loc)
+                frame = cvzone.overlayPNG(frame, self.good_l, [610, 30])
+                frame = cvzone.overlayPNG(frame, self.good_r, [1110, 30])
+                # left
+                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
+                # right
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 230, 40])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 230, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 230, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 230, 790])
+            # 40-59:Excellent
             elif self.one_player_result == 'Excellent':
-                frame = cvzone.overlayPNG(frame, self.Excellent, [self.img_width // 2, self.img_height // 2])
+                frame = cvzone.overlayPNG(frame, self.excellent, self.one_player_effect_loc)
+                frame = cvzone.overlayPNG(frame, self.excellent_l, [560, 40])
+                frame = cvzone.overlayPNG(frame, self.excellent_r, [1160, 40])
+                # left
+                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
+                # right
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 230, 40])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 230, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 230, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 230, 790])
+            # 60:Excellent
             elif self.one_player_result == 'Splendid':
-                frame = cvzone.overlayPNG(frame, self.Splendid, [self.img_width // 2, self.img_height // 2])
+                frame = cvzone.overlayPNG(frame, self.splendid, self.one_player_effect_loc)
+                frame = cvzone.overlayPNG(frame, self.good_l, [540, 40])
+                frame = cvzone.overlayPNG(frame, self.good_r, [1180, 40])
+                # left
+                frame = cvzone.overlayPNG(frame, self.heart_1, [30, 40])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
+                # right
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width-230, 40])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width-230, 250])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width-230, 430])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width-230, 610])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width-230, 790])
+
 
         return frame
 
