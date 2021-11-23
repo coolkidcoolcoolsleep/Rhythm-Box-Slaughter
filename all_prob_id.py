@@ -6,8 +6,8 @@ print(df.info())
 information = []
 for msno in range(16509, 16699):
     condition = df['msno'] == msno
-    song_1 = '|'.join(df.loc[condition, ['artist_name', 'name']].values.tolist()[0])
-    song_2 = '|'.join(df.loc[condition, ['artist_name', 'name']].values.tolist()[1])
+    song_1 = ' '.join(df.loc[condition, ['artist_name', 'name']].values.tolist()[0])
+    song_2 = ' '.join(df.loc[condition, ['artist_name', 'name']].values.tolist()[1])
     songs = sorted([song_1, song_2])
     information.append([msno, songs[0], songs[1]])
 

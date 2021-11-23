@@ -4,7 +4,7 @@ import random
 
 
 def make_csv():
-    df = pd.read_csv('data/collaborative/train_data_songid.csv')
+    df = pd.read_csv('./train_data_songid.csv')
     song_list = list(df['song_id'].unique())
     num_song_list = len(song_list)
     # print(num_song_list)            # 10353
@@ -42,6 +42,7 @@ def make_csv():
     # print(df.loc[isin_con, ['artist_name', 'name']].drop_duplicates())
 
     df_20 = df.loc[isin_con, ['artist_name', 'name']].drop_duplicates().values
+    df.loc[isin_con, ['song_id', 'artist_name', 'name']].drop_duplicates().to_csv('./random_20.csv', index=False)
     df_20 = df_20.tolist()
 
     return df_20
