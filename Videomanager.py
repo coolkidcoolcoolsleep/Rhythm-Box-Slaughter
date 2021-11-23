@@ -268,43 +268,18 @@ class Video_Manager:
 
         # (1500, 80)
         self.purple_fill_0 = cv2.imread('data/gage/purple_0.png', -1)
-        self.purple_fill_0 = cv2.resize(self.purple_fill_0, self.gage_size_1p, -1)
-
         self.purple_fill_1 = cv2.imread('data/gage/purple_1.png', -1)
-        self.purple_fill_1 = cv2.resize(self.purple_fill_1, self.gage_size_1p, -1)
-
         self.purple_fill_2 = cv2.imread('data/gage/purple_2.png', -1)
-        self.purple_fill_2 = cv2.resize(self.purple_fill_2, self.gage_size_1p, -1)
-
         self.purple_fill_3 = cv2.imread('data/gage/purple_3.png', -1)
-        self.purple_fill_3 = cv2.resize(self.purple_fill_3, self.gage_size_1p, -1)
-
         self.purple_fill_4 = cv2.imread('data/gage/purple_4.png', -1)
-        self.purple_fill_4 = cv2.resize(self.purple_fill_4, self.gage_size_1p, -1)
-
         self.purple_fill_5 = cv2.imread('data/gage/purple_5.png', -1)
-        self.purple_fill_5 = cv2.resize(self.purple_fill_5, self.gage_size_1p, -1)
-
         self.purple_fill_6 = cv2.imread('data/gage/purple_6.png', -1)
-        self.purple_fill_6 = cv2.resize(self.purple_fill_6, self.gage_size_1p, -1)
-
         self.purple_fill_7 = cv2.imread('data/gage/purple_7.png', -1)
-        self.purple_fill_7 = cv2.resize(self.purple_fill_7, self.gage_size_1p, -1)
-
         self.purple_fill_8 = cv2.imread('data/gage/purple_8.png', -1)
-        self.purple_fill_8 = cv2.resize(self.purple_fill_8, self.gage_size_1p, -1)
-
         self.purple_fill_9 = cv2.imread('data/gage/purple_9.png', -1)
-        self.purple_fill_9 = cv2.resize(self.purple_fill_9, self.gage_size_1p, -1)
-
         self.purple_fill_10 = cv2.imread('data/gage/purple_10.png', -1)
-        self.purple_fill_10 = cv2.resize(self.purple_fill_10, self.gage_size_1p, -1)
-
         self.purple_fill_11 = cv2.imread('data/gage/purple_11.png', -1)
-        self.purple_fill_11 = cv2.resize(self.purple_fill_11, self.gage_size_1p, -1)
-
         self.purple_fill_12 = cv2.imread('data/gage/purple_12.png', -1)
-        self.purple_fill_12 = cv2.resize(self.purple_fill_12, self.gage_size_1p, -1)
 
         self.purple_fill_13 = cv2.imread('data/gage/purple_13.png', -1)
         self.purple_fill_13 = cv2.resize(self.purple_fill_13, self.gage_size_1p, -1)
@@ -934,7 +909,7 @@ class Video_Manager:
                 self.box_num += 1
 
                 detection_blue, detection_red = self.tracking_ball(frame)
-                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
+                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=True)
 
                 if box_seed_num != self.current_seed:
                     self.is_answer_handled_red = False
@@ -953,18 +928,18 @@ class Video_Manager:
                                   is_answer_handled_blue)
 
                 # 점수 표기
-                frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=False)
+                frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
 
                 self.frame_num = self.frame_num + 1
                 if self.frame_num == 30:
                     self.game_finish = True
 
                 # 승자 결정
-                self.game_result(red_score, blue_score, sum_score, is_one_player=False)
+                self.game_result(red_score, blue_score, sum_score, is_one_player=True)
 
             else:
                 # 승자 효과
-                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=False)
+                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=True)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -1579,90 +1554,329 @@ class Video_Manager:
         else:
             # 0-19:Poor
             img = frame
-            img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
             if self.one_player_result == 'Poor':
-                frame = cvzone.overlayPNG(frame, self.poor, self.one_player_effect_loc)
+                frame = cvzone.overlayPNG(frame, self.poor, [self.img_width // 2 - 250, 10])
                 frame = cvzone.overlayPNG(frame, self.poor_l, [630, 10])
                 frame = cvzone.overlayPNG(frame, self.poor_r, [1100, 10])
-                # left
-                frame = cvzone.overlayPNG(frame, self.bad_1, [30, 40])
-                frame = cvzone.overlayPNG(frame, self.bad_2, [30, 250])
-                frame = cvzone.overlayPNG(frame, self.bad_3, [30, 430])
-                frame = cvzone.overlayPNG(frame, self.bad_4, [30, 610])
-                frame = cvzone.overlayPNG(frame, self.bad_5, [30, 790])
-                # right
-                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 230, 40])
-                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 250])
-                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 230, 430])
-                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 230, 610])
-                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 230, 790])
+
+                self.bad_1 = cv2.resize(self.bad_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_1, [40, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width-120, 10])
+
+                self.bad_2 = cv2.resize(self.bad_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_2, [150, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width-230, 10])
+
+                self.bad_3 = cv2.resize(self.bad_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_3, [260, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width-340, 10])
+
+                self.bad_4 = cv2.resize(self.bad_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_4, [370, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width-450, 10])
+
+                self.bad_5 = cv2.resize(self.bad_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_5, [480, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width-560, 10])
+
+                # bottom
+                self.bad_1 = cv2.resize(self.bad_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_1, [40, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width-120, 920])
+
+                self.bad_2 = cv2.resize(self.bad_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_2, [150, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width-230, 920])
+
+                self.bad_3 = cv2.resize(self.bad_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_3, [260, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width-340, 920])
+
+                self.bad_4 = cv2.resize(self.bad_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_4, [370, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width-450, 920])
+
+                self.bad_5 = cv2.resize(self.bad_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_5, [480, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width-560, 920])
+
+                self.sad_r_small = cv2.resize(self.sad_r, (80, 80), -1)
+                self.sad_l_small = cv2.resize(self.sad_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.sad_r_small, [590, 920])
+                frame = cvzone.overlayPNG(frame, self.sad_l_small, [self.img_width-670, 920])
+
+                self.poor_l_small = cv2.resize(self.poor_l, (80, 80), -1)
+                self.poor_r_small = cv2.resize(self.poor_r, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.poor_l_small, [700, 920])
+                frame = cvzone.overlayPNG(frame, self.poor_r_small, [self.img_width-780, 920])
+
+                self.not_bad_r_small = cv2.resize(self.not_bad_r, (80, 80), -1)
+                self.not_bad_l_small = cv2.resize(self.not_bad_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.not_bad_r_small, [810, 920])
+                frame = cvzone.overlayPNG(frame, self.not_bad_l_small, [self.img_width-890, 920])
+
+                frame = cvzone.overlayPNG(frame, self.bad_2, [920, 920])
+
             # 20-29:Not Bad
             elif self.one_player_result == 'Not Bad':
                 frame = cvzone.overlayPNG(frame, self.not_bad, self.one_player_effect_loc)
                 frame = cvzone.overlayPNG(frame, self.not_bad_l, [560, 30])
                 frame = cvzone.overlayPNG(frame, self.not_bad_r, [1160, 30])
-                # left
-                frame = cvzone.overlayPNG(frame, self.bad_1, [30, 250])
-                frame = cvzone.overlayPNG(frame, self.bad_2, [30, 430])
-                frame = cvzone.overlayPNG(frame, self.bad_3, [30, 610])
-                frame = cvzone.overlayPNG(frame, self.bad_4, [30, 790])
-                frame = cvzone.overlayPNG(frame, self.bad_5, [30, 790])
-                # right
-                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 230, 40])
-                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 250])
-                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 230, 430])
-                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 230, 610])
-                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 230, 790])
+
+                # top
+                self.bad_1 = cv2.resize(self.bad_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_1, [40, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 120, 10])
+
+                self.bad_2 = cv2.resize(self.bad_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_2, [150, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 10])
+
+                self.bad_3 = cv2.resize(self.bad_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_3, [260, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 340, 10])
+
+                self.bad_4 = cv2.resize(self.bad_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_4, [370, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 450, 10])
+
+                self.bad_5 = cv2.resize(self.bad_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_5, [480, 10])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 560, 10])
+
+                # bottom
+                self.bad_1 = cv2.resize(self.bad_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_1, [40, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_1, [self.img_width - 120, 920])
+
+                self.bad_2 = cv2.resize(self.bad_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_2, [150, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_2, [self.img_width - 230, 920])
+
+                self.bad_3 = cv2.resize(self.bad_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_3, [260, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_3, [self.img_width - 340, 920])
+
+                self.bad_4 = cv2.resize(self.bad_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_4, [370, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_4, [self.img_width - 450, 920])
+
+                self.bad_5 = cv2.resize(self.bad_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.bad_5, [480, 920])
+                frame = cvzone.overlayPNG(frame, self.bad_5, [self.img_width - 560, 920])
+
+                self.sad_r_small = cv2.resize(self.sad_r, (80, 80), -1)
+                self.sad_l_small = cv2.resize(self.sad_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.sad_r_small, [590, 920])
+                frame = cvzone.overlayPNG(frame, self.sad_l_small, [self.img_width - 670, 920])
+
+                self.poor_l_small = cv2.resize(self.poor_l, (80, 80), -1)
+                self.poor_r_small = cv2.resize(self.poor_r, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.poor_l_small, [700, 920])
+                frame = cvzone.overlayPNG(frame, self.poor_r_small, [self.img_width - 780, 920])
+
+                self.not_bad_r_small = cv2.resize(self.not_bad_r, (80, 80), -1)
+                self.not_bad_l_small = cv2.resize(self.not_bad_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.not_bad_r_small, [810, 920])
+                frame = cvzone.overlayPNG(frame, self.not_bad_l_small, [self.img_width - 890, 920])
+
+                frame = cvzone.overlayPNG(frame, self.bad_2, [920, 920])
+
             # 30-49:Good
             elif self.one_player_result == 'Good':
                 frame = cvzone.overlayPNG(frame, self.good, self.one_player_effect_loc)
                 frame = cvzone.overlayPNG(frame, self.good_l, [610, 30])
                 frame = cvzone.overlayPNG(frame, self.good_r, [1110, 30])
-                # left
-                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
-                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
-                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
-                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
-                # right
-                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 230, 40])
-                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 250])
-                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 230, 430])
-                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 230, 610])
-                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 230, 790])
+
+                # top
+                self.heart_1 = cv2.resize(self.heart_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_1, [40, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 120, 10])
+
+                self.heart_2 = cv2.resize(self.heart_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_2, [150, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 10])
+
+                self.heart_3 = cv2.resize(self.heart_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_3, [260, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 340, 10])
+
+                self.heart_4 = cv2.resize(self.heart_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_4, [370, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 450, 10])
+
+                self.heart_5 = cv2.resize(self.heart_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_5, [480, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 560, 10])
+
+                # bottom
+                self.heart_1 = cv2.resize(self.heart_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_1, [40, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 120, 920])
+
+                self.heart_2 = cv2.resize(self.heart_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_2, [150, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 920])
+
+                self.heart_3 = cv2.resize(self.heart_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_3, [260, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 340, 920])
+
+                self.heart_4 = cv2.resize(self.heart_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_4, [370, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 450, 920])
+
+                self.heart_5 = cv2.resize(self.heart_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_5, [480, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 560, 920])
+
+                self.clap_r_small = cv2.resize(self.clap_r, (80, 80), -1)
+                self.clap_l_small = cv2.resize(self.clap_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.clap_r_small, [590, 920])
+                frame = cvzone.overlayPNG(frame, self.clap_l_small, [self.img_width - 670, 920])
+
+                self.happy_l_small = cv2.resize(self.happy_l, (80, 80), -1)
+                self.happy_r_small = cv2.resize(self.happy_r, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.happy_l_small, [700, 920])
+                frame = cvzone.overlayPNG(frame, self.happy_r_small, [self.img_width - 780, 920])
+
+                self.peace_r_small = cv2.resize(self.peace_r, (80, 80), -1)
+                self.peace_l_small = cv2.resize(self.peace_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.peace_l_small, [810, 920])
+                frame = cvzone.overlayPNG(frame, self.peace_r_small, [self.img_width - 890, 920])
+
+                frame = cvzone.overlayPNG(frame, self.clap_r_small, [920, 920])
+
             # 40-59:Excellent
             elif self.one_player_result == 'Excellent':
                 frame = cvzone.overlayPNG(frame, self.excellent, self.one_player_effect_loc)
                 frame = cvzone.overlayPNG(frame, self.excellent_l, [560, 40])
                 frame = cvzone.overlayPNG(frame, self.excellent_r, [1160, 40])
-                # left
-                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
-                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
-                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
-                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
-                # right
-                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 230, 40])
-                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 250])
-                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 230, 430])
-                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 230, 610])
-                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 230, 790])
-            # 60:Excellent
+
+                # top
+                self.heart_1 = cv2.resize(self.heart_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_1, [40, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 120, 10])
+
+                self.heart_2 = cv2.resize(self.heart_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_2, [150, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 10])
+
+                self.heart_3 = cv2.resize(self.heart_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_3, [260, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 340, 10])
+
+                self.heart_4 = cv2.resize(self.heart_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_4, [370, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 450, 10])
+
+                self.heart_5 = cv2.resize(self.heart_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_5, [480, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 560, 10])
+
+                # bottom
+                self.heart_1 = cv2.resize(self.heart_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_1, [40, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 120, 920])
+
+                self.heart_2 = cv2.resize(self.heart_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_2, [150, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 920])
+
+                self.heart_3 = cv2.resize(self.heart_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_3, [260, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 340, 920])
+
+                self.heart_4 = cv2.resize(self.heart_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_4, [370, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 450, 920])
+
+                self.heart_5 = cv2.resize(self.heart_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_5, [480, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 560, 920])
+
+                self.clap_r_small = cv2.resize(self.clap_r, (80, 80), -1)
+                self.clap_l_small = cv2.resize(self.clap_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.clap_r_small, [590, 920])
+                frame = cvzone.overlayPNG(frame, self.clap_l_small, [self.img_width - 670, 920])
+
+                self.happy_l_small = cv2.resize(self.happy_l, (80, 80), -1)
+                self.happy_r_small = cv2.resize(self.happy_r, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.happy_l_small, [700, 920])
+                frame = cvzone.overlayPNG(frame, self.happy_r_small, [self.img_width - 780, 920])
+
+                self.peace_r_small = cv2.resize(self.peace_r, (80, 80), -1)
+                self.peace_l_small = cv2.resize(self.peace_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.peace_l_small, [810, 920])
+                frame = cvzone.overlayPNG(frame, self.peace_r_small, [self.img_width - 890, 920])
+
+                frame = cvzone.overlayPNG(frame, self.clap_r_small, [920, 920])
+
+
+            # 60:Splendid
             elif self.one_player_result == 'Splendid':
                 frame = cvzone.overlayPNG(frame, self.splendid, self.one_player_effect_loc)
                 frame = cvzone.overlayPNG(frame, self.good_l, [540, 40])
                 frame = cvzone.overlayPNG(frame, self.good_r, [1180, 40])
-                # left
-                frame = cvzone.overlayPNG(frame, self.heart_1, [30, 40])
-                frame = cvzone.overlayPNG(frame, self.heart_2, [30, 250])
-                frame = cvzone.overlayPNG(frame, self.heart_3, [30, 430])
-                frame = cvzone.overlayPNG(frame, self.heart_4, [30, 610])
-                frame = cvzone.overlayPNG(frame, self.heart_5, [30, 790])
-                # right
-                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width-230, 40])
-                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width-230, 250])
-                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width-230, 430])
-                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width-230, 610])
-                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width-230, 790])
 
+                # top
+                self.heart_1 = cv2.resize(self.heart_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_1, [40, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 120, 10])
+
+                self.heart_2 = cv2.resize(self.heart_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_2, [150, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 10])
+
+                self.heart_3 = cv2.resize(self.heart_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_3, [260, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 340, 10])
+
+                self.heart_4 = cv2.resize(self.heart_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_4, [370, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 450, 10])
+
+                self.heart_5 = cv2.resize(self.heart_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_5, [480, 10])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 560, 10])
+
+                # bottom
+                self.heart_1 = cv2.resize(self.heart_1, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_1, [40, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_1, [self.img_width - 120, 920])
+
+                self.heart_2 = cv2.resize(self.heart_2, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_2, [150, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_2, [self.img_width - 230, 920])
+
+                self.heart_3 = cv2.resize(self.heart_3, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_3, [260, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_3, [self.img_width - 340, 920])
+
+                self.heart_4 = cv2.resize(self.heart_4, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_4, [370, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_4, [self.img_width - 450, 920])
+
+                self.heart_5 = cv2.resize(self.heart_5, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.heart_5, [480, 920])
+                frame = cvzone.overlayPNG(frame, self.heart_5, [self.img_width - 560, 920])
+
+                self.clap_r_small = cv2.resize(self.clap_r, (80, 80), -1)
+                self.clap_l_small = cv2.resize(self.clap_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.clap_r_small, [590, 920])
+                frame = cvzone.overlayPNG(frame, self.clap_l_small, [self.img_width - 670, 920])
+
+                self.happy_l_small = cv2.resize(self.happy_l, (80, 80), -1)
+                self.happy_r_small = cv2.resize(self.happy_r, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.happy_l_small, [700, 920])
+                frame = cvzone.overlayPNG(frame, self.happy_r_small, [self.img_width - 780, 920])
+
+                self.peace_r_small = cv2.resize(self.peace_r, (80, 80), -1)
+                self.peace_l_small = cv2.resize(self.peace_l, (80, 80), -1)
+                frame = cvzone.overlayPNG(frame, self.peace_l_small, [810, 920])
+                frame = cvzone.overlayPNG(frame, self.peace_r_small, [self.img_width - 890, 920])
+
+                frame = cvzone.overlayPNG(frame, self.clap_r_small, [920, 920])
 
         return frame
 
