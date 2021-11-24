@@ -968,7 +968,7 @@ class Video_Manager:
                 frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
 
                 self.frame_num = self.frame_num + 1
-                if self.frame_num == 30:
+                if self.frame_num == 900:
                     self.game_finish = True
 
                 # 승자 결정
