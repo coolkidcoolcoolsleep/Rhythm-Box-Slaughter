@@ -1,32 +1,45 @@
 # youtube_player.py
-import pafy
-import vlc
 import time
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import subprocess
+import shutil
+import pyautogui
+
+shutil.rmtree(r"C:\chrome_debugging")  # remove Cookie, Cache files
+
+subprocess.Popen(r'C:/Program Files/Google/Chrome/Application/chrome.exe --remote-debugging-port=9222 '
+                 r'--user-data-dir="C:\chrome_debugging"')  # Open the debugger chrome
+
+option = Options()
+option.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+
+driver = webdriver.Chrome('./chromedriver.exe', options=option)
+
+driver.implicitly_wait(10)
+
+driver.get(
+    url='https://accounts.google.com/ServiceLogin/identifier?service=youtube&uilel=3&passive=true&continue='
+        'https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Dko%26next'
+        '%3Dhttps%253A%252F%252Fwww.youtube.com%252Fmusicpremium&hl=ko&ec=65620&flowName=GlifWebSignIn&flowEntry'
+        '=ServiceLogin')
+
+pyautogui.write('helennaby')  # Fill in your ID or E-mail
+pyautogui.press('tab', presses=3)  # Press the Tab key 3 times
+pyautogui.press('enter')
+time.sleep(3)  # wait a process
+pyautogui.write('Fernweh.marclius')  # Fill in your PW
+pyautogui.press('enter')
 
 start = time.time()
-options = webdriver.ChromeOptions()
-# options.add_argument("headless")
-options.add_extension(r'extension_4_40_0_0.crx')
 
-'''adblock 확장프로그램 설치'''
-driver = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
-
-driver.get('https://www.youtube.com/watch?v=_UYMtY167c8')
+driver.get('https://www.youtube.com/watch?v=B61nm9OHt5A')
 time.sleep(3)
-
-driver.switch_to.window(driver.window_handles[-1])
-time.sleep(5)
-
-element = driver.find_element_by_xpath("//*[@class='ytp-large-play-button ytp-button']")
-element.click()
-time.sleep(3)
-
 
 while True:
     time.sleep(1)
-    if time.time() - start > 40:
-        quit()
+    if time.time() - start > 10:
+        driver.close()
         break
 
 
