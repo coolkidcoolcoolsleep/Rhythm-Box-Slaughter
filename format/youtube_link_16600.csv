@@ -1,0 +1,11 @@
+16600
+elif item == self.music_list[0]: self.music_thread('https://www.youtube.com/watch?v=PActqzbihXY') self.btn_start.clicked.connect(self.game_start_hard)
+elif item == self.music_list[1]: self.music_thread('https://www.youtube.com/watch?v=zsfpHGqswb4') self.btn_start.clicked.connect(self.game_start_easy)
+elif item == self.music_list[2]: self.music_thread('https://www.youtube.com/watch?v=NeeMfvMnYnE') self.btn_start.clicked.connect(self.game_start_hard)
+elif item == self.music_list[3]: self.music_thread('https://www.youtube.com/watch?v=PSDfz_CjyiA') self.btn_start.clicked.connect(self.game_start_hard)
+elif item == self.music_list[4]: self.music_thread('https://www.youtube.com/watch?v=OzfpeXFFe2I') self.btn_start.clicked.connect(self.game_start_hard)
+elif item == self.music_list[5]: self.music_thread('https://www.youtube.com/watch?v=J3unOTNiDN8') self.btn_start.clicked.connect(self.game_start_easy)
+elif item == self.music_list[6]: self.music_thread('https://www.youtube.com/watch?v=fm384xbFBLk') self.btn_start.clicked.connect(self.game_start_easy)
+elif item == self.music_list[7]: self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs') self.btn_start.clicked.connect(self.game_start_hard)
+elif item == self.music_list[8]: self.music_thread('https://www.youtube.com/watch?v=gXeRqUt_gWU&list=OLAK5uy_lJKr97NHirogxAPddx7IkF4jWAJqRf93A') self.btn_start.clicked.connect(self.game_start_hard)
+elif item == self.music_list[9]: self.music_thread('https://www.youtube.com/watch?v=uua52WTniBk') self.btn_start.clicked.connect(self.game_start_easy)

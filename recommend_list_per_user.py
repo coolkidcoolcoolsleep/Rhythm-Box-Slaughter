@@ -1,5 +1,6 @@
 # recommend_list_per_user.py
 import pandas as pd
+import numpy as np
 
 '''사용할 데이터 다 불러오기'''
 recommended_3800 = pd.read_csv('3800_songs.csv')
@@ -32,7 +33,7 @@ print(users.size())
 func = lambda g: g.sort_values(by='pred', ascending=False)[:8]
 users.apply(func).set_index('user_id').to_csv('./recommended_8.csv')
 
-'''사용자가 선택한 2곡(all_prob) 에 대하여 링크 연결하기'''
+'''사용자가 선택한 2곡(all_prob) 에 대하여 곡의 유튜브, bpm 정보 연결하기'''
 all_prob_380 = pd.merge(all_prob, random_20, on='song_id')
 all_prob_380 = all_prob_380.drop(['target', 'artist_name', 'name'], axis=1)
 print(all_prob_380.info())
@@ -45,6 +46,22 @@ print(recommended_8.info())
 recommended_final = recommended_8.append(all_prob_380)
 recommended_final = recommended_final.sort_values(by=['user_id'])
 print(recommended_final.info())
+
+'''bpm에 따라 다른 난이도로 표기하기'''
+# easy:0~107
+# norm:108~120
+# hard:120~
+# 1000: norm 으로
+condition_list = [
+    (recommended_final['bpm'] < 108),
+    (recommended_final['bpm'] > 107) & (recommended_final['bpm'] < 121) | (recommended_final['bpm'] == 1000),
+    (recommended_final['bpm'] > 120)]
+choices = ['easy', 'norm', 'hard']
+recommended_final['level'] = np.select(condition_list, choices)
+print(recommended_final.info())
+print(recommended_final.head())
+
+print(recommended_final['level'].value_counts())
 
 '''최종 결과물 출력하기'''
 recommended_final.to_csv('./recommended_final.csv', index=False)
