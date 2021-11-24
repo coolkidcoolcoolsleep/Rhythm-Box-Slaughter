@@ -24,11 +24,11 @@ driver.get(
         '%3Dhttps%253A%252F%252Fwww.youtube.com%252Fmusicpremium&hl=ko&ec=65620&flowName=GlifWebSignIn&flowEntry'
         '=ServiceLogin')
 
-pyautogui.write('helennaby')  # Fill in your ID or E-mail
+pyautogui.write('ID')  # Fill in your ID or E-mail
 pyautogui.press('tab', presses=3)  # Press the Tab key 3 times
 pyautogui.press('enter')
 time.sleep(3)  # wait a process
-pyautogui.write('Fernweh.marclius')  # Fill in your PW
+pyautogui.write('PW')  # Fill in your PW
 pyautogui.press('enter')
 
 start = time.time()
