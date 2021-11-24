@@ -4,24 +4,22 @@ import vlc
 import time
 from selenium import webdriver
 
-
 start = time.time()
 options = webdriver.ChromeOptions()
 # options.add_argument("headless")
 options.add_extension(r'extension_4_40_0_0.crx')
 
+'''adblock 확장프로그램 설치'''
 driver = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
-# driver = webdriver.Chrome('./extension_4_40_0_0.crx', chrome_options=options)
 
-'''유튜브 로그인'''
-
-driver.get('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+driver.get('https://www.youtube.com/watch?v=_UYMtY167c8')
 time.sleep(3)
-element = driver.find_element_by_xpath("//*[@class='ytp-large-play-button ytp-button']")
-element.click()
 
 driver.switch_to.window(driver.window_handles[-1])
-print('노래가 재생중입니다')
+time.sleep(5)
+
+element = driver.find_element_by_xpath("//*[@class='ytp-large-play-button ytp-button']")
+element.click()
 time.sleep(3)
 
 
