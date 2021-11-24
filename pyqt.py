@@ -190,12 +190,6 @@ class Game(QtWidgets.QWidget):
         elif self.btn_player_2.isChecked():
             self.player_2('hard')
 
-    def game_start_hell(self):
-        if self.btn_player_1.isChecked():
-            self.player_1('hell')
-        elif self.btn_player_2.isChecked():
-            self.player_2('hell')
-
     def box_layout(self):
         self.btn_player_1.setToolTip('1인용 게임')
         self.btn_player_2.setToolTip('2인용 게임')
@@ -231,25 +225,6 @@ class Game(QtWidgets.QWidget):
 
     def youtube_play(self, url):
         try:
-            # audio = pafy.new(url)
-            # audio = audio.getbestaudio()
-            # play_url = audio.url
-            #
-            # instance = vlc.Instance()
-            # player = instance.media_player_new()
-            # media = instance.media_new(play_url)
-            # media.get_mrl()
-            # player.set_media(media)
-            # player.play()
-            #
-            # start = time.time()
-            #
-            # while True:
-            #     if time.time() - start > 40:
-            #         player.pause()
-            #         break
-            #     pass
-
             shutil.rmtree(r"C:\chrome_debugging")  # remove Cookie, Cache files
 
             subprocess.Popen(r'C:/Program Files/Google/Chrome/Application/chrome.exe --remote-debugging-port=9222 '
@@ -349,17 +324,13 @@ class Game(QtWidgets.QWidget):
 
 
 class GameWindow1(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '뉴이스트 - Love Paint',
-                  '에이핑크 - Secret Garden',
-                  '잔나비 - Goodnight (Intro)',
-                  "비스트 - I'm sorry",
-                  '인피니트 - Follow Me',
-                  'K.Will - 눈물이 뚝뚝',
-                  "박효신 - It's You",
-                  '샤이니 - One',
-                  '샤이니 - Wowowow']
+    music_list = ['(노레를 선택하세요)',
+                  '에이핑크 - Secret Garden : easy',
+                  "NU'EST - Love Paint : hard",
+                  '샤이니 - Wowowow : easy',
+                  '샤이니 - One : hard',
+                  "박효신 - It's You : hard",
+                  '여자친구 - 시간을 달려서 : norm', '인피니트 - Follow Me : hard', "비스트 - I'm sorry : easy", 'K.Will - 눈물이 뚝뚝 : easy', '잔나비 - Goodnight (Intro) : hard']
 
     def __init__(self):
         super().__init__()
@@ -372,58 +343,48 @@ class GameWindow1(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=DIjGzZgu_yY')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
+        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=DIjGzZgu_yY')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
 
 class GameWindow2(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  'EXO - Heart Attack',
-                  '잔나비 - Goodnight (Intro)',
-                  '샤이니 - One',
-                  'IU - 미운 오리',
-                  '양파&다비치&HANNA -  사랑이 다 그런거래요',
-                  '샤이니 - Wowowow',
-                  '바람이 분다 OST - 비밀의 방',
-                  'f(x) - All Mine',
-                  '곽연진 - 재회의 테마']
+    music_list = ['(노레를 선택하세요)', '잔나비 - Goodnight (Intro) : hard', '샤이니 - One : hard', 'IU - 미운 오리 : easy', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', '샤이니 - Wowowow : easy', '바람이 분다OST - 비밀의 방 : hard', 'f(x) - All Mine : hard', '곽연진 - 재회의 테마 : norm', '여자친구 - 시간을 달려서 : norm', 'EXO - Heart Attack : easy']
 
     def __init__(self):
         super().__init__()
@@ -436,58 +397,48 @@ class GameWindow2(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=NK3y5QJ1rp8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[6]:
+        elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=bGKjOoAirdo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
-        elif item == self.music_list[7]:
+        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[8]:
+        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=GrtKiJt_xJg')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=lZ6XG1JhsEk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=lZ6XG1JhsEk')
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow3(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '레드벨벳 - Ice Cream Cake',
-                  '잔나비 - Goodnight (Intro)',
-                  '샤이니 - Wowowow',
-                  '샤이니 - One',
-                  '엠버 - Borders',
-                  '에이핑크 - Secret Garden',
-                  "비스트 - I'm sorry",
-                  '김장훈 - 어머니는 내 마음을 아세요',
-                  '비투비 블루 - 내 곁에 서 있어줘']
+    music_list = ['(노레를 선택하세요)', '레드벨벳 - Ice Cream Cake : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '여자친구 - 시간을 달려서 : norm', "비스트 - I'm sorry : easy", '에이핑크 - Secret Garden : easy', '엠버 - Borders : easy', '샤이니 - One : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '샤이니 - Wowowow : easy', '잔나비 - Goodnight (Intro) : hard']
 
     def __init__(self):
         super().__init__()
@@ -500,23 +451,23 @@ class GameWindow3(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=3zo4F0ZI5wE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/nV6g2SPRq1w')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
@@ -524,98 +475,24 @@ class GameWindow3(Game):
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow4(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  'EXO - Monster',
-                  '에이핑크 - Secret Garden',
-                  "비스트 - I'm sorry",
-                  '샤이니 - Wowowow',
-                  '샤이니 - One',
-                  'f(x) - All Mine',
-                  '연애말고 결혼 OST - Love Knots',
-                  '잔나비 - Goodnight (Intro)',
-                  '슈퍼주니어 - Shirt']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/KSH-FVVtTf0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=Om8twVJM1is')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
-class GameWindow5(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서 (Rough)',
-                  '아이유 - 스물셋',
-                  '박세영, 알렉스 - 블루로드',
-                  '안녕하신가영 - 순간의 순간',
-                  "G.NA - Don't Cry",
-                  '김그림 - 우리만 있어',
-                  '비투비 - Anymore',
-                  '일레븐 - Pray For Korea',
-                  '레드벨벳 - Automatic',
-                  '에일리 - 그대도 같은가요']
+class GameWindow4(Game):
+    music_list = ['(노레를 선택하세요)', 'EXO - Monster : hard', '슈퍼주니어 - Shirt : easy', '잔나비 - Goodnight (Intro) : hard', '연애말고 결혼 OST - Love Knots : hard', 'f(x) - All Mine : hard', '샤이니 - One : hard', '샤이니 - Wowowow : easy', "비스트 - I'm sorry : easy", '에이핑크 - Secret Garden : easy', '여자친구 - 시간을 달려서 : norm']
 
     def __init__(self):
         super().__init__()
@@ -628,16 +505,70 @@ class GameWindow5(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=VatHIJh4O0M')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/42Gtm4-Ax2U')
+            self.music_thread('https://www.youtube.com/watch?v=Om8twVJM1is')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=OSaANCJsfXs')
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+
+class GameWindow5(Game):
+    music_list = ['(노레를 선택하세요)', '아이유 - 스물셋 : hard', '여자친구 - 시간을 달려서 : norm', '박세영 - 블루로드 : norm', '안녕하신가영 - 순간의 순간 : easy', "G.NA - Don't Cry : easy", '비투비 - Anymore : easy', '일레븐 - Pray For Korea : norm', '레드벨벳 - Automatic : easy', '에일리 - 그대도 같은가요 : hard', '최정우 - 어디선가 나의 노랠듣고 있을 너에게 : hard']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=NeeMfvMnYnE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=OSaANCJsfXs')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=J3unOTNiDN8')
@@ -648,38 +579,28 @@ class GameWindow5(Game):
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=xE7izyAKZZA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=D1sTQc7FrVk')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[8]:
+        elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=9lpyAUDxT0c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
-        elif item == self.music_list[9]:
+        elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=RVUv6Hw3WsE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[10]:
+        elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=o5Vj8WCWGW4')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=lxprNC-DqSM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow6(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '현아 - 빨개요',
-                  '이지수 - 너야',
-                  "박효신 - It's You",
-                  '에이핑크 - Secret Garden',
-                  'Flower - 사랑은 알아도...',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '인피니트 - Follow Me',
-                  "바람이 분다 OST - It's Over",
-                  '디아 - 날 위한 이별']
+    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '여자친구 - 시간을 달려서 : norm', "박효신 - It's You : hard", '현아 - 빨개요 : hard', '이지수 - 너야 : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', "바람이 분다OST - It's Over : hard", '인피니트 - Follow Me : hard']
 
     def __init__(self):
         super().__init__()
@@ -692,250 +613,210 @@ class GameWindow6(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/oTXCgR93zC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=qocyC5nvsH8&list=OLAK5uy_kfaAb-W2pQsUqp0x-VmmMlHrGyQhvD79k&index=15')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow7(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '에일리 - 노래가 늘었어',
-                  '투하트 - Tell Me Why',
-                  '혁오 - Hooka',
-                  '레인보우 유아동요 - 숲 속의 음악가',
-                  '블루베어스 & 택연 - 오늘 같은 밤',
-                  '앤츠 - 예쁜 너니까',
-                  '제이민 - Song On My Guitar',
-                  '비투비 - 두 번째 고백',
-                  '인피니트 - Because']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/S122aFkcOiw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=qlEIui3xpUs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=OytSUJZNgL4')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=xl5an64ksKQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=uxhVy02aTqA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=H_rr4CCyACQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=rxl9cIbBHrc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=q-tGcNE6nO8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow8(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '인피니트 - 내꺼하자',
-                  '디아 - 날 위한 이별',
-                  '윤지훈 - 너밖에 몰라',
-                  '지나유 - 처음사랑',
-                  "박효신 - It's You",
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '지훈 - 너만 생각나',
-                  '4MINUTE - 팜므파탈',
-                  '최준영 - 얼음심장']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/tqC8AmuZuLI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=IMQQbW33Vv0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=-oAMQNxxM0k')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=leQ5P_1pNB8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow9(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  'f(x) - Lollipop (feat. SHINee)',
-                  '천둥 - Good',
-                  "박효신 - It's You",
-                  '이지수 - 너야',
-                  'MBLAQ - 유령(같이 사랑했잖아)',
-                  '인피니트 - Follow Me',
-                  'Flower - 사랑은 알아도...',
-                  '요조 - 바나나파티',
-                  '동방신기 - Humanoids']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/bcYxNusTPrw')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=taSWFpvWOag')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=3uWlDF40QMc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
         elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=qocyC5nvsH8&list=OLAK5uy_kfaAb-W2pQsUqp0x-VmmMlHrGyQhvD79k&index=15')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+
+class GameWindow7(Game):
+    music_list = ['(노레를 선택하세요)', '비투비 - 두 번째 고백 : easy', '에일리 - 노래가 늘었어 : easy', '제이민 - Song On My Guitar : hard', '앤츠 - 예쁜 너니까 : easy', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '레인보우 유아동요 - 숲 속의 음악가 : easy', '혁오 - Hooka : easy', '투하트 - Tell Me Why : easy', '인피니트 - Because : norm', '여자친구 - 시간을 달려서 : norm']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=rxl9cIbBHrc')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=S122aFkcOiw')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=H_rr4CCyACQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=uxhVy02aTqA')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=xl5an64ksKQ')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=OytSUJZNgL4')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=qlEIui3xpUs')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=q-tGcNE6nO8')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+
+class GameWindow8(Game):
+    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '최준영 - 얼음심장 : hard', '4MINUTE - 팜므파탈 : norm', '지훈 - 너만 생각나 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', "박효신 - It's You : hard", '지나유 - 처음사랑 : hard', '윤지훈 - 너밖에 몰라 : hard', '디아 - 날 위한 이별 : hard', '인피니트 - 내꺼하자 : hard']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=leQ5P_1pNB8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=-oAMQNxxM0k')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=IMQQbW33Vv0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=YnubLDYNNfQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+
+class GameWindow9(Game):
+    music_list = ['(노레를 선택하세요)', 'f(x) - Lollipop : hard', '동방신기 - Humanoids : norm', '요조 - 바나나파티 : hard', '천둥 - Good : norm', "박효신 - It's You : hard", '이지수 - 너야 : easy', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '인피니트 - Follow Me : hard', 'Flower - 사랑은 알아도... : easy', '여자친구 - 시간을 달려서 : norm']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=bcYxNusTPrw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=V5PLNMn3Wfg')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=3uWlDF40QMc')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow10(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구(GFRIEND) - 시간을 달려서(rough)',
-                  'After School - 너 때문에',
-                  'SHINee - WOWOWOW',
-                  'SHINee - 3 2 1',
-                  'SHINee - 하나',
-                  '잔나비 - Goodnight',
-                  '엠버 - Borders',
-                  '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래',
-                  'INFINITE - Follow Me',
-                  'SUPER JUNIOR - A-Oh!']
+    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '인피니트 - Follow Me : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard', '잔나비 - Goodnight (Intro) : hard', '엠버 - Borders : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', '슈퍼주니어 - A-Oh! : hard', '애프터스쿨 - 너 때문에 : hard']
 
     def __init__(self):
         super().__init__()
@@ -949,57 +830,47 @@ class GameWindow10(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/XwlCnxFL3ik')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/grPy2KJYZ9M')
+            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/zWI-vJXkeXA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/bNT-zFJKifI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[8]:
+        elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/KJSXolyj4DM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=bGKjOoAirdo')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=hoRbO-PiXgU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/hoRbO-PiXgU')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=cllEoGTbPIM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow11(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  'BoA - One Dream',
-                  '비스트 - Let It Snow',
-                  '인피니트 - 내꺼하자',
-                  '김나영 - 어땠을까',
-                  '장기하와 얼굴들 - 그러게 왜 그랬어',
-                  '이오공감 - 한 사람을 위한 마음',
-                  '아이유 - 마쉬멜로우',
-                  '엠씨더맥스 - 어디에도',
-                  '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면)']
+    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '보아 - One Dream : easy', '인피니트 - 내꺼하자 : hard', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : hard', '비스트 - Let It Snow : norm', '김나영 - 어땠을까 : hard', '장기하와 얼굴들 - 그러게 왜 그랬어 : hard', '이오공감 - 한 사람을 위한 마음 : norm', '아이유 - 마쉬멜로우 : hard', '엠씨더맥스 - 어디에도 : hard']
 
     def __init__(self):
         super().__init__()
@@ -1013,57 +884,47 @@ class GameWindow11(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/EOAxIz7VQU8')
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/ZoJrqFPt1pk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/DeuejYoRbps')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/DeuejYoRbps')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/R69fQWVoZLk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/RrFq968fXd8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/ZoJrqFPt1pk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/XfvR4QJVVhU')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RrFq968fXd8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/DokABcA8Iy8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t9GYZ2InEq0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/XfvR4QJVVhU')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/DokABcA8Iy8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/lbLeVCAqd7Y')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/XfvR4QJVVhU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/R69fQWVoZLk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/lbLeVCAqd7Y')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow12(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '시스타 - One More Day',
-                  "비스트 - I'm sorry",
-                  '연애말고 결혼 OST - Love Knots',
-                  '샤이니 - One',
-                  '샤이니 - Wowowow',
-                  '양파&다비치&HANNA -  사랑이 다 그런거래요',
-                  'K.Will - 눈물이 뚝뚝',
-                  '엠버 - Borders',
-                  '샤이니 - 산소 같은 너']
+    music_list = ['(노레를 선택하세요)', '시스타 - One More Day : hard', '샤이니 - 산소 같은 너 : easy', '엠버 - Borders : easy', '연애말고 결혼 OST - Love Knots : hard', '샤이니 - One : hard', '샤이니 - Wowowow : easy', '여자친구 - 시간을 달려서 : norm', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', 'K.Will - 눈물이 뚝뚝 : easy', "비스트 - I'm sorry : easy"]
 
     def __init__(self):
         super().__init__()
@@ -1076,58 +937,48 @@ class GameWindow12(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/zdoB2TPqWxs')
+            self.music_thread('https://www.youtube.com/watch?v=wvpknmu5UIY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
+            self.music_thread('https://youtu.be/bNT-zFJKifI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=bGKjOoAirdo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=bGKjOoAirdo')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=DIjGzZgu_yY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/bNT-zFJKifI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=wvpknmu5UIY')
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow13(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '가인 - 피어나',
-                  '이지수 - 너야',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '천둥 - Good',
-                  '인피니트 - Follow Me',
-                  '정동하 - Mystery (주군의 태양 OST)',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '디아 - 날 위한 이별']
+    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '가인 - 피어나 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '천둥 - Good : norm', '인피니트 - Follow Me : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -1141,57 +992,47 @@ class GameWindow13(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/kFLNAB5-qsQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/WZ2rdYNbndc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
             self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow14(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '박효신 - 야생화',
-                  '에이핑크 - Secret Garden',
-                  'f(x) - All Mine',
-                  "비스트 - I'm sorry",
-                  '샤이니 - Wowowow',
-                  '연애말고 결혼 OST - Love Knots',
-                  '샤이니 - One',
-                  '엠버 - Borders',
-                  '비투비 블루 - 내 곁에 서 있어줘']
+    music_list = ['(노레를 선택하세요)', '비투비 블루 - 내 곁에 서 있어줘 : hard', '엠버 - Borders : easy', '샤이니 - One : hard', '연애말고 결혼 OST - Love Knots : hard', '여자친구 - 시간을 달려서 : norm', "비스트 - I'm sorry : easy", 'f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '샤이니 - Wowowow : easy', '박효신 - 야생화 : hard']
 
     def __init__(self):
         super().__init__()
@@ -1204,58 +1045,48 @@ class GameWindow14(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/ZtcM3KhgF-s')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/bNT-zFJKifI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow15(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  'NCT 127 - Switch',
-                  'Flower - 사랑은 알아도...',
-                  "박효신 - It's You",
-                  '인피니트 - Follow Me',
-                  '정동하 - Mystery (주군의 태양 OST)',
-                  '잔나비 - Goodnight (Intro)',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '4MINUTE - 팜므파탈',
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난']
+    music_list = ['(노레를 선택하세요)', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '여자친구 - 시간을 달려서 : norm', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '잔나비 - Goodnight (Intro) : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', 'NCT 127 - Switch : norm']
 
     def __init__(self):
         super().__init__()
@@ -1268,12 +1099,12 @@ class GameWindow15(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
@@ -1281,45 +1112,35 @@ class GameWindow15(Game):
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/WZ2rdYNbndc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow16(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '빅스 - 사슬 (Chained up)',
-                  '이지수 - 너야',
-                  '잔나비 - Goodnight (Intro)',
-                  '인피니트 - Follow Me',
-                  '안현정 - 그대와 나',
-                  '비투비 블루 - 내 곁에 서 있어줘',
-                  'VIXX - Love Me Do',
-                  'B1A4 - 몇 번을',
-                  '샤이니 - Hold You']
+    music_list = ['(노레를 선택하세요)', '이지수 - 너야 : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', 'VIXX - Love Me Do : hard', 'B1A4 - 몇 번을 : hard', '샤이니 - Hold You : easy', '여자친구 - 시간을 달려서 : norm', '잔나비 - Goodnight (Intro) : hard', '안현정 - 그대와 나 : hard', '인피니트 - Follow Me : hard', '빅스 - 사슬 : easy']
 
     def __init__(self):
         super().__init__()
@@ -1332,58 +1153,48 @@ class GameWindow16(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=jqCIlPQ-sI8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/FmuOH_0UKVI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.music_thread('https://www.youtube.com/watch?v=H5hJreMo_f8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/4eRNIS6zMeo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=jqCIlPQ-sI8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/FmuOH_0UKVI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=H5hJreMo_f8')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow17(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  'BoA - Only One',
-                  "비스트 - I'm sorry",
-                  '연애말고 결혼 OST - Love Knots',
-                  '샤이니 - One',
-                  'f(x) - All Mine',
-                  '샤이니 - Wowowow',
-                  '에이핑크 - Secret Garden',
-                  '잔나비 - Goodnight (Intro)',
-                  '엠버 - Borders']
+    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '보아 - Only One : easy', "비스트 - I'm sorry : easy", '연애말고 결혼 OST - Love Knots : hard', '샤이니 - One : hard', 'f(x) - All Mine : hard', '샤이니 - Wowowow : easy', '잔나비 - Goodnight (Intro) : hard', '여자친구 - 시간을 달려서 : norm', '엠버 - Borders : easy']
 
     def __init__(self):
         super().__init__()
@@ -1396,11 +1207,11 @@ class GameWindow17(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=PQjovLrnvVo')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
@@ -1409,27 +1220,27 @@ class GameWindow17(Game):
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/bNT-zFJKifI')
@@ -1437,17 +1248,7 @@ class GameWindow17(Game):
 
 
 class GameWindow18(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '2NE1 - 안녕',
-                  '이지수 - 너야',
-                  '주헌, 형원, I.M - 인터스텔라 (Interstellar)',
-                  '타코 & 제이형 - 어떡하죠',
-                  '아이유 - 싫은 날',
-                  '백지영 - 사랑아 또 사랑아',
-                  '규현 - Eternal Sunshine',
-                  '블루베어스 & 택연 - 오늘 같은 밤',
-                  '길구봉구 - 달아']
+    music_list = ['(노레를 선택하세요)', '2NE1 - 안녕 : hard', '이지수 - 너야 : easy', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '규현 - Eternal Sunshine : hard', '여자친구 - 시간을 달려서 : norm', '길구봉구 - 달아 : norm', '주헌, 형원, I.M - 인터스텔라 (Interstellar) : hard', '타코 & 제이형 - 어떡하죠 : norm', '아이유 - 싫은 날 : hard', '백지영 - 사랑아 또 사랑아 : easy']
 
     def __init__(self):
         super().__init__()
@@ -1460,58 +1261,48 @@ class GameWindow18(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=wEkLHC7l25w')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=uxhVy02aTqA')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/dBUWcM2TBpM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/3T7BH-7LiqM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/-jxLz7uQ3Uw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RSh5akaaHXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/Tqudgg0aBAI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/zgwix-rY_pU')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/wQZkM2ELDXA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/dBUWcM2TBpM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/3T7BH-7LiqM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/-jxLz7uQ3Uw')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=uxhVy02aTqA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Tqudgg0aBAI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/zgwix-rY_pU')
+            self.music_thread('https://youtu.be/wQZkM2ELDXA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow19(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '여자친구 - 시간을 달려서',
-                  '휘성 - Night and Day',
-                  '에이핑크 - Secret Garden',
-                  '연애말고 결혼 OST - Love Knots',
-                  '동방신기 - Humanoids',
-                  '잔나비 - Goodnight (Intro)',
-                  '양파&다비치&HANNA -  사랑이 다 그런거래요',
-                  'MBLAQ - 유령(같이 사랑했잖아)',
-                  '김장훈 - 어머니는 내 마음을 아세요',
-                  '내 여자친구를 소개합니다 OST - 명우의 수난']
+    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '휘성 - Night and Day : easy', '에이핑크 - Secret Garden : easy', '연애말고 결혼 OST - Love Knots : hard', '동방신기 - Humanoids : norm', '잔나비 - Goodnight (Intro) : hard', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '김장훈 - 어머니는 내 마음을 아세요 : hard', '내 여자친구를 소개합니다 OST - 명우의 수난 : norm']
 
     def __init__(self):
         super().__init__()
@@ -1525,10 +1316,10 @@ class GameWindow19(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://youtu.be/RSh5akaaHXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/napCk8ZVlpw')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
@@ -1537,19 +1328,19 @@ class GameWindow19(Game):
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=bGKjOoAirdo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=3uWlDF40QMc')
@@ -1557,25 +1348,15 @@ class GameWindow19(Game):
 
         elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/PgO9V6K4yrk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow20(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '엑소 - Heart Attack',
-                  '잔나비 - Goodnight (Intro)',
-                  '데미온 - Street of Dawn',
-                  '비투비 블루 - 내 곁에 서 있어줘',
-                  '레드벨벳 - Light Me Up',
-                  'god - 길',
-                  '규현 - 우리가 사랑한 시간',
-                  'IU - 미운 오리',
-                  '박재범 - When']
+    music_list = ['(노레를 선택하세요)', '규현 - 우리가 사랑한 시간 : hard', "NU'EST - Love Paint : hard", 'EXO - Heart Attack : easy', '박재범 - When : easy', 'GOD - 길 : hard', 'IU - 미운 오리 : easy', '레드벨벳 - Light Me Up : norm', '비투비 블루 - 내 곁에 서 있어줘 : hard', '데미온 - Street of Dawn : norm', '잔나비 - Goodnight (Intro) : hard']
 
     def __init__(self):
         super().__init__()
@@ -1588,58 +1369,48 @@ class GameWindow20(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/73TIQLmFb4A')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/dCdRIvqVGtA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/rRctWJReQFQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/73TIQLmFb4A')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=NK3y5QJ1rp8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/5_4pSZX2wCM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=NK3y5QJ1rp8')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://youtu.be/rRctWJReQFQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://youtu.be/dCdRIvqVGtA')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
 
 class GameWindow21(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '레드벨벳 - Ice Cream Cake',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '김장훈 - 어머니는 내 마음을 아세요',
-                  '인피니트 - Follow Me',
-                  '4MINUTE - 팜므파탈',
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '잔나비 - Goodnight (Intro)',
-                  '에이핑크 - Secret Garden']
+    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'Flower - 사랑은 알아도... : easy', "NU'EST - Love Paint : hard", "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard']
 
     def __init__(self):
         super().__init__()
@@ -1652,122 +1423,101 @@ class GameWindow21(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/nV6g2SPRq1w')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-
-class GameWindow22(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '엑소 - Monster',
-                  '4MINUTE - 팜므파탈',
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '디아 - 날 위한 이별',
-                  '윤지훈 - 너밖에 몰라',
-                  '지나유 - 처음사랑',
-                  '지훈 - 너만 생각나',
-                  '최준영 - 얼음심장',
-                  '가인 - Fxxk U']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=KSH-FVVtTf0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=IMQQbW33Vv0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=-oAMQNxxM0k')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=leQ5P_1pNB8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=3zo4F0ZI5wE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+
+class GameWindow22(Game):
+    music_list = ['(노레를 선택하세요)', '지나유 - 처음사랑 : hard', '지훈 - 너만 생각나 : hard', '윤지훈 - 너밖에 몰라 : hard', '최준영 - 얼음심장 : hard', '가인 - Fxxk U : hard', '디아 - 날 위한 이별 : hard', "NU'EST - Love Paint : hard", '4MINUTE - 팜므파탈 : norm', 'EXO - Monster : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=-oAMQNxxM0k')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=IMQQbW33Vv0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=leQ5P_1pNB8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/VSAVsstaj4E')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=VatHIJh4O0M')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow23(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '아이유 - 스물셋',
-                  '더 콰이엇 - 진흙 속에서 피는 꽃',
-                  '크래용팝 - 1, 2, 3, 4',
-                  '비투비 - Anymore',
-                  '린 - 이별주',
-                  '샤이니 - Last Christmas',
-                  'EXO - Baby',
-                  '방탄소년단 - 고엽',
-                  '가비엔제이 - 연애소설']
+    music_list = ['(노레를 선택하세요)', '린 - 이별주 : hard', "NU'EST - Love Paint : hard", '아이유 - 스물셋 : hard', 'EXO - Baby : easy', '크래용팝 - 1, 2, 3, 4 : hard', '비투비 - Anymore : easy', '샤이니 - Last Christmas : norm', '방탄소년단 - 고엽 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가비엔제이 - 연애소설 : norm']
 
     def __init__(self):
         super().__init__()
@@ -1780,58 +1530,48 @@ class GameWindow23(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/QGQqh_jCWwc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=42Gtm4-Ax2U')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=NeeMfvMnYnE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/Q8QDrGxGmy8')
+            self.music_thread('https://youtu.be/dw_QLwFb2z0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=D1sTQc7FrVk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Q8QDrGxGmy8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/QGQqh_jCWwc')
+            self.music_thread('https://www.youtube.com/watch?v=D1sTQc7FrVk')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/Fdw1DkgWZC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/dw_QLwFb2z0')
+            self.music_thread('https://youtu.be/cljJCtXYvuI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/cljJCtXYvuI')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/82Ocgy2Jsf4')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow24(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '현아 - 빨개요',
-                  "박효신 - It's You",
-                  '이지수 - 너야',
-                  'Flower - 사랑은 알아도...',
-                  '슈퍼주니어 - SUPERMAN',
-                  '김예림 - 행복한 나를',
-                  '4MINUTE - 팜므파탈',
-                  '정동하 - Mystery (주군의 태양 OST)',
-                  '잠비나이 - Connection']
+    music_list = ['(노레를 선택하세요)', "NU'EST - Love Paint : hard", '잠비나이 - Connection : hard', '현아 - 빨개요 : hard', '4MINUTE - 팜므파탈 : norm', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -1844,58 +1584,48 @@ class GameWindow24(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/oTXCgR93zC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/ujqVQBgDttc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=taSWFpvWOag')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/IdFeKj798hU')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=Plc5V1ANWtE')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/WZ2rdYNbndc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/ujqVQBgDttc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow25(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '에일리 - 노래가 늘었어',
-                  '이지수 - 너야',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '인피니트 - Follow Me',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '잔나비 - Goodnight (Intro)',
-                  '에이핑크 - Secret Garden',
-                  '4MINUTE - 팜므파탈']
+    music_list = ['(노레를 선택하세요)', "NU'EST - Love Paint : hard", '4MINUTE - 팜므파탈 : norm', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '에일리 - 노래가 늘었어 : easy', '이지수 - 너야 : easy', '인피니트 - Follow Me : hard']
 
     def __init__(self):
         super().__init__()
@@ -1908,122 +1638,48 @@ class GameWindow25(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/S122aFkcOiw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow26(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '인피니트 - 내꺼하자',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '동방신기 - Humanoids',
-                  '디아 - 날 위한 이별',
-                  '4MINUTE - 팜므파탈',
-                  '연애말고 결혼 OST - Love Knots',
-                  "비스트 - I'm sorry",
-                  '더 콰이엇 - 진흙 속에서 피는 꽃']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/tqC8AmuZuLI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.music_thread('https://www.youtube.com/watch?v=S122aFkcOiw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
-class GameWindow27(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  'f(x) - Lollipop',
-                  '이지수 - 너야',
-                  "박효신 - It's You",
-                  '오빠친구동생 - 소보루빵',
-                  '지코 - 날',
-                  'Flower - 사랑은 알아도...',
-                  '디아 - 날 위한 이별',
-                  '우주소녀 - Catch Me',
-                  '모던다락방 - All I Want Is 바라만봐도']
+class GameWindow26(Game):
+    music_list = ['(노레를 선택하세요)', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "비스트 - I'm sorry : easy", '연애말고 결혼 OST - Love Knots : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', '인피니트 - 내꺼하자 : hard', "NU'EST - Love Paint : hard", '동방신기 - Humanoids : norm']
 
     def __init__(self):
         super().__init__()
@@ -2036,12 +1692,66 @@ class GameWindow27(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=bcYxNusTPrw')
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=YnubLDYNNfQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+
+class GameWindow27(Game):
+    music_list = ['(노레를 선택하세요)', 'f(x) - Lollipop : hard', "NU'EST - Love Paint : hard", '이지수 - 너야 : easy', "박효신 - It's You : hard", '오빠친구동생 - 소보루빵 : hard', '지코 - 날 : easy', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '우주소녀 - Catch Me : hard', '모던다락방 - All I Want Is 바라만봐도 : norm']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=bcYxNusTPrw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
@@ -2049,11 +1759,11 @@ class GameWindow27(Game):
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=TutGX4fTXMw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/5bBh8fPirDk')
@@ -2065,29 +1775,19 @@ class GameWindow27(Game):
 
         elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/A6JrasjoyeY')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/-tDld3F9xAA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow28(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '애프터스쿨 - 너 때문에',
-                  '샤이니 - Wowowow',
-                  "비스트 - I'm sorry",
-                  '샤이니 - One',
-                  '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래',
-                  '잔나비 - Goodnight (Intro)',
-                  '엠버 - Borders',
-                  '비투비 블루 - 내 곁에 서 있어줘',
-                  '연애말고 결혼 OST - Love Knots']
+    music_list = ['(노레를 선택하세요)', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '연애말고 결혼 OST - Love Knots : hard', '애프터스쿨 - 너 때문에 : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '엠버 - Borders : easy', '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard', "비스트 - I'm sorry : easy", "NU'EST - Love Paint : hard"]
 
     def __init__(self):
         super().__init__()
@@ -2100,122 +1800,48 @@ class GameWindow28(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=cllEoGTbPIM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/KJSXolyj4DM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
-        elif item == self.music_list[8]:
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=cllEoGTbPIM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/bNT-zFJKifI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow29(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  'Boa - One Dream',
-                  "박효신 - It's You",
-                  '슈퍼주니어 - SUPERMAN',
-                  'Flower - 사랑은 알아도...',
-                  '정동하 - Mystery (주군의 태양 OST)',
-                  '지나 - 싫어',
-                  '포맨 - 살다가 한번쯤',
-                  '요조 - 바나나파티',
-                  '봄바람 소년 - Only One']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/EOAxIz7VQU8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/IdFeKj798hU')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/WZ2rdYNbndc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/Grv0k1dXz3U')
+            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/eV0RwwijHGw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=V5PLNMn3Wfg')
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=DD5ZGsP3VsM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
-class GameWindow30(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '씨스타 - One More Day',
-                  "박효신 - It's You",
-                  '디아 - 날 위한 이별',
-                  '솔뱅 - 함께 걷던 청계천',
-                  'Flower - 사랑은 알아도...',
-                  '방탄소년단 - We on',
-                  '오빠친구동생 - 소보루빵',
-                  '팀 - Liquid',
-                  '잔나비 - Goodnight (Intro)']
+class GameWindow29(Game):
+    music_list = ['(노레를 선택하세요)', 'Flower - 사랑은 알아도... : easy', '포맨 - 살다가 한번쯤 : hard', '봄바람 소년 - Only One : norm', '요조 - 바나나파티 : hard', '슈퍼주니어 - SUPERMAN : hard', '지나 - 싫어 : easy', "박효신 - It's You : hard", '보아 - One Dream : easy', "NU'EST - Love Paint : hard", '정동하 - Mystery (주군의 태양 OST) : hard']
 
     def __init__(self):
         super().__init__()
@@ -2228,24 +1854,78 @@ class GameWindow30(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/eV0RwwijHGw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=DD5ZGsP3VsM')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.music_thread('https://www.youtube.com/watch?v=V5PLNMn3Wfg')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/Grv0k1dXz3U')
             self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+
+class GameWindow30(Game):
+    music_list = ['(노레를 선택하세요)', '시스타 - One More Day : hard', "NU'EST - Love Paint : hard", '디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '솔뱅 - 함께 걷던 청계천 : norm', 'Flower - 사랑은 알아도... : easy', '방탄소년단 - We on : easy', '오빠친구동생 - 소보루빵 : hard', '팀 - Liquid : norm', '잔나비 - Goodnight (Intro) : hard']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=IyuUyIeyYCc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
@@ -2257,29 +1937,19 @@ class GameWindow30(Game):
 
         elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=TutGX4fTXMw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/i4kkDOk9PnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
             self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow31(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '가인 - 피어나',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '슈퍼주니어 - SUPERMAN',
-                  '봄바람 소년 - Only One',
-                  '정동하 - Mystery (주군의 태양 OST)',
-                  '더 콰이엇 - 진흙 속에서 피는 꽃',
-                  'NS 윤지 - 니가 뭘 알아',
-                  '지훈 - 너만 생각나']
+    music_list = ['(노레를 선택하세요)', '슈퍼주니어 - SUPERMAN : hard', '가인 - 피어나 : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지훈 - 너만 생각나 : hard', '봄바람 소년 - Only One : norm', "박효신 - It's You : hard", '정동하 - Mystery (주군의 태양 OST) : hard', "NU'EST - Love Paint : hard", 'Flower - 사랑은 알아도... : easy']
 
     def __init__(self):
         super().__init__()
@@ -2292,58 +1962,48 @@ class GameWindow31(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/kFLNAB5-qsQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/IdFeKj798hU')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=DD5ZGsP3VsM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/WZ2rdYNbndc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/K6fzVQ7KKXM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[10]:
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=DD5ZGsP3VsM')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow32(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '박효신 - 야생화',
-                  "박효신 - It's You",
-                  '디아 - 날 위한 이별',
-                  '포맨 - 살다가 한번쯤',
-                  '슈퍼주니어 - SUPERMAN',
-                  '나플라 - 우',
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '스윙스 - 이겨낼거야 2',
-                  '지훈 - 너만 생각나']
+    music_list = ['(노레를 선택하세요)', '디아 - 날 위한 이별 : hard', '포맨 - 살다가 한번쯤 : hard', '슈퍼주니어 - SUPERMAN : hard', '나플라 - 우 : easy', "NU'EST - Love Paint : hard", '스윙스 - 이겨낼거야 2 : norm', '지훈 - 너만 생각나 : hard', '박효신 - 야생화 : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
 
     def __init__(self):
         super().__init__()
@@ -2356,58 +2016,48 @@ class GameWindow32(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/eV0RwwijHGw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/eV0RwwijHGw')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/IdFeKj798hU')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/isGDGhBsOT4')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/DKQWuqsKXpM')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/DKQWuqsKXpM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=G0wjfcufRDk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow33(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - NCT 127,Switch',
-                  'NCT 127 - Switch',
-                  '에일리 - 이제는 안녕',
-                  '방탄소년단 - Intro: Never Mind',
-                  '방탄소년단 - 고엽',
-                  '디아 - 날 위한 이별',
-                  '안현정 - 그대와 나',
-                  '동방신기 - Humanoids',
-                  '에이핑크 - 몰라요',
-                  '여은 - 사랑아 나의 사랑아']
+    music_list = ['(노레를 선택하세요)', 'NCT 127 - Switch : norm', '여은 - 사랑아 나의 사랑아 : norm', "NU'EST - Love Paint : hard", '동방신기 - Humanoids : norm', '안현정 - 그대와 나 : hard', '에이핑크 - 몰라요 : hard', '방탄소년단 - 고엽 : easy', '에일리 - 이제는 안녕 : hard', '방탄소년단 - Intro: Never Mind : easy', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -2420,58 +2070,48 @@ class GameWindow33(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/eQJEGWQx_Lk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/yvU8KRQRfbQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/ugrXP_YT9j0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/qTI0TJUGDts')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/cljJCtXYvuI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/4eRNIS6zMeo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=42z1_1QteCg')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/yvU8KRQRfbQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/qTI0TJUGDts')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/eQJEGWQx_Lk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow34(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '빅스 - 사슬 (Chained up)',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '빅스 - Love Me Do',
-                  '디아 - 날 위한 이별',
-                  '오빠친구동생 - 소보루빵',
-                  '4MINUTE - 팜므파탈',
-                  '인피니트 - 붙박이 별',
-                  '신용재 - 평범한 사랑']
+    music_list = ['(노레를 선택하세요)', '신용재 - 평범한 사랑 : norm', '인피니트 - 붙박이 별 : hard', '4MINUTE - 팜므파탈 : norm', '오빠친구동생 - 소보루빵 : hard', 'VIXX - Love Me Do : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", "NU'EST - Love Paint : hard", '빅스 - 사슬 : easy', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -2484,58 +2124,48 @@ class GameWindow34(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/7o2SvZhpp8c')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/nwHnJT-AXR0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=TutGX4fTXMw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=jqCIlPQ-sI8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=TutGX4fTXMw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/nwHnJT-AXR0')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/7o2SvZhpp8c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow35(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  'BoA - Only One',
-                  '잔나비 - Goodnight (Intro)',
-                  'MBLAQ - 유령(같이 사랑했잖아)',
-                  "박효신 - It's You",
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '장나라 - 오월의 눈사람',
-                  '인피니트 - Follow Me',
-                  '김장훈 - 어머니는 내 마음을 아세요',
-                  'Flower - 사랑은 알아도...']
+    music_list = ['(노레를 선택하세요)', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'Flower - 사랑은 알아도... : easy', '인피니트 - Follow Me : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '잔나비 - Goodnight (Intro) : hard', "NU'EST - Love Paint : hard", '보아 - Only One : easy', '장나라 - 오월의 눈사람 : hard']
 
     def __init__(self):
         super().__init__()
@@ -2548,58 +2178,48 @@ class GameWindow35(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=PQjovLrnvVo')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=3uWlDF40QMc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=3art4Cu-yqg')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=3art4Cu-yqg')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow36(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '2NE1 - 안녕',
-                  "박효신 - It's You",
-                  '인피니트 - Follow Me',
-                  '이지수 - 너야',
-                  'VAV - 달빛 아래서',
-                  'Flower - 사랑은 알아도...',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '일렉트로보이즈 - love (feat. 승희 from brave new girl group)']
+    music_list = ['(노레를 선택하세요)', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '이지수 - 너야 : easy', 'VAV - 달빛 아래서 : easy', 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', "NU'EST - Love Paint : hard", '2NE1 - 안녕 : hard', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard']
 
     def __init__(self):
         super().__init__()
@@ -2612,58 +2232,49 @@ class GameWindow36(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=wEkLHC7l25w')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=6HXnodVJhSI&list=OLAK5uy_kMSFXWnI5_OujCI0ON4-16F8ymMhufnY0&index=1')
+        elif item == self.music_list[4]:
+            self.music_thread(
+            'https://www.youtube.com/watch?v=6HXnodVJhSI&list=OLAK5uy_kMSFXWnI5_OujCI0ON4-16F8ymMhufnY0&index=1')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[7]:
+        elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[8]:
+        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/4bVF3W32oMc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow37(Game):
-    music_list = ['(노래를 선택하세요)',
-                  '뉴이스트 - Love Paint',
-                  '휘성 - Night and Day',
-                  '잠비나이 - Connection',
-                  "박효신 - It's You",
-                  '인피니트 - Follow Me',
-                  'MBLAQ - 유령(같이 사랑했잖아)',
-                  '박재민 - 하루',
-                  '에일리 - 수줍은 내 사랑',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '잔나비 - Goodnight (Intro)']
+    music_list = ['(노레를 선택하세요)', '에일리 - 수줍은 내 사랑 : easy', '박재민 - 하루 : norm', "NU'EST - Love Paint : hard", "박효신 - It's You : hard", '인피니트 - Follow Me : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '휘성 - Night and Day : easy', '잠비나이 - Connection : hard', '잔나비 - Goodnight (Intro) : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard']
 
     def __init__(self):
         super().__init__()
@@ -2676,58 +2287,48 @@ class GameWindow37(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=Ee15gbUiqfs')
+            self.music_thread('https://youtu.be/s6I9S9mTt0o')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=napCk8ZVlpw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=XxEtFMDmcPE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/ujqVQBgDttc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=QTQhNI9NNQw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=3uWlDF40QMc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=XxEtFMDmcPE')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/s6I9S9mTt0o')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/ujqVQBgDttc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow38(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '레드벨벳 - Ice Cream Cake',
-                  '샤이니 - Wowowow',
-                  '잔나비 - Goodnight (Intro)',
-                  '엠버 - Borders',
-                  '에이핑크 - Secret Garden',
-                  '샤이니 - One',
-                  '비투비 블루 - 내 곁에 서 있어줘',
-                  'god - 길',
-                  'f(x) - All Mine']
+    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '엠버 - Borders : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', '잔나비 - Goodnight (Intro) : hard', 'GOD - 길 : hard', '샤이니 - Wowowow : easy', 'f(x) - All Mine : hard', 'EXO - Heart Attack : easy', '샤이니 - One : hard', '레드벨벳 - Ice Cream Cake : hard']
 
     def __init__(self):
         super().__init__()
@@ -2740,59 +2341,48 @@ class GameWindow38(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/nV6g2SPRq1w')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/bNT-zFJKifI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+        elif item == self.music_list[2]:
+            self.music_thread('https://youtu.be/bNT-zFJKifI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[8]:
+        elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=bLALIv5C7Q8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=3zo4F0ZI5wE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow39(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  'EXO - Monster',
-                  '데미온 - Street of Dawn',
-                  '레드벨벳 - Light Me Up',
-                  '잔나비 - Goodnight (Intro)',
-                  'IU - 미운 오리',
-                  '김장훈 - 어머니는 내 마음을 아세요',
-                  '틴탑 - 향수 뿌리지마',
-                  'VAV - 달빛 아래서',
-                  'god - 길']
-
+    music_list = ['(노레를 선택하세요)', 'EXO - Monster : hard', 'EXO - Heart Attack : easy', 'GOD - 길 : hard', '잔나비 - Goodnight (Intro) : hard', '틴탑 - 향수 뿌리지마 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'IU - 미운 오리 : easy', '레드벨벳 - Light Me Up : norm', '데미온 - Street of Dawn : norm', 'VAV - 달빛 아래서 : easy']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -2804,58 +2394,48 @@ class GameWindow39(Game):
             pass
 
         elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=VatHIJh4O0M')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
             self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=KSH-FVVtTf0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/dCdRIvqVGtA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/rRctWJReQFQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/TUZrerjUfIM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=NK3y5QJ1rp8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=LsQKeNhdda8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/TUZrerjUfIM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/rRctWJReQFQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=6HXnodVJhSI&list=OLAK5uy_kMSFXWnI5_OujCI0ON4-16F8ymMhufnY0&index=1')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/dCdRIvqVGtA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
+            self.music_thread('https://www.youtube.com/watch?v=6HXnodVJhSI&list=OLAK5uy_kMSFXWnI5_OujCI0ON4-16F8ymMhufnY0&index=1')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow40(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '아이유 - 스물셋',
-                  '앤츠 - 예쁜 너니까',
-                  '비투비 - 두 번째 고백',
-                  '헨리 - I Would',
-                  '인피니트 - 맡겨',
-                  '빅뱅 - 맨정신',
-                  'EXO - BEAUTIFUL',
-                  '어반자카파 - Rainbow Ride (Prelude)',
-                  '산들(B1A4) - 짝사랑']
+    music_list = ['(노레를 선택하세요)', 'EXO - Heart Attack : easy', '아이유 - 스물셋 : hard', '비투비 - 두 번째 고백 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '앤츠 - 예쁜 너니까 : easy', '헨리 - I Would : hard', '인피니트 - 맡겨 : norm', '빅뱅 - 맨정신 : hard', 'EXO - BEAUTIFUL : norm', '산들(B1A4) - 짝사랑 : norm']
 
     def __init__(self):
         super().__init__()
@@ -2872,54 +2452,44 @@ class GameWindow40(Game):
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=42Gtm4-Ax2U')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=NeeMfvMnYnE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=rxl9cIbBHrc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
+        elif item == self.music_list[4]:
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/RXos9M66VbM')
+            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/NYanZjjfUw4')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/RXos9M66VbM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/MBNQgq56egk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/NYanZjjfUw4')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/ZPmnUSmzzno')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/MBNQgq56egk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/9JpxslQR-zc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/ZPmnUSmzzno')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/osYmpohGBS8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow41(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '현아 - 빨개요',
-                  '클래지콰이 프로젝트 - Android',
-                  '한희정 - 러브레터',
-                  '뉴이스트 - 나의 천국',
-                  'J-Min - Beautiful Days',
-                  '엠버 - Need To Feel Needed',
-                  '지나 - 싫어',
-                  '셰인 - Be My Love',
-                  '엠블랙 - Again']
+    music_list = ['(노레를 선택하세요)', 'EXO - Heart Attack : easy', '클래지콰이 프로젝트 - Android : norm', '현아 - 빨개요 : hard', '셰인 - Be My Love : norm', '지나 - 싫어 : easy', '엠버 - Need To Feel Needed : easy', 'J-Min - Beautiful Days : hard', '뉴이스트 - 나의 천국 : hard', '한희정 - 러브레터 : norm', '엠블랙 - Again : hard']
 
     def __init__(self):
         super().__init__()
@@ -2936,54 +2506,44 @@ class GameWindow41(Game):
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/oTXCgR93zC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/OmfR14eBQQo')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/OmfR14eBQQo')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=taSWFpvWOag')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/sCpFPdavYII')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/UmC0cfwSKks')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/6390tjodZ5k')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/iNPfFLmwyqM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/aHlYN3jIRMU')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
             self.music_thread('https://youtu.be/Grv0k1dXz3U')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/UmC0cfwSKks')
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/aHlYN3jIRMU')
             self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://youtu.be/iNPfFLmwyqM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://youtu.be/6390tjodZ5k')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://youtu.be/sCpFPdavYII')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/0GotOSuAO3U')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow42(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '에일리 - 노래가 늘었어',
-                  '4MINUTE - 팜므파탈',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '제이민 x 심은지 - 집 앞에서',
-                  '인피니트 - 불편한 진실',
-                  '어반자카파 - Rainbow Ride (Prelude)',
-                  '밍스 - shut up',
-                  "백지영 - 아이캔't 드링크",
-                  '일렉트로보이즈 - love (feat. 승희 from brave new girl group)']
+    music_list = ['(노레를 선택하세요)', '4MINUTE - 팜므파탈 : norm', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '제이민 x 심은지 - 집 앞에서 : norm', 'EXO - Heart Attack : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '인피니트 - 불편한 진실 : norm', '에일리 - 노래가 늘었어 : easy', '밍스 - shut up : easy', "백지영 - 아이캔't 드링크 : easy", '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard']
 
     def __init__(self):
         super().__init__()
@@ -2996,31 +2556,31 @@ class GameWindow42(Game):
             pass
 
         elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://youtu.be/vllQcjG_au4')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[4]:
             self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/S122aFkcOiw')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/vllQcjG_au4')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/IYyENijVcU4')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.music_thread('https://www.youtube.com/watch?v=S122aFkcOiw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
@@ -3033,21 +2593,11 @@ class GameWindow42(Game):
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/4bVF3W32oMc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow43(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '인피니트 - 내꺼하자',
-                  '에이핑크 - Secret Garden',
-                  '인피니트 - Follow Me',
-                  '잔나비 - Goodnight (Intro)',
-                  "박효신 - It's You",
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '이지수 - 너야',
-                  'god - 길',
-                  '레드벨벳 - Light Me Up']
+    music_list = ['(노레를 선택하세요)', '이지수 - 너야 : easy', '레드벨벳 - Light Me Up : norm', '인피니트 - 내꺼하자 : hard', 'GOD - 길 : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '에이핑크 - Secret Garden : easy', 'EXO - Heart Attack : easy', '잔나비 - Goodnight (Intro) : hard']
 
     def __init__(self):
         super().__init__()
@@ -3060,186 +2610,48 @@ class GameWindow43(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/tqC8AmuZuLI')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/rRctWJReQFQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow44(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  'f(x) - Lollipop (feat. SHINee)',
-                  '어반자카파 - Rainbow Ride (Prelude)',
-                  '임창정 - 그렇게 당해놓고',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '아이오아이 - 내 말대로 해줘',
-                  '슈퍼주니어 - SUPERMAN',
-                  '에일리 - 얼음꽃',
-                  'RETA - Listen Now']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=bcYxNusTPrw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/rRctWJReQFQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/9JpxslQR-zc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=YnubLDYNNfQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/t1gRKVgghKY')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/5ParLiob-xw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/IdFeKj798hU')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/Z8KzIpDqYoc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/XTSCvT7_dys')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-
-class GameWindow45(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '애프터스쿨 - 너 때문에',
-                  "박효신 - It's You",
-                  'Flower - 사랑은 알아도...',
-                  '인피니트 - Follow Me',
-                  '에이핑크 - Secret Garden',
-                  '잔나비 - Goodnight (Intro)',
-                  '슈퍼주니어 - SUPERMAN',
-                  '디아 - 날 위한 이별',
-                  '인피니트 H - Fly Again']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=cllEoGTbPIM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/IdFeKj798hU')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://www.youtube.com/watch?v=FAQ7BOD76l8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
-class GameWindow46(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  'BoA - One Dream',
-                  '박세영 - 블루로드',
-                  '칠전팔기 구해라 OST - 아로하',
-                  '현아 - Attention',
-                  '인피니트 - Alone',
-                  "비프리 - fly (feat. loco & s'way.d)",
-                  '슈퍼주니어 - Sexy, Free & Single',
-                  '비즈니즈 - 죽은 위인들의 사회',
-                  '아지아틱스 - Cold']
+class GameWindow44(Game):
+    music_list = ['(노레를 선택하세요)', "박효신 - It's You : hard", '아이오아이 - 내 말대로 해줘 : easy', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '에일리 - 얼음꽃 : hard', '임창정 - 그렇게 당해놓고 : norm', 'EXO - Heart Attack : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', 'f(x) - Lollipop : hard', 'RETA - Listen Now : hard']
 
     def __init__(self):
         super().__init__()
@@ -3252,58 +2664,48 @@ class GameWindow46(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/EOAxIz7VQU8')
+            self.music_thread('https://youtu.be/5ParLiob-xw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=OSaANCJsfXs')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/u052eGvnQg0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=sV5cwqHw-p8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Z8KzIpDqYoc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=AoS_cWcZB34')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t1gRKVgghKY')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/-e0FSXlQm4Q')
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/gWIkiI_UmeE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/9PmvBKQOCCw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=bcYxNusTPrw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/e8jXzim2hXk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/XTSCvT7_dys')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
-class GameWindow47(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  'SISTAR - One More Day',
-                  '세븐틴 - BEAUTIFUL',
-                  '이홍기 - Jump (뜨거운 안녕 OST)',
-                  '시스타 - 이불 덮고 들어',
-                  '김범수 - 사랑의 시작은 고백에서부터 (프로듀사 OST)',
-                  '블루베어스 & 택연 - 오늘 같은 밤',
-                  '미생 OST - 출근길',
-                  '앤츠 - 예쁜 너니까',
-                  '윤도현 - 사랑했나봐']
+class GameWindow45(Game):
+    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '인피니트 - Follow Me : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '애프터스쿨 - 너 때문에 : hard', 'EXO - Heart Attack : easy', '잠비나이 - Connection : hard', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -3316,122 +2718,156 @@ class GameWindow47(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=cllEoGTbPIM')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://youtu.be/ujqVQBgDttc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+
+class GameWindow46(Game):
+    music_list = ['(노레를 선택하세요)', '보아 - One Dream : easy', 'EXO - Heart Attack : easy', '아지아틱스 - Cold : hard', '비즈니즈 - 죽은 위인들의 사회 : norm', '슈퍼주니어 - Sexy, Free & Single : norm', "비프리 - fly (feat. loco & s'way.d) : hard", '인피니트 - Alone : easy', '현아 - Attention : norm', '칠전팔기 구해라 OST - 아로하 : hard', '박세영 - 블루로드 : norm']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://youtu.be/e8jXzim2hXk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://youtu.be/9PmvBKQOCCw')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://youtu.be/gWIkiI_UmeE')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/-e0FSXlQm4Q')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=AoS_cWcZB34')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://www.youtube.com/watch?v=sV5cwqHw-p8')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://youtu.be/u052eGvnQg0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=OSaANCJsfXs')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+
+class GameWindow47(Game):
+    music_list = ['(노레를 선택하세요)', '시스타 - One More Day : hard', 'EXO - Heart Attack : easy', '세븐틴 - BEAUTIFUL : hard', '미생 OST - Jordan Fantasy : hard', '윤도현 - 사랑했나봐 : easy', '미생 OST - 출근길 : norm', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '앤츠 - 예쁜 너니까 : easy', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '시스타 - 이불 덮고 들어 : norm']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
             self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/TVaeTwHc2Lc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/JJlFuj7WA9Q')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/MC7FxEOm5bo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://youtu.be/sC0XKHDA-xM')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[6]:
-            self.music_thread('https://youtu.be/oi4DIlc3HVo')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=uxhVy02aTqA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/uvatwry5tmA')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[9]:
-            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[10]:
             self.music_thread('https://www.youtube.com/watch?v=KeMbLY7ztDw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-
-class GameWindow48(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '가인 - 피어나',
-                  '비 - 30 SEXY (East4a deeptech mix)',
-                  '시스타 - Say I Love You',
-                  'better days 48',
-                  '디아 - 날 위한 이별',
-                  '시크릿 - Madonna',
-                  '크라운제이 - The Best (feat. 서인영)',
-                  '케이윌 - 이러지마 제발',
-                  '유미 - Last one (주군의 태양 OST)']
-
-    def __init__(self):
-        super().__init__()
-        Game.__init__(self)
-
-    def music_play(self):
-        item = self.music.currentText()
-
-        if item == self.music_list[0]:
-            pass
-
-        elif item == self.music_list[1]:
-            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[2]:
-            self.music_thread('https://youtu.be/kFLNAB5-qsQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[3]:
-            self.music_thread('https://youtu.be/ZCLWXYCmeUcc')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[4]:
-            self.music_thread('https://youtu.be/nslMk8Vuw-0')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
-        elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[6]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/uvatwry5tmA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/n2fM1yHE_Nc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=uxhVy02aTqA')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/exqQ-a1UZfY')
+            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/PdUiCJnRptk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/JJlFuj7WA9Q')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/XEk5Nrd3-Zs')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/sC0XKHDA-xM')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
-class GameWindow49(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'EXO - Heart Attack',
-                  '박효신 - 야생화',
-                  "박효신 - It's You",
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난',
-                  '디아 - 날 위한 이별',
-                  '4MINUTE - 팜므파탈',
-                  '김종국 - 눈물자국',
-                  '우주소녀 - Catch Me',
-                  '지코 - 날',
-                  '윤도현 - 요즘 내 모습']
+class GameWindow48(Game):
+    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : easy', '케이윌 - 이러지마 제발 : easy', '시크릿 - Madonna : easy', '크라운제이 - The Best (feat. 서인영) : hard', '유미 - Last one (주군의 태양 OST) : norm', '요섭(비스트) - 나와 : hard', '가인 - 피어나 : hard', '비 - 30 SEXY (East4a deeptech mix) : norm', '시스타 - Say I Love You : hard', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -3448,53 +2884,98 @@ class GameWindow49(Game):
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.music_thread('https://youtu.be/PdUiCJnRptk')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.music_thread('https://youtu.be/n2fM1yHE_Nc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.music_thread('https://youtu.be/exqQ-a1UZfY')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[5]:
+            self.music_thread('https://youtu.be/XEk5Nrd3-Zs')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[6]:
+            self.music_thread('https://youtu.be/61B2Ol6gzLc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[7]:
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[8]:
+            self.music_thread('https://youtu.be/ZCLWXYCmeUcc')
+            self.btn_start.clicked.connect(self.game_start_norm)
+
+        elif item == self.music_list[9]:
+            self.music_thread('https://youtu.be/nslMk8Vuw-0')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+
+class GameWindow49(Game):
+    music_list = ['(노래를 선택하세요)','김종국 - 눈물자국 : easy', '우주소녀 - Catch Me : hard', '지코 - 날 : easy', '윤도현 - 요즘 내 모습 : easy', 'EXO - Heart Attack : easy', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '박효신 - 야생화 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+
+    def __init__(self):
+        super().__init__()
+        Game.__init__(self)
+
+    def music_play(self):
+        item = self.music.currentText()
+
+        if item == self.music_list[0]:
+            pass
+
+        elif item == self.music_list[1]:
+            self.music_thread('https://youtu.be/0zMYllAzwM0')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[2]:
+            self.music_thread('https://youtu.be/A6JrasjoyeY')
+            self.btn_start.clicked.connect(self.game_start_hard)
+
+        elif item == self.music_list[3]:
+            self.music_thread('https://youtu.be/5bBh8fPirDk')
+            self.btn_start.clicked.connect(self.game_start_easy)
+
+        elif item == self.music_list[4]:
+            self.music_thread('https://youtu.be/M9jYuBrX0eUU')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://youtu.be/0zMYllAzwM0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('https://youtu.be/A6JrasjoyeY')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('https://youtu.be/5bBh8fPirDk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('https://youtu.be/M9jYuBrX0eUU')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow50(Game):
-    music_list = ['EXO - Heart Attack',
-                  'NCT 127 - Switch',
-                  '스윗소로우 - 별 일 아니에요 (연애의 발견 OST)',
-                  '황치열, 리싸 - 이 밤의 끝을 잡고',
-                  '비스트 - Easy',
-                  '벤 - 안 괜찮아',
-                  '방탄소년단 - Intro: Never Mind',
-                  '앤츠 - 예쁜 너니까',
-                  '주군의 태양 OST - Ghost World',
-                  '빅뱅 - Crazy Dog']
+    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : easy', 'NCT 127 - Switch : norm', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', '황치열, 리싸 - 이 밤의 끝을 잡고 : easy', '비스트 - Easy : hard', '벤 - 안 괜찮아 : norm', '방탄소년단 - Intro: Never Mind : easy', '앤츠 - 예쁜 너니까 : easy', '주군의 태양 OST - Ghost World : norm', '빅뱅 - Crazy Dog : hard']
 
     def __init__(self):
         super().__init__()
@@ -3512,11 +2993,11 @@ class GameWindow50(Game):
 
         elif item == self.music_list[2]:
             self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
             self.music_thread('https://youtu.be/GELnbRfJv3c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/23oVRoiu_dk')
@@ -3524,11 +3005,11 @@ class GameWindow50(Game):
 
         elif item == self.music_list[5]:
             self.music_thread('https://youtu.be/cPTL-1ijmTI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/4b_ABHDG0Zg')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
             self.music_thread('https://youtu.be/ugrXP_YT9j0')
@@ -3540,24 +3021,15 @@ class GameWindow50(Game):
 
         elif item == self.music_list[9]:
             self.music_thread('https://youtu.be/onAdqNddGpw')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
             self.music_thread('https://youtu.be/c1nag-CoLpk')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow51(Game):
-    music_list = ['박재민 - 하루',
-                  'VAV - 달빛 아래서',
-                  'DICKPUNKS - 지금을 잃고 싶지 않아',
-                  '데미온 - Street of Dawn',
-                  '잔나비 - Goodnight (Intro)',
-                  '윤지훈 - 너밖에 몰라',
-                  '빅스 - 사슬',
-                  'GOD - 길',
-                  'EXO - Heart Attack',
-                  'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난']
+    music_list = ['(노래를 선택하세요)','박재민 - 하루 : norm', 'VAV - 달빛 아래서 : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '데미온 - Street of Dawn : norm', '잔나비 - Goodnight (Intro) : hard', '윤지훈 - 너밖에 몰라 : hard', '빅스 - 사슬 : easy', 'GOD - 길 : hard', 'EXO - Heart Attack : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
 
     def __init__(self):
         super().__init__()
@@ -3571,27 +3043,28 @@ class GameWindow51(Game):
 
         elif item == self.music_list[1]:
             self.music_thread('https://www.youtube.com/watch?v=XxEtFMDmcPE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('https://www.youtube.com/watch?v=6HXnodVJhSI&list=OLAK5uy_kMSFXWnI5_OujCI0ON4-16F8ymMhufnY0&index=1')
+            self.music_thread(
+            'https://www.youtube.com/watch?v=6HXnodVJhSI&list=OLAK5uy_kMSFXWnI5_OujCI0ON4-16F8ymMhufnY0&index=1')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/dCdRIvqVGtA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://www.youtube.com/watch?v=IMQQbW33Vv0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
             self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
@@ -3599,7 +3072,7 @@ class GameWindow51(Game):
 
         elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=KgXtSx8ublA')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=17EC_xVcqC8')
@@ -3607,11 +3080,11 @@ class GameWindow51(Game):
 
         elif item == self.music_list[10]:
             self.music_thread('https://www.youtube.com/watch?v=FMIqLQR0CYI')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow52(Game):
-    music_list = ['EXO - Heart Attack', 'Flower - 사랑은 알아도...', 'DICKPUNKS - 지금을 잃고 싶지 않아', '이오공감 - 한 사람을 위한 마음', "박효신 - It's You", '인피니트 - Follow Me', "바람이 분다OST - It's Over", '에이핑크 - Secret Garden', '슈가볼 - Cherish', '보아 - Only One']
+    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : easy', 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '이오공감 - 한 사람을 위한 마음 : norm', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', "바람이 분다OST - It's Over : hard", '에이핑크 - Secret Garden : easy', '슈가볼 - Cherish : norm', '보아 - Only One : easy']
 
     def __init__(self):
         super().__init__()
@@ -3633,23 +3106,24 @@ class GameWindow52(Game):
 
         elif item == self.music_list[3]:
             self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
             self.music_thread('https://youtu.be/DokABcA8Iy8')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
             self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
             self.music_thread('https://youtu.be/mb1J6xz1ME0')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('https://www.youtube.com/watch?v=qocyC5nvsH8&list=OLAK5uy_kfaAb-W2pQsUqp0x-VmmMlHrGyQhvD79k&index=15')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread(
+            'https://www.youtube.com/watch?v=qocyC5nvsH8&list=OLAK5uy_kfaAb-W2pQsUqp0x-VmmMlHrGyQhvD79k&index=15')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
             self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
@@ -3657,7 +3131,7 @@ class GameWindow52(Game):
 
         elif item == self.music_list[9]:
             self.music_thread('https://www.youtube.com/watch?v=bq3-da4ENs4')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
             self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
@@ -3665,7 +3139,7 @@ class GameWindow52(Game):
 
 
 class GameWindow53(Game):
-    music_list = ["신데렐라와 네 명의 기사 OST - Let's Cheer Up! : easy", '이준기 - 하루만 : hard', '임창정 - 그렇게 당해놓고 : norm', '에이핑크 - Wanna Be : easy', '2NE1 - 안녕 : hard', '4MINUTE - BABABA : hard', '비스트 - Sad Movie : easy', '시스타 - Say I Love You : hard', 'EXO - Heart Attack : easy', '크라운제이 - The Best (feat. 서인영) : hard']
+    music_list = ['(노래를 선택하세요)',"신데렐라와 네 명의 기사 OST - Let's Cheer Up! : easy", '이준기 - 하루만 : hard', '임창정 - 그렇게 당해놓고 : norm', '에이핑크 - Wanna Be : easy', '2NE1 - 안녕 : hard', '4MINUTE - BABABA : hard', '비스트 - Sad Movie : easy', '시스타 - Say I Love You : hard', 'EXO - Heart Attack : easy', '크라운제이 - The Best (feat. 서인영) : hard']
 
     def __init__(self):
         super().__init__()
@@ -3719,7 +3193,7 @@ class GameWindow53(Game):
 
 
 class GameWindow54(Game):
-    music_list = ['비스트 - Fiction : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', "박효신 - It's You : hard", '캐스커 - Undo : hard', '인피니트 - Follow Me : hard', '잔나비 - Goodnight (Intro) : hard', '에이핑크 - Secret Garden : easy', '천둥 - Good : norm', '휘성 - Night and Day : easy', 'EXO - Heart Attack : easy']
+    music_list = ['(노래를 선택하세요)','비스트 - Fiction : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', "박효신 - It's You : hard", '캐스커 - Undo : hard', '인피니트 - Follow Me : hard', '잔나비 - Goodnight (Intro) : hard', '에이핑크 - Secret Garden : easy', '천둥 - Good : norm', '휘성 - Night and Day : easy', 'EXO - Heart Attack : easy']
 
     def __init__(self):
         super().__init__()
@@ -3773,7 +3247,7 @@ class GameWindow54(Game):
 
 
 class GameWindow55(Game):
-    music_list = ['지훈 - 너만 생각나 : hard', '슈퍼주니어 - SUPERMAN : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '딕펑스 - 한강에서 놀아요 : norm', 'EXO - Monster : hard', '레드벨벳 - Ice Cream Cake : hard']
+    music_list = ['(노래를 선택하세요)','지훈 - 너만 생각나 : hard', '슈퍼주니어 - SUPERMAN : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '딕펑스 - 한강에서 놀아요 : norm', 'EXO - Monster : hard', '레드벨벳 - Ice Cream Cake : hard']
 
     def __init__(self):
         super().__init__()
@@ -3827,7 +3301,7 @@ class GameWindow55(Game):
 
 
 class GameWindow56(Game):
-    music_list = ['려욱 - 그대 : norm', '방탄소년단 - Intro: Never Mind : easy', 'EXO - Let out the Beast : hard', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '커피소년 - 바보 : hard', '방탄소년단 - 진격의 방탄 : norm', '레드벨벳 - Ice Cream Cake : hard', '아이유 - 스물셋 : hard', '현아 - Change : hard']
+    music_list = ['(노래를 선택하세요)','려욱 - 그대 : norm', '방탄소년단 - Intro: Never Mind : easy', 'EXO - Let out the Beast : hard', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '커피소년 - 바보 : hard', '방탄소년단 - 진격의 방탄 : norm', '레드벨벳 - Ice Cream Cake : hard', '아이유 - 스물셋 : hard', '현아 - Change : hard']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -3880,7 +3354,7 @@ class GameWindow56(Game):
 
 
 class GameWindow57(Game):
-    music_list = ['샤이니 - Runaway : hard', '슬리피 - 기분탓 : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '디아 - 날 위한 이별 : hard', '신용재 - 평범한 사랑 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '현아 - 빨개요 : hard', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)','샤이니 - Runaway : hard', '슬리피 - 기분탓 : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '디아 - 날 위한 이별 : hard', '신용재 - 평범한 사랑 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '현아 - 빨개요 : hard', 'Flower - 사랑은 알아도... : easy']
 
     def __init__(self):
         super().__init__()
@@ -3934,7 +3408,7 @@ class GameWindow57(Game):
 
 
 class GameWindow58(Game):
-    music_list = ['MBLAQ - 유령(같이 사랑했잖아) : easy', 'GOD - 길 : hard', '레드벨벳 - Ice Cream Cake : hard', '에일리 - 노래가 늘었어 : easy', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', '데미온 - Street of Dawn : norm', '인피니트 - Follow Me : hard', '장나라 - 오월의 눈사람 : hard', '레드벨벳 - Light Me Up : norm']
+    music_list = ['(노래를 선택하세요)','MBLAQ - 유령(같이 사랑했잖아) : easy', 'GOD - 길 : hard', '레드벨벳 - Ice Cream Cake : hard', '에일리 - 노래가 늘었어 : easy', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', '데미온 - Street of Dawn : norm', '인피니트 - Follow Me : hard', '장나라 - 오월의 눈사람 : hard', '레드벨벳 - Light Me Up : norm']
 
     def __init__(self):
         super().__init__()
@@ -3988,7 +3462,7 @@ class GameWindow58(Game):
 
 
 class GameWindow59(Game):
-    music_list = ["박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '레드벨벳 - Ice Cream Cake : hard', '슈퍼주니어 - SUPERMAN : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '봄바람 소년 - Only One : norm', '인피니트 - 내꺼하자 : hard', '디아 - 날 위한 이별 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '레드벨벳 - Ice Cream Cake : hard', '슈퍼주니어 - SUPERMAN : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '봄바람 소년 - Only One : norm', '인피니트 - 내꺼하자 : hard', '디아 - 날 위한 이별 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4042,7 +3516,7 @@ class GameWindow59(Game):
 
 
 class GameWindow60(Game):
-    music_list = ['레드벨벳 - Ice Cream Cake : hard', 'f(x) - Lollipop : hard', '레드벨벳 - Huff n Puff : easy', '윤도현밴드 - 미스터리 : norm', '딕펑스 - 한강에서 놀아요 : norm', '딕펑스 - 요즘 젊은 것들 : norm', '방탄소년단 - 진격의 방탄 : norm', '스타러브피쉬 (with Jane) - Goodbye (연애의 발견 OST) : norm', '이오공감 - 한 사람을 위한 마음 : norm', '안현정 - 그대와 나 : hard']
+    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : hard', 'f(x) - Lollipop : hard', '레드벨벳 - Huff n Puff : easy', '윤도현밴드 - 미스터리 : norm', '딕펑스 - 한강에서 놀아요 : norm', '딕펑스 - 요즘 젊은 것들 : norm', '방탄소년단 - 진격의 방탄 : norm', '스타러브피쉬 (with Jane) - Goodbye (연애의 발견 OST) : norm', '이오공감 - 한 사람을 위한 마음 : norm', '안현정 - 그대와 나 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4095,7 +3569,7 @@ class GameWindow60(Game):
             self.btn_start.clicked.connect(self.game_start_hard)
 
 class GameWindow61(Game):
-    music_list = ['레드벨벳 - Ice Cream Cake : hard', '애프터스쿨 - 너 때문에 : hard', '지나유 - 처음사랑 : hard', '슈퍼주니어 - SUPERMAN : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : hard', '애프터스쿨 - 너 때문에 : hard', '지나유 - 처음사랑 : hard', '슈퍼주니어 - SUPERMAN : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm']
 
     def __init__(self):
         super().__init__()
@@ -4149,7 +3623,7 @@ class GameWindow61(Game):
 
 
 class GameWindow62(Game):
-    music_list = ['보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '요조 - 바나나파티 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지나 - 싫어 : easy']
+    music_list = ['(노래를 선택하세요)','보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '요조 - 바나나파티 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지나 - 싫어 : easy']
 
     def __init__(self):
         super().__init__()
@@ -4203,7 +3677,7 @@ class GameWindow62(Game):
 
 
 class GameWindow63(Game):
-    music_list = ['더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', 'Flower - 사랑은 알아도... : easy', '시스타 - One More Day : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', 'Flower - 사랑은 알아도... : easy', '시스타 - One More Day : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm']
 
     def __init__(self):
         super().__init__()
@@ -4257,7 +3731,7 @@ class GameWindow63(Game):
 
 
 class GameWindow64(Game):
-    music_list = ['디아 - 날 위한 이별 : hard', '요조 - 바나나파티 : hard', '포맨 - 살다가 한번쯤 : hard', '봄바람 소년 - Only One : norm', '슈퍼주니어 - SUPERMAN : hard', '가인 - 피어나 : hard', '레드벨벳 - Ice Cream Cake : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : hard', '요조 - 바나나파티 : hard', '포맨 - 살다가 한번쯤 : hard', '봄바람 소년 - Only One : norm', '슈퍼주니어 - SUPERMAN : hard', '가인 - 피어나 : hard', '레드벨벳 - Ice Cream Cake : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -4311,7 +3785,7 @@ class GameWindow64(Game):
 
 
 class GameWindow65(Game):
-    music_list = ['NS 윤지 - 니가 뭘 알아 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '박재민 - 하루 : norm', '오빠친구동생 - 소보루빵 : hard', '레드벨벳 - Ice Cream Cake : hard', '박효신 - 야생화 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '윤지훈 - 너밖에 몰라 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard']
+    music_list = ['(노래를 선택하세요)','NS 윤지 - 니가 뭘 알아 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '박재민 - 하루 : norm', '오빠친구동생 - 소보루빵 : hard', '레드벨벳 - Ice Cream Cake : hard', '박효신 - 야생화 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '윤지훈 - 너밖에 몰라 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4365,7 +3839,7 @@ class GameWindow65(Game):
 
 
 class GameWindow66(Game):
-    music_list = ['레드벨벳 - Ice Cream Cake : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard', '디아 - 날 위한 이별 : hard', 'NCT 127 - Switch : norm', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '정동하 - Mystery (주군의 태양 OST) : hard']
+    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard', '디아 - 날 위한 이별 : hard', 'NCT 127 - Switch : norm', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '정동하 - Mystery (주군의 태양 OST) : hard']
 
     def __init__(self):
         super().__init__()
@@ -4419,7 +3893,7 @@ class GameWindow66(Game):
 
 
 class GameWindow67(Game):
-    music_list = ['빅스 - 사슬 : easy', '지나유 - 처음사랑 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', 'Flower - 사랑은 알아도... : easy', '레드벨벳 - Ice Cream Cake : hard', '윤지훈 - 너밖에 몰라 : hard']
+    music_list = ['(노래를 선택하세요)','빅스 - 사슬 : easy', '지나유 - 처음사랑 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', 'Flower - 사랑은 알아도... : easy', '레드벨벳 - Ice Cream Cake : hard', '윤지훈 - 너밖에 몰라 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4474,7 +3948,7 @@ class GameWindow67(Game):
 
 
 class GameWindow68(Game):
-    music_list = ['보아 - Only One : easy', '레드벨벳 - Ice Cream Cake : hard', '딕펑스 - 한강에서 놀아요 : norm', '4MINUTE - 팜므파탈 : norm', '슈퍼주니어 - SUPERMAN : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard']
+    music_list = ['(노래를 선택하세요)','보아 - Only One : easy', '레드벨벳 - Ice Cream Cake : hard', '딕펑스 - 한강에서 놀아요 : norm', '4MINUTE - 팜므파탈 : norm', '슈퍼주니어 - SUPERMAN : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -4527,7 +4001,7 @@ class GameWindow68(Game):
 
 
 class GameWindow69(Game):
-    music_list = ['4MINUTE - 팜므파탈 : norm', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '디아 - 날 위한 이별 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard', '인피니트 - Follow Me : hard', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '2NE1 - Goodbye : hard', '이지수 - 너야 : easy']
+    music_list = ['(노래를 선택하세요)','4MINUTE - 팜므파탈 : norm', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '디아 - 날 위한 이별 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard', '인피니트 - Follow Me : hard', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '2NE1 - Goodbye : hard', '이지수 - 너야 : easy']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -4580,7 +4054,7 @@ class GameWindow69(Game):
 
 
 class GameWindow70(Game):
-    music_list = ['휘성 - Night and Day : easy', '윤지훈 - 너밖에 몰라 : hard', '레드벨벳 - Ice Cream Cake : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '인피니트 - Follow Me : hard', '잠비나이 - Connection : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard']
+    music_list = ['(노래를 선택하세요)','휘성 - Night and Day : easy', '윤지훈 - 너밖에 몰라 : hard', '레드벨벳 - Ice Cream Cake : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '인피니트 - Follow Me : hard', '잠비나이 - Connection : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4634,7 +4108,7 @@ class GameWindow70(Game):
 
 
 class GameWindow71(Game):
-    music_list = ['유준상 - Love & Hate : hard', '좋아서하는밴드 - 우리 함께 하면 : norm', '한희정 - 러브레터 : norm', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm', '샤이니 - Your Number : easy', 'EXO - Monster : hard', '아이유 - 스물셋 : hard']
+    music_list = ['(노래를 선택하세요)','유준상 - Love & Hate : hard', '좋아서하는밴드 - 우리 함께 하면 : norm', '한희정 - 러브레터 : norm', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm', '샤이니 - Your Number : easy', 'EXO - Monster : hard', '아이유 - 스물셋 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4688,7 +4162,7 @@ class GameWindow71(Game):
 
 
 class GameWindow72(Game):
-    music_list = ['안혜은 - 그녀를 찾지마 : easy', 'EXO - Monster : hard', '바스코 - Whoa Ha ! : norm', 'Lucia(심규선) - 녹여줘 : norm', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '현아 -Red : hard', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : hard', '딕펑스 - 한강에서 놀아요 : norm', '비스트 - Let It Snow : norm', '스윙스 - 이겨낼거야 2 : norm']
+    music_list = ['(노래를 선택하세요)','안혜은 - 그녀를 찾지마 : easy', 'EXO - Monster : hard', '바스코 - Whoa Ha ! : norm', 'Lucia(심규선) - 녹여줘 : norm', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '현아 -Red : hard', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : hard', '딕펑스 - 한강에서 놀아요 : norm', '비스트 - Let It Snow : norm', '스윙스 - 이겨낼거야 2 : norm']
 
     def __init__(self):
         super().__init__()
@@ -4742,7 +4216,7 @@ class GameWindow72(Game):
 
 
 class GameWindow73(Game):
-    music_list = ['f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', '샤이니 - One : hard', '인피니트 - Follow Me : hard', '에일리 - 노래가 늘었어 : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', 'EXO - Monster : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', '샤이니 - One : hard', '인피니트 - Follow Me : hard', '에일리 - 노래가 늘었어 : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', 'EXO - Monster : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm']
 
     def __init__(self):
         super().__init__()
@@ -4796,7 +4270,7 @@ class GameWindow73(Game):
 
 
 class GameWindow74(Game):
-    music_list = ['인피니트 - 내꺼하자 : hard', 'EXO - Monster : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '이지수 - 너야 : easy', "박효신 - It's You : hard", '에이핑크 - Secret Garden : easy', '4MINUTE - 팜므파탈 : norm', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '모던다락방 - All I Want Is 바라만봐도 : norm']
+    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : hard', 'EXO - Monster : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '이지수 - 너야 : easy', "박효신 - It's You : hard", '에이핑크 - Secret Garden : easy', '4MINUTE - 팜므파탈 : norm', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '모던다락방 - All I Want Is 바라만봐도 : norm']
 
     def __init__(self):
         super().__init__()
@@ -4850,7 +4324,7 @@ class GameWindow74(Game):
 
 
 class GameWindow75(Game):
-    music_list = ['Flower - 사랑은 알아도... : easy', 'f(x) - Lollipop : hard', '딕펑스 - 한강에서 놀아요 : norm', '오빠친구동생 - 소보루빵 : hard', '수지 - Ring My Bell : hard', 'EXO - Monster : hard', '인피니트 - 붙박이 별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', '딕펑스 - 요즘 젊은 것들 : norm']
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', 'f(x) - Lollipop : hard', '딕펑스 - 한강에서 놀아요 : norm', '오빠친구동생 - 소보루빵 : hard', '수지 - Ring My Bell : hard', 'EXO - Monster : hard', '인피니트 - 붙박이 별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', '딕펑스 - 요즘 젊은 것들 : norm']
 
     def __init__(self):
         super().__init__()
@@ -4904,7 +4378,7 @@ class GameWindow75(Game):
 
 
 class GameWindow76(Game):
-    music_list = ["박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '이지수 - 너야 : easy', '잔나비 - Goodnight (Intro) : hard', '4MINUTE - 팜므파탈 : norm', 'EXO - Monster : hard', '애프터스쿨 - 너 때문에 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '이지수 - 너야 : easy', '잔나비 - Goodnight (Intro) : hard', '4MINUTE - 팜므파탈 : norm', 'EXO - Monster : hard', '애프터스쿨 - 너 때문에 : hard']
 
     def __init__(self):
         super().__init__()
@@ -4958,7 +4432,7 @@ class GameWindow76(Game):
 
 
 class GameWindow77(Game):
-    music_list = ['EXO - Monster : hard', '보아 - One Dream : easy', '시스타 - Say I Love You : hard', '오준성 - Enjoy Party : easy', '에이핑크 - It Girl : easy', '비스트 - 내가 아니야 : easy', '뉴이스트 - 나의 천국 : hard', '더 라임 그리워서 : norm', 'FTISLAND - 여자는 몰라 : easy', '틴탑 - Date : easy']
+    music_list = ['(노래를 선택하세요)','EXO - Monster : hard', '보아 - One Dream : easy', '시스타 - Say I Love You : hard', '오준성 - Enjoy Party : easy', '에이핑크 - It Girl : easy', '비스트 - 내가 아니야 : easy', '뉴이스트 - 나의 천국 : hard', '더 라임 그리워서 : norm', 'FTISLAND - 여자는 몰라 : easy', '틴탑 - Date : easy']
 
     def __init__(self):
         super().__init__()
@@ -5012,7 +4486,7 @@ class GameWindow77(Game):
 
 
 class GameWindow78(Game):
-    music_list = ['딕펑스 - 요즘 젊은 것들 : norm', '디아 - 날 위한 이별 : hard', '시스타 - One More Day : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', "박효신 - It's You : hard", '딕펑스 - 한강에서 놀아요 : norm', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','딕펑스 - 요즘 젊은 것들 : norm', '디아 - 날 위한 이별 : hard', '시스타 - One More Day : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', "박효신 - It's You : hard", '딕펑스 - 한강에서 놀아요 : norm', '4MINUTE - 팜므파탈 : norm']
 
     def __init__(self):
         super().__init__()
@@ -5066,7 +4540,7 @@ class GameWindow78(Game):
 
 
 class GameWindow79(Game):
-    music_list = ['가인 - 피어나 : hard', 'EXO - Monster : hard', '딕펑스 - 한강에서 놀아요 : norm', '딕펑스 - 요즘 젊은 것들 : norm', '인피니트 - 붙박이 별 : hard', "박효신 - It's You : hard", '이지수 - 너야 : easy', '요조 - 바나나파티 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','가인 - 피어나 : hard', 'EXO - Monster : hard', '딕펑스 - 한강에서 놀아요 : norm', '딕펑스 - 요즘 젊은 것들 : norm', '인피니트 - 붙박이 별 : hard', "박효신 - It's You : hard", '이지수 - 너야 : easy', '요조 - 바나나파티 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -5120,7 +4594,7 @@ class GameWindow79(Game):
 
 
 class GameWindow80(Game):
-    music_list = ['인피니트 - Follow Me : hard', "박효신 - It's You : hard", '박효신 - 야생화 : hard', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '윤지훈 - 너밖에 몰라 : hard', '4MINUTE - 팜므파탈 : norm', '지나유 - 처음사랑 : hard']
+    music_list = ['(노래를 선택하세요)','인피니트 - Follow Me : hard', "박효신 - It's You : hard", '박효신 - 야생화 : hard', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '윤지훈 - 너밖에 몰라 : hard', '4MINUTE - 팜므파탈 : norm', '지나유 - 처음사랑 : hard']
 
     def __init__(self):
         super().__init__()
@@ -5174,7 +4648,7 @@ class GameWindow80(Game):
 
 
 class GameWindow81(Game):
-    music_list = ['윤미래 - 사랑이 맞을거야 : norm', 'NCT 127 - Switch : norm', 'Ailee - 폭풍속으로 : hard', '에일리 - 까꿍 : hard', '세븐틴 - 글쎄 : hard', '비투비 - 북 치고 장구 치고 : easy', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : hard', '신용재 - 평범한 사랑 : norm', 'EXO - Monster : hard', '보아 - Kiss My Lips : easy']
+    music_list = ['(노래를 선택하세요)','윤미래 - 사랑이 맞을거야 : norm', 'NCT 127 - Switch : norm', 'Ailee - 폭풍속으로 : hard', '에일리 - 까꿍 : hard', '세븐틴 - 글쎄 : hard', '비투비 - 북 치고 장구 치고 : easy', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : hard', '신용재 - 평범한 사랑 : norm', 'EXO - Monster : hard', '보아 - Kiss My Lips : easy']
 
     def __init__(self):
         super().__init__()
@@ -5228,7 +4702,7 @@ class GameWindow81(Game):
 
 
 class GameWindow82(Game):
-    music_list = ['효린 - 널 사랑하겠어 : easy', '백지영 - 내 귀에 캔디 : hard', '김종국 - 눈물자국 : easy', '빅스 - 사슬 : easy', 'EXO - Monster : hard', '오빠친구동생 - 소보루빵 : hard', '봄바람 소년 - Only One : norm', '레드벨벳 - Huff n Puff : easy', '디아 - 날 위한 이별 : hard', '산이 - Do It For Fun : norm']
+    music_list = ['(노래를 선택하세요)','효린 - 널 사랑하겠어 : easy', '백지영 - 내 귀에 캔디 : hard', '김종국 - 눈물자국 : easy', '빅스 - 사슬 : easy', 'EXO - Monster : hard', '오빠친구동생 - 소보루빵 : hard', '봄바람 소년 - Only One : norm', '레드벨벳 - Huff n Puff : easy', '디아 - 날 위한 이별 : hard', '산이 - Do It For Fun : norm']
 
     def __init__(self):
         super().__init__()
@@ -5282,7 +4756,7 @@ class GameWindow82(Game):
 
 
 class GameWindow83(Game):
-    music_list = ['보아 - Only One : easy', 'EXO - Monster : hard', '샤이니 - One : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', 'f(x) - All Mine : hard', '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '에이핑크 - Secret Garden : easy']
+    music_list = ['(노래를 선택하세요)','보아 - Only One : easy', 'EXO - Monster : hard', '샤이니 - One : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', 'f(x) - All Mine : hard', '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '에이핑크 - Secret Garden : easy']
 
     def __init__(self):
         super().__init__()
@@ -5336,7 +4810,7 @@ class GameWindow83(Game):
 
 
 class GameWindow84(Game):
-    music_list = ['2NE1 - 안녕 : hard', '시크릿 - Madonna : easy', '비 - 널 붙잡을 노래 : hard', '태양 - Where U At : hard', '니엘 - 심쿵 : hard', '시스타 - 나혼자 : norm', 'EXO - Monster : hard', 'EXO - December, 2014 (The Winter’s Tale) : norm', '니엘 - 그런 날 : norm', '박재범 - Evolution (feat. Gray) : hard']
+    music_list = ['(노래를 선택하세요)','2NE1 - 안녕 : hard', '시크릿 - Madonna : easy', '비 - 널 붙잡을 노래 : hard', '태양 - Where U At : hard', '니엘 - 심쿵 : hard', '시스타 - 나혼자 : norm', 'EXO - Monster : hard', 'EXO - December, 2014 (The Winter’s Tale) : norm', '니엘 - 그런 날 : norm', '박재범 - Evolution (feat. Gray) : hard']
 
     def __init__(self):
         super().__init__()
@@ -5390,7 +4864,7 @@ class GameWindow84(Game):
 
 
 class GameWindow85(Game):
-    music_list = ['이지수 - 너야 : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '휘성 - Night and Day : easy', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', '잔나비 - Goodnight (Intro) : hard', '에이핑크 - Secret Garden : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard']
+    music_list = ['(노래를 선택하세요)','이지수 - 너야 : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '휘성 - Night and Day : easy', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', '잔나비 - Goodnight (Intro) : hard', '에이핑크 - Secret Garden : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard']
 
     def __init__(self):
         super().__init__()
@@ -5444,7 +4918,7 @@ class GameWindow85(Game):
 
 
 class GameWindow86(Game):
-    music_list = ['아이유 - 스물셋 : hard', '샤이니 - Last Christmas : norm', '용준형(비스트) - Caffeine : easy', '현아 -Red : hard', '박보람 - 연예할래 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '멜로디데이 - 마법의 성 : hard', '커피소년 - 바보 : hard', '성훈 - The Justice : hard', 'EXO - MY ANSWER : hard']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '샤이니 - Last Christmas : norm', '용준형(비스트) - Caffeine : easy', '현아 -Red : hard', '박보람 - 연예할래 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '멜로디데이 - 마법의 성 : hard', '커피소년 - 바보 : hard', '성훈 - The Justice : hard', 'EXO - MY ANSWER : hard']
 
     def __init__(self):
         super().__init__()
@@ -5498,7 +4972,7 @@ class GameWindow86(Game):
 
 
 class GameWindow87(Game):
-    music_list = ['아이유 - 스물셋 : hard', '혁오 - Hooka : easy', '빅뱅 - Remember : hard', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '아이유 - 입술 사이 (50cm) : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '이오공감 - 한 사람을 위한 마음 : norm', "샤이니 - Don't Stop : norm", 'EXO - Thunder : easy', '에일리 - 노래가 늘었어 : easy']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '혁오 - Hooka : easy', '빅뱅 - Remember : hard', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '아이유 - 입술 사이 (50cm) : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '이오공감 - 한 사람을 위한 마음 : norm', "샤이니 - Don't Stop : norm", 'EXO - Thunder : easy', '에일리 - 노래가 늘었어 : easy']
 
     def __init__(self):
         super().__init__()
@@ -5552,7 +5026,7 @@ class GameWindow87(Game):
 
 
 class GameWindow88(Game):
-    music_list = ['아이유 - 스물셋 : hard', '4MINUTE - 팜므파탈 : norm', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '포맨 - 살다가 한번쯤 : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard", '이지수 - 너야 : easy']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '4MINUTE - 팜므파탈 : norm', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '포맨 - 살다가 한번쯤 : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard", '이지수 - 너야 : easy']
 
     def __init__(self):
         super().__init__()
@@ -5606,7 +5080,7 @@ class GameWindow88(Game):
 
 
 class GameWindow89(Game):
-    music_list = ['아이유 - 느리게 하는 일 : hard', 'f(x) - Lollipop : hard', '빅스 - Can’t say : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '업텐션 - Just Like That : easy', '디아 - 날 위한 이별 : hard', '나플라 - 우 : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '아이유 - 스물셋 : hard']
+    music_list = ['(노래를 선택하세요)','아이유 - 느리게 하는 일 : hard', 'f(x) - Lollipop : hard', '빅스 - Can’t say : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '업텐션 - Just Like That : easy', '디아 - 날 위한 이별 : hard', '나플라 - 우 : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '아이유 - 스물셋 : hard']
 
     def __init__(self):
         super().__init__()
@@ -5660,7 +5134,7 @@ class GameWindow89(Game):
 
 
 class GameWindow90(Game):
-    music_list = ['규현 - Eternal Sunshine : hard', '에이핑크 - Secret Garden : easy', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '아이유 - 스물셋 : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', "박효신 - It's You : hard", '애프터스쿨 - 너 때문에 : hard', '요조 - 바나나파티 : hard']
+    music_list = ['(노래를 선택하세요)','규현 - Eternal Sunshine : hard', '에이핑크 - Secret Garden : easy', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '아이유 - 스물셋 : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', "박효신 - It's You : hard", '애프터스쿨 - 너 때문에 : hard', '요조 - 바나나파티 : hard']
 
     def __init__(self):
         super().__init__()
@@ -5714,7 +5188,7 @@ class GameWindow90(Game):
 
 
 class GameWindow91(Game):
-    music_list = ['보아 - One Dream : easy', '앤츠 - 예쁜 너니까 : easy', 'AZIATIX - Lights : easy', '주영 - 들리나요 : hard', '비투비 - 두 번째 고백 : easy', '비투비 - For You : easy', '벤 - 안 괜찮아 : norm', '윤미래 - 사랑이 맞을거야 : norm', '아이유 - 스물셋 : hard', '현아 - 내 집에서 나가 : easy']
+    music_list = ['(노래를 선택하세요)','보아 - One Dream : easy', '앤츠 - 예쁜 너니까 : easy', 'AZIATIX - Lights : easy', '주영 - 들리나요 : hard', '비투비 - 두 번째 고백 : easy', '비투비 - For You : easy', '벤 - 안 괜찮아 : norm', '윤미래 - 사랑이 맞을거야 : norm', '아이유 - 스물셋 : hard', '현아 - 내 집에서 나가 : easy']
 
     def __init__(self):
         super().__init__()
@@ -5768,7 +5242,7 @@ class GameWindow91(Game):
 
 
 class GameWindow92(Game):
-    music_list = ['제아 - 그대 바보 : hard', "연애말고결혼OST - What's Up : easy", '아이유 - 스물셋 : hard', '김희진 - 이별얘기 : hard', '거미 - 너를 사랑해 : hard', '안녕하신가영 - 순간의 순간 : easy', '인피니트 - Real Story : easy', '시스타 - One More Day : hard', '채정아 - 죽어야 살까 : hard', '제시 - 쾌지나 칭칭나네 : easy']
+    music_list = ['(노래를 선택하세요)','제아 - 그대 바보 : hard', "연애말고결혼OST - What's Up : easy", '아이유 - 스물셋 : hard', '김희진 - 이별얘기 : hard', '거미 - 너를 사랑해 : hard', '안녕하신가영 - 순간의 순간 : easy', '인피니트 - Real Story : easy', '시스타 - One More Day : hard', '채정아 - 죽어야 살까 : hard', '제시 - 쾌지나 칭칭나네 : easy']
 
     def __init__(self):
         super().__init__()
@@ -5823,7 +5297,7 @@ class GameWindow92(Game):
 
 
 class GameWindow93(Game):
-    music_list = ['가인 - 피어나 : hard', '아이유 - 스물셋 : hard', '비투비 - Anymore : easy', '크래용팝 - 1, 2, 3, 4 : hard', '가비엔제이 - 연애소설 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '이승철 - 달링(프로듀사 OST) : norm', 'EXO - Baby : easy', '비스트 - Dance With U : hard', '린 - 이별주 : hard']
+    music_list = ['(노래를 선택하세요)','가인 - 피어나 : hard', '아이유 - 스물셋 : hard', '비투비 - Anymore : easy', '크래용팝 - 1, 2, 3, 4 : hard', '가비엔제이 - 연애소설 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '이승철 - 달링(프로듀사 OST) : norm', 'EXO - Baby : easy', '비스트 - Dance With U : hard', '린 - 이별주 : hard']
 
     def __init__(self):
         super().__init__()
@@ -5877,7 +5351,7 @@ class GameWindow93(Game):
 
 
 class GameWindow94(Game):
-    music_list = ['4MINUTE - Sweet Suga Honey! : easy', '린 - 이별주 : hard', '아이유 - 스물셋 : hard', '크래용팝 - 1, 2, 3, 4 : hard', '인피니트 - Julia : easy', '박효신 - 야생화 : hard', '비투비 - 스릴러 : hard', 'G.NA - 첫눈에 한눈에 : easy', '박재범 - 사실은 : easy', '엠블랙 - Y : hard']
+    music_list = ['(노래를 선택하세요)','4MINUTE - Sweet Suga Honey! : easy', '린 - 이별주 : hard', '아이유 - 스물셋 : hard', '크래용팝 - 1, 2, 3, 4 : hard', '인피니트 - Julia : easy', '박효신 - 야생화 : hard', '비투비 - 스릴러 : hard', 'G.NA - 첫눈에 한눈에 : easy', '박재범 - 사실은 : easy', '엠블랙 - Y : hard']
 
     def __init__(self):
         super().__init__()
@@ -5931,7 +5405,7 @@ class GameWindow94(Game):
 
 
 class GameWindow95(Game):
-    music_list = ['빅뱅 - 맨정신 : hard', '스윙스 - a real lady : easy', '세븐틴 - 어른이 되면 : easy', '아이유 - 스물셋 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '에일리 - 이제는 안녕 : hard', '업텐션 - Just Like That : easy', '이유성 - Butter Flying : norm', '아이유 - 느리게 하는 일 : hard', 'NCT 127 - Switch : norm']
+    music_list = ['(노래를 선택하세요)','빅뱅 - 맨정신 : hard', '스윙스 - a real lady : easy', '세븐틴 - 어른이 되면 : easy', '아이유 - 스물셋 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '에일리 - 이제는 안녕 : hard', '업텐션 - Just Like That : easy', '이유성 - Butter Flying : norm', '아이유 - 느리게 하는 일 : hard', 'NCT 127 - Switch : norm']
 
     def __init__(self):
         super().__init__()
@@ -5985,7 +5459,7 @@ class GameWindow95(Game):
 
 
 class GameWindow96(Game):
-    music_list = ['아이유 - 스물셋 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '슈퍼주니어 - SUPERMAN : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '바람이 분다OST - 비밀의 방 : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '윤도현 - 요즘 내 모습 : easy', '빅스 - 사슬 : easy']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '슈퍼주니어 - SUPERMAN : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '바람이 분다OST - 비밀의 방 : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '윤도현 - 요즘 내 모습 : easy', '빅스 - 사슬 : easy']
 
     def __init__(self):
         super().__init__()
@@ -6039,7 +5513,7 @@ class GameWindow96(Game):
 
 
 class GameWindow97(Game):
-    music_list = ['아이유 - 스물셋 : hard', '보아 - Only One : easy', '산들(B1A4) - 짝사랑 : norm', '업텐션 - Just Like That : easy', '아이유 - 느리게 하는 일 : hard', '이유성 - Butter Flying : norm', '백지영 - 안해요 : hard', '셰인 - Be My Love : norm', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '유미 - Last one (주군의 태양 OST) : norm']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '보아 - Only One : easy', '산들(B1A4) - 짝사랑 : norm', '업텐션 - Just Like That : easy', '아이유 - 느리게 하는 일 : hard', '이유성 - Butter Flying : norm', '백지영 - 안해요 : hard', '셰인 - Be My Love : norm', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '유미 - Last one (주군의 태양 OST) : norm']
 
     def __init__(self):
         super().__init__()
@@ -6093,7 +5567,8 @@ class GameWindow97(Game):
 
 
 class GameWindow98(Game):
-    music_list = ['2NE1 - 안녕 : hard', '아이유 - 스물셋 : hard', '앤츠 - 예쁜 너니까 : easy', '산들(B1A4) - 짝사랑 : norm', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '오빠친구동생 - 소보루빵 : hard', "유성은 & 진영 - I'm In Love : hard", '인피니트 - 맡겨 : norm', '백지영 - 비라도 내렸으면 좋겠어 : norm', '비투비 - 두 번째 고백 : easy']
+    music_list = ['(노래를 선택하세요)','2NE1 - 안녕 : hard', '아이유 - 스물셋 : hard', '앤츠 - 예쁜 너니까 : easy', '산들(B1A4) - 짝사랑 : norm', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '오빠친구동생 - 소보루빵 : hard', "유성은 & 진영 - I'm In Love : hard", '인피니트 - 맡겨 : norm', '백지영 - 비라도 내렸으면 좋겠어 : norm', '비투비 - 두 번째 고백 : easy']
+
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -6146,7 +5621,8 @@ class GameWindow98(Game):
 
 
 class GameWindow99(Game):
-    music_list = ['산들 - 같이 걷는 길 : hard', '휘성 - Night and Day : easy', '아이유 - 스물셋 : hard', '업텐션 - Just Like That : easy', '앤츠 - 예쁜 너니까 : easy', '4MINUTE - BABABA : hard', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '몬스타엑스 - 출구는 없어 : easy', '라이너스의 담요 - Love Me : hard', '비투비 - 두 번째 고백 : easy']
+    music_list = ['(노래를 선택하세요)','산들 - 같이 걷는 길 : hard', '휘성 - Night and Day : easy', '아이유 - 스물셋 : hard', '업텐션 - Just Like That : easy', '앤츠 - 예쁜 너니까 : easy', '4MINUTE - BABABA : hard', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '몬스타엑스 - 출구는 없어 : easy', '라이너스의 담요 - Love Me : hard', '비투비 - 두 번째 고백 : easy']
+
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -6199,7 +5675,7 @@ class GameWindow99(Game):
 
 
 class GameWindow100(Game):
-    music_list = ['에일리 - 노래가 늘었어 : easy', '현아 - 빨개요 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '클래지콰이 프로젝트 - Android : norm', '앤츠 - 예쁜 너니까 : easy', '타루 - 세탁기 : norm', '한희정 - 러브레터 : norm', '예성 - 먹지 : hard', '4MINUTE - BABABA : hard', '이홍기 - Jump (뜨거운 안녕 OST) : hard']
+    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : easy', '현아 - 빨개요 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '클래지콰이 프로젝트 - Android : norm', '앤츠 - 예쁜 너니까 : easy', '타루 - 세탁기 : norm', '한희정 - 러브레터 : norm', '예성 - 먹지 : hard', '4MINUTE - BABABA : hard', '이홍기 - Jump (뜨거운 안녕 OST) : hard']
 
     def __init__(self):
         super().__init__()
@@ -6253,7 +5729,7 @@ class GameWindow100(Game):
 
 
 class GameWindow101(Game):
-    music_list = ['정동하 - Mystery (주군의 태양 OST) : hard', '인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '현아 - 빨개요 : hard', "박효신 - It's You : hard", '에이핑크 - Secret Garden : easy', '샤이니 - Wowowow : easy', '샤이니 - One : hard', '슈퍼주니어 - SUPERMAN : hard', '잠비나이 - Connection : hard']
+    music_list = ['(노래를 선택하세요)','정동하 - Mystery (주군의 태양 OST) : hard', '인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '현아 - 빨개요 : hard', "박효신 - It's You : hard", '에이핑크 - Secret Garden : easy', '샤이니 - Wowowow : easy', '샤이니 - One : hard', '슈퍼주니어 - SUPERMAN : hard', '잠비나이 - Connection : hard']
 
     def __init__(self):
         super().__init__()
@@ -6307,7 +5783,7 @@ class GameWindow101(Game):
 
 
 class GameWindow102(Game):
-    music_list = ['천둥 - Good : norm', '이지수 - 너야 : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', 'f(x) - Lollipop : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', 'NS 윤지 - 니가 뭘 알아 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '현아 - 빨개요 : hard']
+    music_list = ['(노래를 선택하세요)','천둥 - Good : norm', '이지수 - 너야 : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', 'f(x) - Lollipop : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', 'NS 윤지 - 니가 뭘 알아 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '현아 - 빨개요 : hard']
 
     def __init__(self):
         super().__init__()
@@ -6361,7 +5837,7 @@ class GameWindow102(Game):
 
 
 class GameWindow103(Game):
-    music_list = ['시스타 - Oh Baby : easy', '려욱 - 그대 : norm', '린 - 이별주 : hard', '방탄소년단 - Intro: Never Mind : easy', '애프터스쿨 - 너 때문에 : hard', '현아 - 빨개요 : hard', '샤이니 - Last Christmas : norm', "박효신 - It's You : hard", '슈퍼주니어 - SUPERMAN : hard', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','시스타 - Oh Baby : easy', '려욱 - 그대 : norm', '린 - 이별주 : hard', '방탄소년단 - Intro: Never Mind : easy', '애프터스쿨 - 너 때문에 : hard', '현아 - 빨개요 : hard', '샤이니 - Last Christmas : norm', "박효신 - It's You : hard", '슈퍼주니어 - SUPERMAN : hard', '방탄소년단 - 고엽 : easy']
 
     def __init__(self):
         super().__init__()
@@ -6415,7 +5891,7 @@ class GameWindow103(Game):
 
 
 class GameWindow104(Game):
-    music_list = ['현아 - 빨개요 : hard', '알파벳 - 답정너 : hard', '보아 - One Dream : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지나 - 싫어 : easy', 'We are the night - 흐려도 좋아 : easy', '앤츠 - 예쁜 너니까 : easy', '더 라임 그리워서 : norm', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard']
+    music_list = ['(노래를 선택하세요)','현아 - 빨개요 : hard', '알파벳 - 답정너 : hard', '보아 - One Dream : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지나 - 싫어 : easy', 'We are the night - 흐려도 좋아 : easy', '앤츠 - 예쁜 너니까 : easy', '더 라임 그리워서 : norm', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard']
 
     def __init__(self):
         super().__init__()
@@ -6469,7 +5945,7 @@ class GameWindow104(Game):
 
 
 class GameWindow105(Game):
-    music_list = ['샤이니 - Runaway : hard', '시스타 - One More Day : hard', '이지수 - 너야 : easy', '4MINUTE - 팜므파탈 : norm', '현아 - 빨개요 : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '천둥 - Good : norm', '동방신기 - Humanoids : norm']
+    music_list = ['(노래를 선택하세요)','샤이니 - Runaway : hard', '시스타 - One More Day : hard', '이지수 - 너야 : easy', '4MINUTE - 팜므파탈 : norm', '현아 - 빨개요 : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '천둥 - Good : norm', '동방신기 - Humanoids : norm']
 
     def __init__(self):
         super().__init__()
@@ -6523,7 +5999,7 @@ class GameWindow105(Game):
 
 
 class GameWindow106(Game):
-    music_list = ['박수진 & 일렉트로보이즈 - 떨려요 : norm', '방탄소년단 - Intro: Never Mind : easy', '린 - 이별주 : hard', '방탄소년단 - 고엽 : easy', '현아 - 빨개요 : hard', '인피니트 - Julia : easy', '가인 - 피어나 : hard', '려욱 - 그대 : norm', '현아 - Change : hard', '샤이니 - Last Christmas : norm']
+    music_list = ['(노래를 선택하세요)','박수진 & 일렉트로보이즈 - 떨려요 : norm', '방탄소년단 - Intro: Never Mind : easy', '린 - 이별주 : hard', '방탄소년단 - 고엽 : easy', '현아 - 빨개요 : hard', '인피니트 - Julia : easy', '가인 - 피어나 : hard', '려욱 - 그대 : norm', '현아 - Change : hard', '샤이니 - Last Christmas : norm']
 
     def __init__(self):
         super().__init__()
@@ -6577,7 +6053,7 @@ class GameWindow106(Game):
 
 
 class GameWindow107(Game):
-    music_list = ["박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', '이오공감 - 한 사람을 위한 마음 : norm', '현아 - 빨개요 : hard', '박효신 - 야생화 : hard', '샤이니 - Runaway : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '이지수 - 너야 : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', '이오공감 - 한 사람을 위한 마음 : norm', '현아 - 빨개요 : hard', '박효신 - 야생화 : hard', '샤이니 - Runaway : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '이지수 - 너야 : easy']
 
     def __init__(self):
         super().__init__()
@@ -6631,7 +6107,7 @@ class GameWindow107(Game):
 
 
 class GameWindow108(Game):
-    music_list = ['더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '박수진 & 일렉트로보이즈 - 떨려요 : norm', 'Beta89 - 청춘아 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '코코소리 - 다크서클 : hard', '딕펑스 - 요즘 젊은 것들 : norm', '지나 - 싫어 : easy', '현아 - 빨개요 : hard', '아우라 - 커졌다 작아졌다 : norm', 'NCT 127 - Switch : norm']
+    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '박수진 & 일렉트로보이즈 - 떨려요 : norm', 'Beta89 - 청춘아 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '코코소리 - 다크서클 : hard', '딕펑스 - 요즘 젊은 것들 : norm', '지나 - 싫어 : easy', '현아 - 빨개요 : hard', '아우라 - 커졌다 작아졌다 : norm', 'NCT 127 - Switch : norm']
 
     def __init__(self):
         super().__init__()
@@ -6685,7 +6161,7 @@ class GameWindow108(Game):
 
 
 class GameWindow109(Game):
-    music_list = ['세븐틴 - 어른이 되면 : easy', '헨리 - Butterfly : easy', '시크릿 - POISON : easy', '민효린 & 진영 - 당신과 만난 이날 : norm', '이유성 - Butter Flying : norm', '현아 - 빨개요 : hard', '비스트 - 일하러 가야 돼 : easy', '블락비 - 몇 년 후에 : easy', '빅스 - 사슬 : easy', '오준성 - Out Of The Ghost : norm']
+    music_list = ['(노래를 선택하세요)','세븐틴 - 어른이 되면 : easy', '헨리 - Butterfly : easy', '시크릿 - POISON : easy', '민효린 & 진영 - 당신과 만난 이날 : norm', '이유성 - Butter Flying : norm', '현아 - 빨개요 : hard', '비스트 - 일하러 가야 돼 : easy', '블락비 - 몇 년 후에 : easy', '빅스 - 사슬 : easy', '오준성 - Out Of The Ghost : norm']
 
     def __init__(self):
         super().__init__()
@@ -6739,7 +6215,7 @@ class GameWindow109(Game):
 
 
 class GameWindow110(Game):
-    music_list = ['어반자카파 - Rainbow Ride (Prelude) : hard', '업텐션 - Just Like That : easy', '비투비 - 두 번째 고백 : easy', '셰인 - Be My Love : norm', '아이유 - 느리게 하는 일 : hard', '앤츠 - 예쁜 너니까 : easy', '악동뮤지션 - 매력있어 : hard', '현아 - 빨개요 : hard', '보아 - Only One : easy', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : hard']
+    music_list = ['(노래를 선택하세요)','어반자카파 - Rainbow Ride (Prelude) : hard', '업텐션 - Just Like That : easy', '비투비 - 두 번째 고백 : easy', '셰인 - Be My Love : norm', '아이유 - 느리게 하는 일 : hard', '앤츠 - 예쁜 너니까 : easy', '악동뮤지션 - 매력있어 : hard', '현아 - 빨개요 : hard', '보아 - Only One : easy', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : hard']
 
     def __init__(self):
         super().__init__()
@@ -6793,7 +6269,7 @@ class GameWindow110(Game):
 
 
 class GameWindow111(Game):
-    music_list = ['앤츠 - 예쁜 너니까 : easy', "유성은 & 진영 - I'm In Love : hard", '2NE1 - 안녕 : hard', '비투비 - 두 번째 고백 : easy', '틴탑 - 우린 문제없어 : easy', '인피니트 - Amazing : norm', '에이핑크 - 하늘 높이 : hard', '씨잼 - 걍 음악이다 : norm', '릴보이 - 돈돈돈 : easy', '현아 - 빨개요 : hard']
+    music_list = ['(노래를 선택하세요)','앤츠 - 예쁜 너니까 : easy', "유성은 & 진영 - I'm In Love : hard", '2NE1 - 안녕 : hard', '비투비 - 두 번째 고백 : easy', '틴탑 - 우린 문제없어 : easy', '인피니트 - Amazing : norm', '에이핑크 - 하늘 높이 : hard', '씨잼 - 걍 음악이다 : norm', '릴보이 - 돈돈돈 : easy', '현아 - 빨개요 : hard']
 
     def __init__(self):
         super().__init__()
@@ -6847,7 +6323,7 @@ class GameWindow111(Game):
 
 
 class GameWindow112(Game):
-    music_list = ['잠비나이 - Connection : hard', '휘성 - Night and Day : easy', '미 - 온도 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '현아 - 빨개요 : hard', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard', 'NS 윤지 - 니가 뭘 알아 : easy']
+    music_list = ['(노래를 선택하세요)','잠비나이 - Connection : hard', '휘성 - Night and Day : easy', '미 - 온도 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '현아 - 빨개요 : hard', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard', 'NS 윤지 - 니가 뭘 알아 : easy']
 
     def __init__(self):
         super().__init__()
@@ -6901,7 +6377,7 @@ class GameWindow112(Game):
 
 
 class GameWindow113(Game):
-    music_list = ['비투비 블루 - 내 곁에 서 있어줘 : hard', '에이핑크 - Secret Garden : easy', "박효신 - It's You : hard", '이지수 - 너야 : easy', '에일리 - 노래가 늘었어 : easy', 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '모던다락방 - All I Want Is 바라만봐도 : norm', '인피니트 - 내꺼하자 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','비투비 블루 - 내 곁에 서 있어줘 : hard', '에이핑크 - Secret Garden : easy', "박효신 - It's You : hard", '이지수 - 너야 : easy', '에일리 - 노래가 늘었어 : easy', 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '모던다락방 - All I Want Is 바라만봐도 : norm', '인피니트 - 내꺼하자 : hard', '4MINUTE - 팜므파탈 : norm']
 
     def __init__(self):
         super().__init__()
@@ -6955,7 +6431,7 @@ class GameWindow113(Game):
 
 
 class GameWindow114(Game):
-    music_list = ['이지수 - 너야 : easy', '에이핑크 - Secret Garden : easy', 'MBLAQ - 유령(같이 사랑했잖아) : easy', "박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '비스트 - Fiction : hard', '인피니트 - Follow Me : hard', '에일리 - 노래가 늘었어 : easy', '요조 - 바나나파티 : hard', 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','이지수 - 너야 : easy', '에이핑크 - Secret Garden : easy', 'MBLAQ - 유령(같이 사랑했잖아) : easy', "박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '비스트 - Fiction : hard', '인피니트 - Follow Me : hard', '에일리 - 노래가 늘었어 : easy', '요조 - 바나나파티 : hard', 'f(x) - Lollipop : hard']
 
     def __init__(self):
         super().__init__()
@@ -7009,7 +6485,7 @@ class GameWindow114(Game):
 
 
 class GameWindow115(Game):
-    music_list = ["바람이 분다OST - It's Over : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '봄바람 소년 - Only One : norm', '잔나비 - Goodnight (Intro) : hard', "박효신 - It's You : hard", '애프터스쿨 - 너 때문에 : hard', '에일리 - 노래가 늘었어 : easy', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)',"바람이 분다OST - It's Over : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '봄바람 소년 - Only One : norm', '잔나비 - Goodnight (Intro) : hard', "박효신 - It's You : hard", '애프터스쿨 - 너 때문에 : hard', '에일리 - 노래가 늘었어 : easy', 'Flower - 사랑은 알아도... : easy']
 
     def __init__(self):
         super().__init__()
@@ -7063,7 +6539,7 @@ class GameWindow115(Game):
 
 
 class GameWindow116(Game):
-    music_list = ['4MINUTE - BABABA : hard', '동방신기 - Humanoids : norm', '아이유 - 느리게 하는 일 : hard', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : norm', '보아 - One Dream : easy', '업텐션 - Just Like That : easy', '앤츠 - 예쁜 너니까 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '에일리 - 노래가 늘었어 : easy', '백지영 - 안해요 : hard']
+    music_list = ['(노래를 선택하세요)','4MINUTE - BABABA : hard', '동방신기 - Humanoids : norm', '아이유 - 느리게 하는 일 : hard', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : norm', '보아 - One Dream : easy', '업텐션 - Just Like That : easy', '앤츠 - 예쁜 너니까 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '에일리 - 노래가 늘었어 : easy', '백지영 - 안해요 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7117,7 +6593,7 @@ class GameWindow116(Game):
 
 
 class GameWindow117(Game):
-    music_list = ["박효신 - It's You : hard", '잔나비 - Goodnight (Intro) : hard', 'f(x) - All Mine : hard', '이지수 - 너야 : easy', '인피니트 - Follow Me : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '샤이니 - One : hard', '에일리 - 노래가 늘었어 : easy', '시스타 - One More Day : hard', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '잔나비 - Goodnight (Intro) : hard', 'f(x) - All Mine : hard', '이지수 - 너야 : easy', '인피니트 - Follow Me : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '샤이니 - One : hard', '에일리 - 노래가 늘었어 : easy', '시스타 - One More Day : hard', 'Flower - 사랑은 알아도... : easy']
 
     def __init__(self):
         super().__init__()
@@ -7172,7 +6648,7 @@ class GameWindow117(Game):
 
 
 class GameWindow118(Game):
-    music_list = ['에일리 - 노래가 늘었어 : easy', '가인 - 피어나 : hard', 'Ra.L - 잠을 좀 자고싶어요 : easy', '이유림 - 이런 기분 : norm', 'EXO - Let Out The Beast : hard', 'EXO - Cloud 9 : easy', '바이브 - 외로운 놈 : norm', '보경, 셰인 - Summer Love : norm', '백지영 - 사랑아 또 사랑아 : easy', 'B.A.P - 빗소리 : easy']
+    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : easy', '가인 - 피어나 : hard', 'Ra.L - 잠을 좀 자고싶어요 : easy', '이유림 - 이런 기분 : norm', 'EXO - Let Out The Beast : hard', 'EXO - Cloud 9 : easy', '바이브 - 외로운 놈 : norm', '보경, 셰인 - Summer Love : norm', '백지영 - 사랑아 또 사랑아 : easy', 'B.A.P - 빗소리 : easy']
 
     def __init__(self):
         super().__init__()
@@ -7226,7 +6702,7 @@ class GameWindow118(Game):
 
 
 class GameWindow119(Game):
-    music_list = ['에일리 - 노래가 늘었어 : easy', '박효신 - 야생화 : hard', '에이핑크 - Secret Garden : easy', "박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '인피니트 - Follow Me : hard', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : easy', '박효신 - 야생화 : hard', '에이핑크 - Secret Garden : easy', "박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '인피니트 - Follow Me : hard', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7280,7 +6756,7 @@ class GameWindow119(Game):
 
 
 class GameWindow120(Game):
-    music_list = ['비스트 - Fiction : hard', '프롬 - 달의 뒤편으로 와요 : norm', "박효신 - It's You : hard", '레드벨벳 - 장미꽃 향기는 바람에 날리고 : hard', '천둥 - Good : norm', '임창정 - 그렇게 당해놓고 : norm', '에이핑크 - Secret Garden : easy', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', 'NCT 127 - Switch : norm', '에일리 - 노래가 늘었어 : easy']
+    music_list = ['(노래를 선택하세요)','비스트 - Fiction : hard', '프롬 - 달의 뒤편으로 와요 : norm', "박효신 - It's You : hard", '레드벨벳 - 장미꽃 향기는 바람에 날리고 : hard', '천둥 - Good : norm', '임창정 - 그렇게 당해놓고 : norm', '에이핑크 - Secret Garden : easy', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', 'NCT 127 - Switch : norm', '에일리 - 노래가 늘었어 : easy']
 
     def __init__(self):
         super().__init__()
@@ -7335,7 +6811,7 @@ class GameWindow120(Game):
 
 
 class GameWindow121(Game):
-    music_list = ["박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '에일리 - 노래가 늘었어 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '지훈 - 너만 생각나 : hard', '빅스 - 사슬 : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '에일리 - 노래가 늘었어 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '지훈 - 너만 생각나 : hard', '빅스 - 사슬 : easy']
 
     def __init__(self):
         super().__init__()
@@ -7389,7 +6865,7 @@ class GameWindow121(Game):
 
 
 class GameWindow122(Game):
-    music_list = ['딕펑스 - 니가보여 : easy', '아이유 - 무릎 : hard', '참깨와 솜사탕 - 키스미 : norm', '샤이니 - Hold You : easy', '세븐틴 - 이 놈의 인기 : easy', 'B1A4 - Chu Chu Chu : easy', '한희정 - 러브레터 : norm', '보아 - Only One : easy', '에일리 - 노래가 늘었어 : easy', '악뮤 - 다리꼬지마 : hard']
+    music_list = ['(노래를 선택하세요)','딕펑스 - 니가보여 : easy', '아이유 - 무릎 : hard', '참깨와 솜사탕 - 키스미 : norm', '샤이니 - Hold You : easy', '세븐틴 - 이 놈의 인기 : easy', 'B1A4 - Chu Chu Chu : easy', '한희정 - 러브레터 : norm', '보아 - Only One : easy', '에일리 - 노래가 늘었어 : easy', '악뮤 - 다리꼬지마 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7443,7 +6919,7 @@ class GameWindow122(Game):
 
 
 class GameWindow123(Game):
-    music_list = ['라디(Ra.D) - Lovesome : hard', '4MINUTE - Sweet Suga Honey! : easy', '시스타 - Give It To Me (Reno Remix) : hard', '방탄소년단 - Intro: Skool Luv Affair : easy', '멜로디데이 - Lake Wave (주군의 태양 OST) : easy', 'DEAN - And You? (Outro) : easy', 'f(x) - MILK : norm', '비스트 - 예이 : hard', '에일리 - 노래가 늘었어 : easy', '2NE1 - 안녕 : hard']
+    music_list = ['(노래를 선택하세요)','라디(Ra.D) - Lovesome : hard', '4MINUTE - Sweet Suga Honey! : easy', '시스타 - Give It To Me (Reno Remix) : hard', '방탄소년단 - Intro: Skool Luv Affair : easy', '멜로디데이 - Lake Wave (주군의 태양 OST) : easy', 'DEAN - And You? (Outro) : easy', 'f(x) - MILK : norm', '비스트 - 예이 : hard', '에일리 - 노래가 늘었어 : easy', '2NE1 - 안녕 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7497,7 +6973,7 @@ class GameWindow123(Game):
 
 
 class GameWindow124(Game):
-    music_list = ['세븐틴 - 이 놈의 인기 : easy', '태양 - 기도 (feat. Teddy) : hard', '요조 - 뒹굴뒹굴 : hard', '정은지 - 하늘바라기 : easy', '딕펑스 - 니가보여 : easy', '샤이니 - Hold You : easy', '휘성 - Night and Day : easy', '이오공감 - 한 사람을 위한 마음 : norm', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', '에일리 - 노래가 늘었어 : easy']
+    music_list = ['(노래를 선택하세요)','세븐틴 - 이 놈의 인기 : easy', '태양 - 기도 (feat. Teddy) : hard', '요조 - 뒹굴뒹굴 : hard', '정은지 - 하늘바라기 : easy', '딕펑스 - 니가보여 : easy', '샤이니 - Hold You : easy', '휘성 - Night and Day : easy', '이오공감 - 한 사람을 위한 마음 : norm', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', '에일리 - 노래가 늘었어 : easy']
 
     def __init__(self):
         super().__init__()
@@ -7551,7 +7027,7 @@ class GameWindow124(Game):
 
 
 class GameWindow125(Game):
-    music_list = ['슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', '천둥 - Good : norm', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '잠비나이 - Connection : hard', '연애말고 결혼 OST - Love Knots : hard', 'f(x) - Lollipop : hard', '인피니트 - 내꺼하자 : hard', '정동하 - Mystery (주군의 태양 OST) : hard']
+    music_list = ['(노래를 선택하세요)','슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', '천둥 - Good : norm', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '잠비나이 - Connection : hard', '연애말고 결혼 OST - Love Knots : hard', 'f(x) - Lollipop : hard', '인피니트 - 내꺼하자 : hard', '정동하 - Mystery (주군의 태양 OST) : hard']
 
     def __init__(self):
         super().__init__()
@@ -7605,7 +7081,7 @@ class GameWindow125(Game):
 
 
 class GameWindow126(Game):
-    music_list = ['N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '포맨 - 살다가 한번쯤 : hard', '잠비나이 - Connection : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '슈퍼주니어 - SUPERMAN : hard', '애프터스쿨 - 너 때문에 : hard', '인피니트 - 내꺼하자 : hard']
+    music_list = ['(노래를 선택하세요)','N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '포맨 - 살다가 한번쯤 : hard', '잠비나이 - Connection : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '슈퍼주니어 - SUPERMAN : hard', '애프터스쿨 - 너 때문에 : hard', '인피니트 - 내꺼하자 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7659,7 +7135,7 @@ class GameWindow126(Game):
 
 
 class GameWindow127(Game):
-    music_list = ['인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '잠비나이 - Connection : hard', '에일리 - 여인의 향기 : hard', 'NS 윤지 - 니가 뭘 알아 : easy', "박효신 - It's You : hard", '보아 - One Dream : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard', '엠블랙 - Y : hard']
+    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '잠비나이 - Connection : hard', '에일리 - 여인의 향기 : hard', 'NS 윤지 - 니가 뭘 알아 : easy', "박효신 - It's You : hard", '보아 - One Dream : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard', '엠블랙 - Y : hard']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -7713,7 +7189,7 @@ class GameWindow127(Game):
 
 
 class GameWindow128(Game):
-    music_list = ['슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '천둥 - Good : norm', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '4MINUTE - 팜므파탈 : norm', '시스타 - One More Day : hard', '포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '천둥 - Good : norm', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '4MINUTE - 팜므파탈 : norm', '시스타 - One More Day : hard', '포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -7768,7 +7244,7 @@ class GameWindow128(Game):
 
 
 class GameWindow129(Game):
-    music_list = ['이지수 - 너야 : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '인피니트 - Follow Me : hard', '동방신기 - Humanoids : norm', "박효신 - It's You : hard", '인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '4MINUTE - 팜므파탈 : norm', '가인 - 피어나 : hard']
+    music_list = ['(노래를 선택하세요)','이지수 - 너야 : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '인피니트 - Follow Me : hard', '동방신기 - Humanoids : norm', "박효신 - It's You : hard", '인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '4MINUTE - 팜므파탈 : norm', '가인 - 피어나 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7822,7 +7298,7 @@ class GameWindow129(Game):
 
 
 class GameWindow130(Game):
-    music_list = ['포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard", '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', '박효신 - 야생화 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '슈퍼주니어 - SUPERMAN : hard', '신용재 - 평범한 사랑 : norm', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard", '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', '박효신 - 야생화 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '슈퍼주니어 - SUPERMAN : hard', '신용재 - 평범한 사랑 : norm', '디아 - 날 위한 이별 : hard']
 
     def __init__(self):
         super().__init__()
@@ -7876,7 +7352,7 @@ class GameWindow130(Game):
 
 
 class GameWindow131(Game):
-    music_list = ['인피니트 - 내꺼하자 : hard', 'NCT 127 - Switch : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '디아 - 날 위한 이별 : hard', '신용재 - 평범한 사랑 : norm', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Runaway : hard', '방탄소년단 - 고엽 : easy', '규현 - Eternal Sunshine : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : hard', 'NCT 127 - Switch : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '디아 - 날 위한 이별 : hard', '신용재 - 평범한 사랑 : norm', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Runaway : hard', '방탄소년단 - 고엽 : easy', '규현 - Eternal Sunshine : hard', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -7930,7 +7406,7 @@ class GameWindow131(Game):
 
 
 class GameWindow132(Game):
-    music_list = ["박효신 - It's You : hard", '안혜은 - 그녀를 찾지마 : easy', '윤도현 - 요즘 내 모습 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '디아 - 날 위한 이별 : hard', '김종국 - 눈물자국 : easy', '빅스 - 사슬 : easy', '포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', '슈퍼주니어 - SUPERMAN : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '안혜은 - 그녀를 찾지마 : easy', '윤도현 - 요즘 내 모습 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '디아 - 날 위한 이별 : hard', '김종국 - 눈물자국 : easy', '빅스 - 사슬 : easy', '포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', '슈퍼주니어 - SUPERMAN : hard']
 
     def __init__(self):
         super().__init__()
@@ -7984,7 +7460,7 @@ class GameWindow132(Game):
 
 
 class GameWindow133(Game):
-    music_list = ['Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '이지수 - 너야 : easy', '에이핑크 - Secret Garden : easy', '보아 - Only One : easy', '인피니트 - 내꺼하자 : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '인피니트 - Follow Me : hard']
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '이지수 - 너야 : easy', '에이핑크 - Secret Garden : easy', '보아 - Only One : easy', '인피니트 - 내꺼하자 : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '인피니트 - Follow Me : hard']
 
     def __init__(self):
         super().__init__()
@@ -8038,7 +7514,7 @@ class GameWindow133(Game):
 
 
 class GameWindow134(Game):
-    music_list = ['윤미래 - Who : easy', '미(MIIII) - Not-Boyfriend : easy', '엠블랙 - Again : hard', '어쿠루브 - 그날 : easy', '뉴이스트 - 나의 천국 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '2NE1 - 안녕 : hard', '인피니트 - 내꺼하자 : hard', '한희정 - 러브레터 : norm', '여자친구 - 나침반 : hard']
+    music_list = ['(노래를 선택하세요)','윤미래 - Who : easy', '미(MIIII) - Not-Boyfriend : easy', '엠블랙 - Again : hard', '어쿠루브 - 그날 : easy', '뉴이스트 - 나의 천국 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '2NE1 - 안녕 : hard', '인피니트 - 내꺼하자 : hard', '한희정 - 러브레터 : norm', '여자친구 - 나침반 : hard']
 
     def __init__(self):
         super().__init__()
@@ -8092,7 +7568,7 @@ class GameWindow134(Game):
 
 
 class GameWindow135(Game):
-    music_list = ["박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '포맨 - 살다가 한번쯤 : hard', '잠비나이 - Connection : hard', '인피니트 - Follow Me : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '휘성 - Night and Day : easy', '인피니트 - 내꺼하자 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '포맨 - 살다가 한번쯤 : hard', '잠비나이 - Connection : hard', '인피니트 - Follow Me : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '휘성 - Night and Day : easy', '인피니트 - 내꺼하자 : hard']
 
     def __init__(self):
         super().__init__()
@@ -8146,7 +7622,7 @@ class GameWindow135(Game):
 
 
 class GameWindow136(Game):
-    music_list = ["박효신 - It's You : hard", '방탄소년단 - Intro: Never Mind : easy', '방탄소년단 - 고엽 : easy', '애프터스쿨 - 너 때문에 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '유준상 - Love & Hate : hard', '린 - 이별주 : hard', '비투비 - 자리비움 : easy', 'f(x) - Lollipop : hard', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '방탄소년단 - Intro: Never Mind : easy', '방탄소년단 - 고엽 : easy', '애프터스쿨 - 너 때문에 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '유준상 - Love & Hate : hard', '린 - 이별주 : hard', '비투비 - 자리비움 : easy', 'f(x) - Lollipop : hard', 'Flower - 사랑은 알아도... : easy']
 
     def __init__(self):
         super().__init__()
@@ -8200,7 +7676,7 @@ class GameWindow136(Game):
 
 
 class GameWindow137(Game):
-    music_list = ['f(x) - Lollipop : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '지코 - 날 : easy', '앤츠 - 예쁜 너니까 : easy', '동방신기 - 아테나 : hard', 'YoungAh - 이별통보 : hard', '셰인 - Be My Love : norm', "The K2 OST - Anna's Appassionata : easy", '오빠친구동생 - 소보루빵 : hard', '보아 - One Dream : easy']
+    music_list = ['(노래를 선택하세요)','f(x) - Lollipop : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '지코 - 날 : easy', '앤츠 - 예쁜 너니까 : easy', '동방신기 - 아테나 : hard', 'YoungAh - 이별통보 : hard', '셰인 - Be My Love : norm', "The K2 OST - Anna's Appassionata : easy", '오빠친구동생 - 소보루빵 : hard', '보아 - One Dream : easy']
 
     def __init__(self):
         super().__init__()
@@ -8254,7 +7730,7 @@ class GameWindow137(Game):
 
 
 class GameWindow138(Game):
-    music_list = ['천둥 - Good : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '방탄소년단 - Intro: Never Mind : easy', '비투비 - Killing Me : hard', '방탄소년단 - 고엽 : easy', '샤이니 - Your Number : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '시스타 - One More Day : hard', 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','천둥 - Good : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '방탄소년단 - Intro: Never Mind : easy', '비투비 - Killing Me : hard', '방탄소년단 - 고엽 : easy', '샤이니 - Your Number : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '시스타 - One More Day : hard', 'f(x) - Lollipop : hard']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -8307,7 +7783,7 @@ class GameWindow138(Game):
 
 
 class GameWindow139(Game):
-    music_list = ['안현정 - 그대와 나 : hard', '여은 - 사랑아 나의 사랑아 : norm', '가인 - 피어나 : hard', '샤이니 - Last Christmas : norm', '에일리 - 이제는 안녕 : hard', '비투비 - Killing Me : hard', '에이핑크 - 몰라요 : hard', 'f(x) - Lollipop : hard', '방탄소년단 - Intro: Never Mind : easy', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','안현정 - 그대와 나 : hard', '여은 - 사랑아 나의 사랑아 : norm', '가인 - 피어나 : hard', '샤이니 - Last Christmas : norm', '에일리 - 이제는 안녕 : hard', '비투비 - Killing Me : hard', '에이핑크 - 몰라요 : hard', 'f(x) - Lollipop : hard', '방탄소년단 - Intro: Never Mind : easy', '방탄소년단 - 고엽 : easy']
 
     def __init__(self):
         super().__init__()
@@ -8361,7 +7837,7 @@ class GameWindow139(Game):
 
 
 class GameWindow140(Game):
-    music_list = ["박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '잠비나이 - Connection : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'f(x) - Lollipop : hard', '지나유 - 처음사랑 : hard', '박효신 - 야생화 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '잠비나이 - Connection : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'f(x) - Lollipop : hard', '지나유 - 처음사랑 : hard', '박효신 - 야생화 : hard']
 
     def __init__(self):
         super().__init__()
@@ -8415,7 +7891,7 @@ class GameWindow140(Game):
 
 
 class GameWindow141(Game):
-    music_list = ['보아 - Home : easy', 'f(x) - Lollipop : hard', '에이핑크 - 몰라요 : hard', '안현정 - 그대와 나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', 'NCT 127 - Switch : norm', '방탄소년단 - Intro: Never Mind : easy', '시크릿 - POISON : easy', '천둥 - Good : norm', '참깨와 솜사탕 - 키스미 : norm']
+    music_list = ['(노래를 선택하세요)','보아 - Home : easy', 'f(x) - Lollipop : hard', '에이핑크 - 몰라요 : hard', '안현정 - 그대와 나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', 'NCT 127 - Switch : norm', '방탄소년단 - Intro: Never Mind : easy', '시크릿 - POISON : easy', '천둥 - Good : norm', '참깨와 솜사탕 - 키스미 : norm']
 
     def __init__(self):
         super().__init__()
@@ -8469,7 +7945,7 @@ class GameWindow141(Game):
 
 
 class GameWindow142(Game):
-    music_list = ['디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '악뮤 - 다리꼬지마 : hard', '슬리피 - 기분탓 : easy', '에일리 - 이제는 안녕 : hard', '인피니트 - 붙박이 별 : hard', '오빠친구동생 - 소보루빵 : hard', '빅스 - 사슬 : easy', '레드벨벳 - Huff n Puff : easy', 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '악뮤 - 다리꼬지마 : hard', '슬리피 - 기분탓 : easy', '에일리 - 이제는 안녕 : hard', '인피니트 - 붙박이 별 : hard', '오빠친구동생 - 소보루빵 : hard', '빅스 - 사슬 : easy', '레드벨벳 - Huff n Puff : easy', 'f(x) - Lollipop : hard']
 
     def __init__(self):
         super().__init__()
@@ -8523,7 +7999,7 @@ class GameWindow142(Game):
 
 
 class GameWindow143(Game):
-    music_list = ['보아 - Only One : easy', '슈퍼주니어 - SUPERMAN : hard', '코코소리 - 다크서클 : hard', '이지수 - 너야 : easy', 'Beta89 - 청춘아 : easy', '샤이니 - Last Christmas : norm', 'Flower - 사랑은 알아도... : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','보아 - Only One : easy', '슈퍼주니어 - SUPERMAN : hard', '코코소리 - 다크서클 : hard', '이지수 - 너야 : easy', 'Beta89 - 청춘아 : easy', '샤이니 - Last Christmas : norm', 'Flower - 사랑은 알아도... : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", 'f(x) - Lollipop : hard']
 
     def __init__(self):
         super().__init__()
@@ -8577,7 +8053,7 @@ class GameWindow143(Game):
 
 
 class GameWindow144(Game):
-    music_list = ['유성은 - 500일의 Summer : easy', '레인보우 유아동요 - 숲 속의 음악가 : easy', 'f(x) - MILK : norm', 'HUS - Space Loves Disco : hard', 'f(x) - Lollipop : hard', '효린 - 미치게 만들어 : hard', '백지영 - 사랑아 또 사랑아 : easy', '2NE1 - 안녕 : hard', '악동뮤지션 - 외국인의 고백 : norm', 'FTISLAND - 새들처럼 : hard']
+    music_list = ['(노래를 선택하세요)','유성은 - 500일의 Summer : easy', '레인보우 유아동요 - 숲 속의 음악가 : easy', 'f(x) - MILK : norm', 'HUS - Space Loves Disco : hard', 'f(x) - Lollipop : hard', '효린 - 미치게 만들어 : hard', '백지영 - 사랑아 또 사랑아 : easy', '2NE1 - 안녕 : hard', '악동뮤지션 - 외국인의 고백 : norm', 'FTISLAND - 새들처럼 : hard']
 
     def __init__(self):
         super().__init__()
@@ -8631,7 +8107,7 @@ class GameWindow144(Game):
 
 
 class GameWindow145(Game):
-    music_list = ['Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '이지수 - 너야 : easy', '샤이니 - Your Number : easy', "박효신 - It's You : hard", '천둥 - Good : norm', 'f(x) - Lollipop : hard', '샤이니 - Last Christmas : norm', '휘성 - Night and Day : easy', '인피니트 - 붙박이 별 : hard']
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '이지수 - 너야 : easy', '샤이니 - Your Number : easy', "박효신 - It's You : hard", '천둥 - Good : norm', 'f(x) - Lollipop : hard', '샤이니 - Last Christmas : norm', '휘성 - Night and Day : easy', '인피니트 - 붙박이 별 : hard']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -8684,7 +8160,7 @@ class GameWindow145(Game):
 
 
 class GameWindow146(Game):
-    music_list = ['더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '샤이니 - Last Christmas : norm', '방탄소년단 - 고엽 : easy', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '슈퍼주니어 - SUPERMAN : hard', '애프터스쿨 - 너 때문에 : hard', '보아 - One Dream : easy']
+    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '샤이니 - Last Christmas : norm', '방탄소년단 - 고엽 : easy', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '슈퍼주니어 - SUPERMAN : hard', '애프터스쿨 - 너 때문에 : hard', '보아 - One Dream : easy']
 
     def __init__(self):
         super().__init__()
@@ -8738,7 +8214,7 @@ class GameWindow146(Game):
 
 
 class GameWindow147(Game):
-    music_list = ['에이핑크 - Secret Garden : easy', '애프터스쿨 - 너 때문에 : hard', '시스타 - One More Day : hard', "비스트 - I'm sorry : easy", '샤이니 - Wowowow : easy', '샤이니 - One : hard', '연애말고 결혼 OST - Love Knots : hard', '잔나비 - Goodnight (Intro) : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy']
+    music_list = ['(노래를 선택하세요)','에이핑크 - Secret Garden : easy', '애프터스쿨 - 너 때문에 : hard', '시스타 - One More Day : hard', "비스트 - I'm sorry : easy", '샤이니 - Wowowow : easy', '샤이니 - One : hard', '연애말고 결혼 OST - Love Knots : hard', '잔나비 - Goodnight (Intro) : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy']
 
     def __init__(self):
         super().__init__()
@@ -8792,7 +8268,7 @@ class GameWindow147(Game):
 
 
 class GameWindow148(Game):
-    music_list = ['정동하 - Mystery (주군의 태양 OST) : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '애프터스쿨 - 너 때문에 : hard', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','정동하 - Mystery (주군의 태양 OST) : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '애프터스쿨 - 너 때문에 : hard', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard', '방탄소년단 - 고엽 : easy']
 
     def __init__(self):
         super().__init__()
@@ -8846,7 +8322,7 @@ class GameWindow148(Game):
 
 
 class GameWindow149(Game):
-    music_list = ['오빠친구동생 - 소보루빵 : hard', '애프터스쿨 - 너 때문에 : hard', '박효신 - 야생화 : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm', '스트레이 - Tonight : norm']
+    music_list = ['(노래를 선택하세요)','오빠친구동생 - 소보루빵 : hard', '애프터스쿨 - 너 때문에 : hard', '박효신 - 야생화 : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm', '스트레이 - Tonight : norm']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -8899,7 +8375,7 @@ class GameWindow149(Game):
 
 
 class GameWindow150(Game):
-    music_list = ['Flower - 사랑은 알아도... : easy', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Last Christmas : norm', '에일리 - 이제는 안녕 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '디아 - 날 위한 이별 : hard', '유준상 - Love & Hate : hard', 'NCT 127 - Switch : norm', '애프터스쿨 - 너 때문에 : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Last Christmas : norm', '에일리 - 이제는 안녕 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '디아 - 날 위한 이별 : hard', '유준상 - Love & Hate : hard', 'NCT 127 - Switch : norm', '애프터스쿨 - 너 때문에 : hard', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -8953,7 +8429,7 @@ class GameWindow150(Game):
 
 
 class GameWindow151(Game):
-    music_list = ['디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '빅스 - 사슬 : easy', '애프터스쿨 - 너 때문에 : hard', '지훈 - 너만 생각나 : hard', '지나유 - 처음사랑 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '4MINUTE - 팜므파탈 : norm', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '빅스 - 사슬 : easy', '애프터스쿨 - 너 때문에 : hard', '지훈 - 너만 생각나 : hard', '지나유 - 처음사랑 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '4MINUTE - 팜므파탈 : norm', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
 
     def __init__(self):
         super().__init__()
@@ -9007,7 +8483,7 @@ class GameWindow151(Game):
 
 
 class GameWindow152(Game):
-    music_list = ["비스트 - I'm sorry : easy", '애프터스쿨 - 너 때문에 : hard', 'f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', '보아 - Only One : easy', "박효신 - It's You : hard", '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard']
+    music_list = ['(노래를 선택하세요)',"비스트 - I'm sorry : easy", '애프터스쿨 - 너 때문에 : hard', 'f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', '보아 - Only One : easy', "박효신 - It's You : hard", '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard']
 
     def __init__(self):
         super().__init__()
@@ -9061,7 +8537,7 @@ class GameWindow152(Game):
 
 
 class GameWindow153(Game):
-    music_list = ['애프터스쿨 - 너 때문에 : hard', '2NE1 - 안녕 : hard', 'f(x) - Beautiful Goodbye : easy', '제이스 - 라디오 스타 : norm', '타코 & 제이형 - 어떡하죠 : norm', '크래용팝 - 1, 2, 3, 4 : hard', '시스타 - 니까짓게 : hard', '최가람 - Broken Heart : easy', '비 - 30 SEXY (East4a deeptech mix) : norm', '지놉 - 여기봐요 : norm']
+    music_list = ['(노래를 선택하세요)','애프터스쿨 - 너 때문에 : hard', '2NE1 - 안녕 : hard', 'f(x) - Beautiful Goodbye : easy', '제이스 - 라디오 스타 : norm', '타코 & 제이형 - 어떡하죠 : norm', '크래용팝 - 1, 2, 3, 4 : hard', '시스타 - 니까짓게 : hard', '최가람 - Broken Heart : easy', '비 - 30 SEXY (East4a deeptech mix) : norm', '지놉 - 여기봐요 : norm']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -9114,7 +8590,7 @@ class GameWindow153(Game):
 
 
 class GameWindow154(Game):
-    music_list = ['봄바람 소년 - Only One : norm', '애프터스쿨 - 너 때문에 : hard', '인피니트 - Follow Me : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '휘성 - Night and Day : easy', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)','봄바람 소년 - Only One : norm', '애프터스쿨 - 너 때문에 : hard', '인피니트 - Follow Me : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '휘성 - Night and Day : easy', '잔나비 - Goodnight (Intro) : hard']
 
     def __init__(self):
         super().__init__()
@@ -9168,7 +8644,7 @@ class GameWindow154(Game):
 
 
 class GameWindow155(Game):
-    music_list = ['틴탑 - Date : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '시스타 - One More Day : hard', 'K.Will - 눈물이 뚝뚝 : easy', '셰인 - Be My Love : norm', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '윤도현 - 사랑했나봐 : easy', '앤츠 - 예쁜 너니까 : easy', '창민 & 다희 - 한 사람만 보여요 (최고다 이순신 OST) : hard', '보아 - One Dream : easy']
+    music_list = ['(노래를 선택하세요)','틴탑 - Date : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '시스타 - One More Day : hard', 'K.Will - 눈물이 뚝뚝 : easy', '셰인 - Be My Love : norm', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '윤도현 - 사랑했나봐 : easy', '앤츠 - 예쁜 너니까 : easy', '창민 & 다희 - 한 사람만 보여요 (최고다 이순신 OST) : hard', '보아 - One Dream : easy']
 
     def __init__(self):
         super().__init__()
@@ -9222,7 +8698,7 @@ class GameWindow155(Game):
 
 
 class GameWindow156(Game):
-    music_list = ['에일리 - 이제는 안녕 : hard', '여은 - 사랑아 나의 사랑아 : norm', '샤이니 - Runaway : hard', '샤이니 - Last Christmas : norm', '보아 - One Dream : easy', '방탄소년단 - Intro: Never Mind : easy', '가인 - 피어나 : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '지나 - 싫어 : easy', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','에일리 - 이제는 안녕 : hard', '여은 - 사랑아 나의 사랑아 : norm', '샤이니 - Runaway : hard', '샤이니 - Last Christmas : norm', '보아 - One Dream : easy', '방탄소년단 - Intro: Never Mind : easy', '가인 - 피어나 : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '지나 - 싫어 : easy', '방탄소년단 - 고엽 : easy']
 
     def __init__(self):
         super().__init__()
@@ -9276,7 +8752,7 @@ class GameWindow156(Game):
 
 
 class GameWindow157(Game):
-    music_list = ['개리 - 둥둥 : easy', '최철호 - Der Rosenkavalier : hard', '보아 - One Dream : easy', '지나 - 싫어 : easy', 'Flower - 사랑은 알아도... : easy', '샤이니 - Runaway : hard', "박효신 - It's You : hard", '박수진 & 일렉트로보이즈 - 떨려요 : norm', '박효신 - 야생화 : hard', '이오공감 - 한 사람을 위한 마음 : norm']
+    music_list = ['(노래를 선택하세요)','개리 - 둥둥 : easy', '최철호 - Der Rosenkavalier : hard', '보아 - One Dream : easy', '지나 - 싫어 : easy', 'Flower - 사랑은 알아도... : easy', '샤이니 - Runaway : hard', "박효신 - It's You : hard", '박수진 & 일렉트로보이즈 - 떨려요 : norm', '박효신 - 야생화 : hard', '이오공감 - 한 사람을 위한 마음 : norm']
 
     def __init__(self):
         super().__init__()
@@ -9331,17 +8807,7 @@ class GameWindow157(Game):
 
 
 class GameWindow158(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'youtube music 158',
-                  'cute 158',
-                  'tenderness 158',
-                  'acoustic breeze 158',
-                  'better days 158',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+    music_list = ['(노래를 선택하세요)','보아 - One Dream : easy', '산들(B1A4) - 짝사랑 : norm', '스윙스 - a real lady : easy', '박재범 - Forever : hard', '샤이니 - 너의 노래가 되어 : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '지나 - 싫어 : easy', 'We are the night - 흐려도 좋아 : easy', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm', 'NCT 127 - Switch : norm']
 
     def __init__(self):
         super().__init__()
@@ -9354,58 +8820,48 @@ class GameWindow158(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/osYmpohGBS8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=8H2OTYIHJvg')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=EMj7hPy4wJ8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=5mhDiHyFE3g')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=7arTRoqY3QA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/Grv0k1dXz3U')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=XNRo2MEMALQ')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t1gRKVgghKY')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow159(Game):
-    music_list = ['(노래를 선택하세요)',
-                  'youtube music 159',
-                  'cute 159',
-                  'tenderness 159',
-                  'acoustic breeze 159',
-                  'better days 159',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+    music_list = ['(노래를 선택하세요)','인피니트 - 붙박이 별 : hard', '샤이니 - Your Number : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '봄바람 소년 - Only One : norm', 'Flower - 사랑은 알아도... : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '빅스 - 사슬 : easy', '보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -9418,58 +8874,49 @@ class GameWindow159(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/nwHnJT-AXR0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/xq3NB3U0Ps8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=DD5ZGsP3VsM')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow160(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 160',
-                  'cute 160',
-                  'tenderness 160',
-                  'acoustic breeze 160',
-                  'better days 160',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '보아 - Only One : easy', '유미 - Last one (주군의 태양 OST) : norm', '슈퍼주니어 - Let’s Dance : hard', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : norm', '앤츠 - 예쁜 너니까 : easy', '몬스타엑스 - 히어로 : hard', '에일리 - Live or Die : easy', '악뮤 - 다리꼬지마 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '보아 - One Dream : easy']
 
     def __init__(self):
         super().__init__()
@@ -9482,58 +8929,49 @@ class GameWindow160(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/XEk5Nrd3-Zs')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=I1-q8mrnpDU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/0LvBVFnX1Vk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jzYU7nCNR4c')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=w6yUYGd5M3M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/nnPY7l1LrMQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow161(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 161',
-                  'cute 161',
-                  'tenderness 161',
-                  'acoustic breeze 161',
-                  'better days 161',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '제이켠 - 나쁜 X : norm', '어반자카파 - Rainbow Ride (Prelude) : hard', '거미 - 너를 사랑해 : hard', 'AZIATIX - Lights : easy', '비투비 - 두 번째 고백 : easy', '앤츠 - 예쁜 너니까 : easy', '에이핑크 - 하늘 높이 : hard', '2NE1 - 안녕 : hard', '보아 - One Dream : easy', '릴보이 - 돈돈돈 : easy']
 
     def __init__(self):
         super().__init__()
@@ -9546,58 +8984,49 @@ class GameWindow161(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Pr4JowItzOM')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=OzfpeXFFe2I')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=hTUr660PMlU')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=rxl9cIbBHrc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=TnIXDeM7jAw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=6rbt3DjYoOg')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow162(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 162',
-                  'cute 162',
-                  'tenderness 162',
-                  'acoustic breeze 162',
-                  'better days 162',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', '에이핑크 - BUBIBU : norm', '엠블랙 - Y : hard', '지나 - 싫어 : easy', '시스타 - Sunshine : hard', '주영 - 들리나요 : hard', '앤츠 - 예쁜 너니까 : easy', '휘성 - Night and Day : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy']
 
     def __init__(self):
         super().__init__()
@@ -9610,58 +9039,49 @@ class GameWindow162(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=EOAxIz7VQU8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=eNcn4vA-9sE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/gyCss-xlMNA')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/Grv0k1dXz3U')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=5tK8627wCtw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=2LW4Ih_UZMw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=8shnOlfd1wY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow163(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 163',
-                  'cute 163',
-                  'tenderness 163',
-                  'acoustic breeze 163',
-                  'better days 163',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '가인 - 피어나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '김남주 & 육성재 - 사진 : norm', '뉴이스트 - 나의 천국 : hard', '한희정 - 러브레터 : norm', '참깨와 솜사탕 - 키스미 : norm', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '시스타 - One More Day : hard', '클래지콰이 프로젝트 - Android : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy']
 
     def __init__(self):
         super().__init__()
@@ -9674,58 +9094,49 @@ class GameWindow163(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mBEJ18AV8gE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/6390tjodZ5k')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/sCpFPdavYII')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/xHAoLgkbETY')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/JJlFuj7WA9Q')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/OmfR14eBQQo')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow164(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 164',
-                  'cute 164',
-                  'tenderness 164',
-                  'acoustic breeze 164',
-                  'better days 164',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '시스타 - One More Day : hard', 'Beta89 - 청춘아 : easy', '박효신 - 야생화 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '포맨 - 살다가 한번쯤 : hard', 'EXO - MY ANSWER : hard', '코코소리 - 다크서클 : hard', '요조 - 바나나파티 : hard', '샤이니 - Last Christmas : norm']
 
     def __init__(self):
         super().__init__()
@@ -9738,58 +9149,49 @@ class GameWindow164(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=veaz-t0e2Fg')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/KJSXolyj4DM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/eV0RwwijHGw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=KC_nbsVUFtM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=eM8A0q8GQrc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=V5PLNMn3Wfg')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Fdw1DkgWZC8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow165(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 165',
-                  'cute 165',
-                  'tenderness 165',
-                  'acoustic breeze 165',
-                  'better days 165',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '에일리 - 이제는 안녕 : hard', '에이핑크 - 몰라요 : hard', '안현정 - 그대와 나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '방탄소년단 - Intro: Never Mind : easy', '시크릿 - POISON : easy', '시스타 - One More Day : hard', 'NCT 127 - Switch : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '샤이니 - Evil : hard']
 
     def __init__(self):
         super().__init__()
@@ -9802,58 +9204,51 @@ class GameWindow165(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/yvU8KRQRfbQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/qTI0TJUGDts')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/TP56DuUpKBE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t81DgI79p8A')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow166(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 166',
-                  'cute 166',
-                  'tenderness 166',
-                  'acoustic breeze 166',
-                  'better days 166',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '에이핑크 - Secret Garden : easy', '비스트 - Fiction : hard', '모던다락방 - All I Want Is 바라만봐도 : norm',
+                  '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard',
+                  '이지수 - 너야 : easy', '시스타 - One More Day : hard', '빅스 - 사슬 : easy', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -9866,58 +9261,49 @@ class GameWindow166(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=whlVRDTobhs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/-tDld3F9xAA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=WmLGy3ebLnM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow167(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 167',
-                  'cute 167',
-                  'tenderness 167',
-                  'acoustic breeze 167',
-                  'better days 167',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '샤이니 - One : hard', '시스타 - One More Day : hard', "비스트 - I'm sorry : easy", '연애말고 결혼 OST - Love Knots : hard', '샤이니 - Wowowow : easy', '에이핑크 - Secret Garden : easy', '비스트 - Fiction : hard', 'K.Will - 눈물이 뚝뚝 : easy', '잔나비 - Goodnight (Intro) : hard', '보아 - Only One : easy']
 
     def __init__(self):
         super().__init__()
@@ -9930,58 +9316,51 @@ class GameWindow167(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=grPy2KJYZ9M')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=whlVRDTobhs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=DIjGzZgu_yY')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow168(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 168',
-                  'cute 168',
-                  'tenderness 168',
-                  'acoustic breeze 168',
-                  'better days 168',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '이오공감 - 한 사람을 위한 마음 : norm', '딕펑스 - 들리지 않겠죠 : easy', '안현정 - 그대와 나 : hard', '뉴이스트 - 나의 천국 : hard',
+                  '엠블랙 - Y : hard', 'B1A4 - 몇 번을 : hard', '박재범 - Evolution (feat. Gray) : hard', '더 라임 그리워서 : norm',
+                  '2NE1 - 안녕 : hard', '시스타 - One More Day : hard']
 
     def __init__(self):
         super().__init__()
@@ -9994,58 +9373,49 @@ class GameWindow168(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/DokABcA8Iy8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=gJzAmWLrJFU')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/6390tjodZ5k')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/gyCss-xlMNA')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/FmuOH_0UKVI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=lYPMh88RTLc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=fyaYx8M4DQk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow169(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 169',
-                  'cute 169',
-                  'tenderness 169',
-                  'acoustic breeze 169',
-                  'better days 169',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '휘성 - Night and Day : easy', '시스타 - One More Day : hard', '샤이니 - One : hard', "비스트 - I'm sorry : easy", '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', 'f(x) - All Mine : hard', '천둥 - Good : norm', '연애말고 결혼 OST - Love Knots : hard', "박효신 - It's You : hard"]
 
     def __init__(self):
         super().__init__()
@@ -10058,58 +9428,49 @@ class GameWindow169(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=zdoB2TPqWxs')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=et9u7hPESCo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=7d_cdW-k6pE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=f4_3dWqu6kM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow170(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 170',
-                  'cute 170',
-                  'tenderness 170',
-                  'acoustic breeze 170',
-                  'better days 170',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '박효신 - 야생화 : hard', '가인 - 피어나 : hard', 'B1A4 - 둘만 있으면 : easy', 'Second Moon - 다음 이시간에 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '슈퍼주니어 - SUPERMAN : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '포맨 - 살다가 한번쯤 : hard', '클래지콰이 프로젝트 - Madly : norm', '지나 - 싫어 : easy']
 
     def __init__(self):
         super().__init__()
@@ -10122,58 +9483,49 @@ class GameWindow170(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=7A_tJZblEP4')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=e38Ijf-MMYI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/K6fzVQ7KKXM')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/eV0RwwijHGw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=g9iUDKeokIw')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/Grv0k1dXz3U')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow171(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 171',
-                  'cute 171',
-                  'tenderness 171',
-                  'acoustic breeze 171',
-                  'better days 171',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '뉴클리어스 - 깃길 : easy', '가인 - 피어나 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '크래용팝 - 1, 2, 3, 4 : hard', '샤이니 - Evil : hard', '보아 - Home : easy', 'NCT 127 - Switch : norm', '김남주 & 육성재 - 사진 : norm', '방탄소년단 - Intro: Never Mind : easy', '태양 - 기도 (feat. Teddy) : hard']
 
     def __init__(self):
         super().__init__()
@@ -10186,58 +9538,49 @@ class GameWindow171(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=lSBbLQXAUZs')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Q8QDrGxGmy8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t81DgI79p8A')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/igTvMcvm35s')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mBEJ18AV8gE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/vWKrcboMteo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow172(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 172',
-                  'cute 172',
-                  'tenderness 172',
-                  'acoustic breeze 172',
-                  'better days 172',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '크래용팝 - 1, 2, 3, 4 : hard', '방탄소년단 - 고엽 : easy', '샤이니 - Evil : hard', '비투비 - 자리비움 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '방탄소년단 - Intro: Never Mind : easy', '빅스 - 사슬 : easy', '에이프릴 - 스노우맨 : norm', '홍대광 - 아닌가요 : hard']
 
     def __init__(self):
         super().__init__()
@@ -10250,58 +9593,49 @@ class GameWindow172(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Q8QDrGxGmy8')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/cljJCtXYvuI')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t81DgI79p8A')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/18jtm9s1J20')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=RYQS3YmhO_8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=BETXd_AUeAg')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow173(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 173',
-                  'cute 173',
-                  'tenderness 173',
-                  'acoustic breeze 173',
-                  'better days 173',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '아이유 - 느리게 하는 일 : hard', '한희정 - 러브레터 : norm', '뉴이스트 - 나의 천국 : hard', '안현정 - 그대와 나 : hard', '황치열, 리싸 - 이 밤의 끝을 잡고 : easy', '이유성 - Butter Flying : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '유미 - Last one (주군의 태양 OST) : norm', '보아 - Only One : easy']
 
     def __init__(self):
         super().__init__()
@@ -10314,58 +9648,49 @@ class GameWindow173(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/S_8B6x89Uoo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/sCpFPdavYII')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/6390tjodZ5k')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/23oVRoiu_dk')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=HVqxQThIGgk')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/XEk5Nrd3-Zs')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow174(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 174',
-                  'cute 174',
-                  'tenderness 174',
-                  'acoustic breeze 174',
-                  'better days 174',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '안현정 - 그대와 나 : hard', '뉴이스트 - 나의 천국 : hard', 'B1A4 - 몇 번을 : hard', '2NE1 - 안녕 : hard', '수지 - Ring My Bell : hard', '멜로디데이 - Lake Wave (주군의 태양 OST) : easy', '이오공감 - 한 사람을 위한 마음 : norm', '주헌, 형원, I.M - 인터스텔라 (Interstellar) : hard', '더 케이투 OST - The K2 Main Theme : norm', '가인 - 피어나 : hard']
 
     def __init__(self):
         super().__init__()
@@ -10378,58 +9703,51 @@ class GameWindow174(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/6390tjodZ5k')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/FmuOH_0UKVI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=HVQ2WKhByMU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/w-rMc-AiNig')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/DokABcA8Iy8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/dBUWcM2TBpM')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/zOE7y0iCmG8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow175(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 175',
-                  'cute 175',
-                  'tenderness 175',
-                  'acoustic breeze 175',
-                  'better days 175',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  "박효신 - It's You : hard", '천둥 - Good : norm', '가인 - 피어나 : hard', '휘성 - Night and Day : easy',
+                  'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '정동하 - Mystery (주군의 태양 OST) : hard',
+                  '디아 - 날 위한 이별 : hard', '4MINUTE - 팜므파탈 : norm', '슈퍼주니어 - SUPERMAN : hard']
 
     def __init__(self):
         super().__init__()
@@ -10442,58 +9760,49 @@ class GameWindow175(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=kFLNAB5-qsQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=r39Sufgf7Pc')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow176(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 176',
-                  'cute 176',
-                  'tenderness 176',
-                  'acoustic breeze 176',
-                  'better days 176',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  'NCT 127 - Switch : norm', '박효신 - 야생화 : hard', '태양 - 기도 (feat. Teddy) : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '샤이니 - Evil : hard', '김남주 & 육성재 - 사진 : norm', '안현정 - 그대와 나 : hard', '한희정 - 러브레터 : norm', '뉴클리어스 - 깃길 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard']
 
     def __init__(self):
         super().__init__()
@@ -10506,58 +9815,49 @@ class GameWindow176(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/vWKrcboMteo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t81DgI79p8A')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/mBEJ18AV8gE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4eRNIS6zMeo')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/sCpFPdavYII')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=lSBbLQXAUZs')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow177(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 177',
-                  'cute 177',
-                  'tenderness 177',
-                  'acoustic breeze 177',
-                  'better days 177',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '빅스 - 사슬 : easy', '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '샤이니 - Last Christmas : norm', '박효신 - 야생화 : hard', '코코소리 - 다크서클 : hard', '방탄소년단 - Intro: Never Mind : easy', 'Lucia(심규선) - 녹여줘 : norm', "박효신 - It's You : hard", 'Beta89 - 청춘아 : easy']
 
     def __init__(self):
         super().__init__()
@@ -10570,58 +9870,49 @@ class GameWindow177(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/Fdw1DkgWZC8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=eM8A0q8GQrc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/cJ5ts0qjCaI')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=veaz-t0e2Fg')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow178(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 178',
-                  'cute 178',
-                  'tenderness 178',
-                  'acoustic breeze 178',
-                  'better days 178',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '보아 - Only One : easy', '박효신 - 야생화 : hard', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Lucia(심규선) - 녹여줘 : norm', 'Beta89 - 청춘아 : easy', '바스코 - Whoa Ha ! : norm', '코코소리 - 다크서클 : hard']
 
     def __init__(self):
         super().__init__()
@@ -10634,58 +9925,48 @@ class GameWindow178(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/eV0RwwijHGw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/IdFeKj798hU')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/cJ5ts0qjCaI')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=veaz-t0e2Fg')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=JpL691-pxuM')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=eM8A0q8GQrc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 class GameWindow179(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 179',
-                  'cute 179',
-                  'tenderness 179',
-                  'acoustic breeze 179',
-                  'better days 179',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '박효신 - 야생화 : hard', '니엘 - 심쿵 : hard', '에이핑크 - 하늘 높이 : hard', '시크릿 - Madonna : easy', '태민 - One By One : norm', '송지은 - 예쁜 나이 25살 : norm', '디아 - 날 위한 이별 : hard', '민연재 - 비행소녀 : hard', '2NE1 - 안녕 : hard', 'We are the night - 흐려도 좋아 : easy']
 
     def __init__(self):
         super().__init__()
@@ -10698,58 +9979,49 @@ class GameWindow179(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1T3gndIBNbc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=TnIXDeM7jAw')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/n2fM1yHE_Nc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=3wQWOKQX8NE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=dMEZMHpWTSM')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=TCHXoRYwjVQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=XNRo2MEMALQ')
             self.btn_start.clicked.connect(self.game_start_easy)
 
 
 class GameWindow180(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 180',
-                  'cute 180',
-                  'tenderness 180',
-                  'acoustic breeze 180',
-                  'better days 180',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '김예림 - 행복한 나를 : hard', 'DEAN - Bonnie & Clyde : easy', 'f(x) - Stand Up : norm', 'B.A.P - 0 (Zero) : easy', 'B.A.P - Fermata : hard', '니엘 - 아포카토 : easy', '박효신 - 야생화 : hard', '휘성 - Night and Day : easy', '셰인 - Be My Love : norm', '4minute - 이름이 뭐예요? : norm']
 
     def __init__(self):
         super().__init__()
@@ -10762,58 +10034,49 @@ class GameWindow180(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Plc5V1ANWtE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=QKcJa8dKg_A')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=Px_TaS30Cb0')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=W4EHYKFQvns')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=dGERGbN7VYg')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=QgU5CVZQoEs')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=ZtcM3KhgF-s')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/UmC0cfwSKks')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=nD5ferh1_eE')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow181(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 181',
-                  'cute 181',
-                  'tenderness 181',
-                  'acoustic breeze 181',
-                  'better days 181',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  'NCT 127 - Switch : norm', '빅스 - 사슬 : easy', '시크릿 - POISON : easy', '악뮤 - 다리꼬지마 : hard', 'B1A4 - 몇 번을 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '보경, 셰인 - Summer Love : norm', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Evil : hard', '이오공감 - 한 사람을 위한 마음 : norm']
 
     def __init__(self):
         super().__init__()
@@ -10826,58 +10089,58 @@ class GameWindow181(Game):
             pass
 
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/TP56DuUpKBE')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/nnPY7l1LrMQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/FmuOH_0UKVI')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/L9GPT1opU44')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
 
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/t81DgI79p8A')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/DokABcA8Iy8')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 
 class GameWindow182(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 182',
-                  'cute 182',
-                  'tenderness 182',
-                  'acoustic breeze 182',
-                  'better days 182',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '샤이니 - Your Number : easy',
+                  '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm',
+                  '더 콰이엇 - 진흙 속에서 피는 꽃 : easy',
+                  '태양 - 기도 (feat. Teddy) : hard',
+                  '황치열, 리싸 - 이 밤의 끝을 잡고 : easy',
+                  '에일리 - 이제는 안녕 : hard',
+                  '보아 - Only One (Instrumental) : easy',
+                  '김남주 & 육성재 - 사진 : norm',
+                  '방탄소년단 - Intro: Never Mind : easy',
+                  'NCT 127 - Switch : norm']
 
     def __init__(self):
         super().__init__()
@@ -10888,60 +10151,49 @@ class GameWindow182(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://youtu.be/xq3NB3U0Ps8')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/t1gRKVgghKY')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/vWKrcboMteo')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/23oVRoiu_dk')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/yvU8KRQRfbQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/mBEJ18AV8gE')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 class GameWindow183(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 183',
-                  'cute 183',
-                  'tenderness 183',
-                  'acoustic breeze 183',
-                  'better days 183',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '김현우 - Love Blowing : norm',
+                  'NCT 127 - Switch : norm',
+                  '한희정 - 입맞춤, 입술의 춤 : hard',
+                  '2NE1 - Goodbye : hard',
+                  '오준성 - The Chorus Of Knights : easy',
+                  '악동뮤지션 - 사람들이 움직이는 게 : hard',
+                  '인피니트 - 붙박이 별 : hard',
+                  '딕펑스 - 요즘 젊은 것들 : norm',
+                  '백지영 - 사랑아 또 사랑아 : easy',
+                  '이지수 - 너야 : easy']
 
     def __init__(self):
         super().__init__()
@@ -10952,60 +10204,49 @@ class GameWindow183(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/pdLtYmWDoq8')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=gtAiZ8ONgpU')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=_XDUam4-pis')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=MWROa7V4FqA')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/nwHnJT-AXR0')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/OwNJJf2yM04')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/wQZkM2ELDXA')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
-
 
 class GameWindow184(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 184',
-                  'cute 184',
-                  'tenderness 184',
-                  'acoustic breeze 184',
-                  'better days 184',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '휘성 - Night and Day : easy',
+                  '방탄소년단 - Intro: Never Mind : easy',
+                  '딕펑스 - 요즘 젊은 것들 : norm',
+                  '샤이니 - Your Number : easy',
+                  '천둥 - Good : norm',
+                  '황치열, 리싸 - 이 밤의 끝을 잡고 : easy',
+                  '더 콰이엇 - 진흙 속에서 피는 꽃 : easy',
+                  'NCT 127 - Switch : norm',
+                  '어반자카파 - Rainbow Ride (Prelude) : hard',
+                  '정동하 - Mystery (주군의 태양 OST) : hard']
 
     def __init__(self):
         super().__init__()
@@ -11016,60 +10257,50 @@ class GameWindow184(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/OwNJJf2yM04')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/xq3NB3U0Ps8')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=X7eMeU7JiIA')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/23oVRoiu_dk')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=jAhJl87fEOQ')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[9]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/9JpxslQR-zc')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow185(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 185',
-                  'cute 185',
-                  'tenderness 185',
-                  'acoustic breeze 185',
-                  'better days 185',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '오빠친구동생 - 소보루빵 : hard',
+                  '딕펑스 - 한강에서 놀아요 : norm',
+                  '이지수 - 너야 : easy',
+                  '스트레이 - Tonight : norm',
+                  "박효신 - It's You : hard",
+                  '디아 - 날 위한 이별 : hard',
+                  '보아 - Only One (Instrumental) : easy',
+                  'Flower - 사랑은 알아도... : easy',
+                  '빅스 - 사슬 : easy',
+                  '딕펑스 - 요즘 젊은 것들 : norm']
 
     def __init__(self):
         super().__init__()
@@ -11080,60 +10311,49 @@ class GameWindow185(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=TutGX4fTXMw')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/B3qAHL_dXXk')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=TBddTpXl-uA')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/Dr_6ktsvnHU')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=Q33ftKGy3vk')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=xc3iDjbYSG8')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/OwNJJf2yM04')
+            self.btn_start.clicked.connect(self.game_start_norm)
 
 class GameWindow186(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 186',
-                  'cute 186',
-                  'tenderness 186',
-                  'acoustic breeze 186',
-                  'better days 186',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '2NE1 - Goodbye : hard',
+                  '멜로디데이 - Lake Wave (주군의 태양 OST) : easy',
+                  '빅스 - 사슬 : easy',
+                  '에이핑크 - Wanna Be : easy',
+                  '주헌, 형원, I.M - 인터스텔라 (Interstellar) : hard',
+                  '태양 - 기도 (feat. Teddy) : hard',
+                  '종현 - 그래도 되지 않아? : hard',
+                  '팀 - River Flows in You : norm',
+                  '백지영 - 사랑아 또 사랑아 : easy',
+                  '4minute - 안 줄래 : hard']
 
     def __init__(self):
         super().__init__()
@@ -11144,60 +10364,50 @@ class GameWindow186(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/w-rMc-AiNig')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=YFLnr9CUfJQ')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/dBUWcM2TBpM')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/vWKrcboMteo')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=GDY0f2sb9yE')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/Xcc87nlXEnI')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/wQZkM2ELDXA')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=UAOghR-YRYQ')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow187(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 187',
-                  'cute 187',
-                  'tenderness 187',
-                  'acoustic breeze 187',
-                  'better days 187',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '더 콰이엇 - 진흙 속에서 피는 꽃 : easy',
+                  '비하트 - 필요없어 : easy',
+                  '비투비 - 자리비움 : easy',
+                  '린 - 이별주 : hard',
+                  '방탄소년단 - 고엽 : easy',
+                  '박수진 & 일렉트로보이즈 - 떨려요 : norm',
+                  '방탄소년단 - Intro: Never Mind : easy',
+                  '휘성 - Night and Day : easy',
+                  '정동하 - Mystery (주군의 태양 OST) : hard',
+                  '빅스 - 사슬 : easy']
 
     def __init__(self):
         super().__init__()
@@ -11208,60 +10418,52 @@ class GameWindow187(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=Gf-P9UvVWqw')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=3nmvvZtvXDc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[3]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/18jtm9s1J20')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/QGQqh_jCWwc')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[5]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/cljJCtXYvuI')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=7arTRoqY3QA')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[7]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/ugrXP_YT9j0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[8]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://youtu.be/WZ2rdYNbndc')
+            self.btn_start.clicked.connect(self.game_start_hard)
+        elif item == self.music_list[10]:
+            self.music_thread('https://www.youtube.com/watch?v=pMkIfldadUc')
             self.btn_start.clicked.connect(self.game_start_easy)
 
-        elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+
 
 
 class GameWindow188(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 188',
-                  'cute 188',
-                  'tenderness 188',
-                  'acoustic breeze 188',
-                  'better days 188',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '클래지콰이 프로젝트 - Android : norm',
+                  '2NE1 - Goodbye : hard',
+                  '셰인 - Be My Love : norm',
+                  '에이핑크 - Wanna Be : easy',
+                  '한희정 - 러브레터 : norm',
+                  '뉴이스트 - 나의 천국 : hard',
+                  '헨리(슈퍼주니어 M) - My Everything : hard',
+                  '티어라이너 - Einfühlung : hard',
+                  '보아 - Only One (Instrumental) : easy',
+                  '성시경 - Winter Wonderland : hard']
 
     def __init__(self):
         super().__init__()
@@ -11272,60 +10474,50 @@ class GameWindow188(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/OmfR14eBQQo')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[2]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/UmC0cfwSKks')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[4]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=YFLnr9CUfJQ')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/sCpFPdavYII')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/6390tjodZ5k')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=Mbm5PldbeWY')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=rqHEhhnWfqY')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://youtu.be/4y2j_Z0IuI0')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow189(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 189',
-                  'cute 189',
-                  'tenderness 189',
-                  'acoustic breeze 189',
-                  'better days 189',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '보아 - Only One (Instrumental) : easy',
+                  "비스트 - I'm sorry : easy",
+                  '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard',
+                  '인피니트 - Follow Me : hard',
+                  '프롬 - 달의 뒤편으로 와요 : norm',
+                  '휘성 - Night and Day : easy',
+                  "박효신 - It's You : hard",
+                  '연애말고 결혼 OST - Love Knots : hard',
+                  'K.Will - 눈물이 뚝뚝 : easy',
+                  '잔나비 - Goodnight (Intro) : hard']
 
     def __init__(self):
         super().__init__()
@@ -11336,60 +10528,50 @@ class GameWindow189(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
+            self.music_thread('https://www.youtube.com/watch?v=ty-88JATqxc')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=ZpRlIVImgnM')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/4bVF3W32oMc')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/mb1J6xz1ME0')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=hLiTZkvm8kY')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[6]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=xXlS6-V5ec0')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=lk5QWPq1K6E')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=DIjGzZgu_yY')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
+            self.music_thread('https://www.youtube.com/watch?v=1Xr5IhcE2pE')
+            self.btn_start.clicked.connect(self.game_start_hard)
 
 
 class GameWindow190(Game):
     music_list = ['(노래를 선택하세요)',
-                  'youtube music 190',
-                  'cute 190',
-                  'tenderness 190',
-                  'acoustic breeze 190',
-                  'better days 190',
-                  '6',
-                  '7',
-                  '8',
-                  '9',
-                  '10']
+                  '2NE1 - Goodbye : hard',
+                  '에이핑크 - 끌려 : easy',
+                  '신용재 - 평범한 사랑 : norm',
+                  '슈퍼주니어 - Oops!! : hard',
+                  '유미 - Last one (주군의 태양 OST) : norm',
+                  'LOCO - 높아 2 : hard',
+                  '조권 & 니엘 & 지오 & 양요섭 & 우현 - 눈물나게 아름다운 : hard',
+                  '기리보이, 매드클라운, 주영 - 0 (YOUNG) : hard',
+                  '오준성 - Enjoy Party : easy',
+                  '휘성 - Night and Day : easy']
 
     def __init__(self):
         super().__init__()
@@ -11400,47 +10582,36 @@ class GameWindow190(Game):
 
         if item == self.music_list[0]:
             pass
-
         elif item == self.music_list[1]:
-            self.music_thread('https://youtu.be/7TO_oHxuk6c')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=o3hMsjMkOB4')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[2]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=IdBLtbfnlHM')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[3]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/7o2SvZhpp8c')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[4]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=PFeIiLbOiK8')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[5]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/XEk5Nrd3-Zs')
+            self.btn_start.clicked.connect(self.game_start_norm)
         elif item == self.music_list[6]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=dVYLEvYsnDU')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[7]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://www.youtube.com/watch?v=fHw3CJp9ckk')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[8]:
-            self.music_thread('')
-            self.btn_start.clicked.connect(self.game_start_easy)
-
+            self.music_thread('https://youtu.be/FeDeDnwJlB0')
+            self.btn_start.clicked.connect(self.game_start_hard)
         elif item == self.music_list[9]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=JkRgGYEYERM')
             self.btn_start.clicked.connect(self.game_start_easy)
-
         elif item == self.music_list[10]:
-            self.music_thread('')
+            self.music_thread('https://www.youtube.com/watch?v=eV1KawA_5Q0')
             self.btn_start.clicked.connect(self.game_start_easy)
-
 
 class FindSongs(QtWidgets.QWidget):
     def __init__(self):
