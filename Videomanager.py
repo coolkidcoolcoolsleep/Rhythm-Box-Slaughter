@@ -941,7 +941,7 @@ class Video_Manager:
             frame = cv2.resize(frame, (self.img_width, self.img_height))
 
             if self.game_finish == False:
-                box_seed_num = self.box_num // 30
+                box_seed_num = self.box_num // 20
                 random.seed(box_seed_num)
                 self.box_num += 1
 
@@ -968,7 +968,7 @@ class Video_Manager:
                 frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=False)
 
                 self.frame_num = self.frame_num + 1
-                if self.frame_num == 900:
+                if self.frame_num == 600:
                     self.game_finish = True
 
                 # 승자 결정
@@ -1509,9 +1509,9 @@ class Video_Manager:
             elif red_score == blue_score:
                 self.all_draw = True
         else:
-            if 0 <= sum_score < 10:
+            if 0 <= sum_score < 20:
                 self.one_player_result = 'Poor'
-            elif 9 < sum_score < 30:
+            elif 19 < sum_score < 30:
                 self.one_player_result = 'Not Bad'
             elif 29 < sum_score < 50:
                 self.one_player_result = 'Good'
