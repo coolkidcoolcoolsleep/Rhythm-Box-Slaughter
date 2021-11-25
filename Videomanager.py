@@ -946,7 +946,7 @@ class Video_Manager:
                 self.box_num += 1
 
                 detection_blue, detection_red = self.tracking_ball(frame)
-                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=True)
+                coordinate_red, coordinate_blue = self.random_box('easy', frame, is_one_player=False)
 
                 if box_seed_num != self.current_seed:
                     self.is_answer_handled_red = False
@@ -965,18 +965,18 @@ class Video_Manager:
                                   is_answer_handled_blue)
 
                 # 점수 표기
-                frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
+                frame = self.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=False)
 
                 self.frame_num = self.frame_num + 1
                 if self.frame_num == 900:
                     self.game_finish = True
 
                 # 승자 결정
-                self.game_result(red_score, blue_score, sum_score, is_one_player=True)
+                self.game_result(red_score, blue_score, sum_score, is_one_player=False)
 
             else:
                 # 승자 효과
-                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=True)
+                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -1608,7 +1608,7 @@ class Video_Manager:
 
                 # top
                 frame = cvzone.overlayPNG(frame, self.heart_1_small, [self.img_width - 120, 10])
-                frame = cvzone.overlayPNG(frame, self.happy_r_small_80, [self.img_width - 230, 10])
+                frame = cvzone.overlayPNG(frame, self.happy_r_small, [self.img_width - 230, 10])
                 frame = cvzone.overlayPNG(frame, self.heart_2_small, [self.img_width - 340, 10])
                 frame = cvzone.overlayPNG(frame, self.splendid_r_small_80, [self.img_width - 450, 10])
                 frame = cvzone.overlayPNG(frame, self.heart_3_small, [self.img_width - 560, 10])
@@ -1618,7 +1618,7 @@ class Video_Manager:
 
                 # bottom
                 frame = cvzone.overlayPNG(frame, self.heart_1_small, [self.img_width - 120, 1000])
-                frame = cvzone.overlayPNG(frame, self.happy_r_small_80, [self.img_width - 230, 1000])
+                frame = cvzone.overlayPNG(frame, self.happy_r_small, [self.img_width - 230, 1000])
                 frame = cvzone.overlayPNG(frame, self.heart_2_small, [self.img_width - 340, 1000])
                 frame = cvzone.overlayPNG(frame, self.splendid_r_small_80, [self.img_width - 450, 1000])
                 frame = cvzone.overlayPNG(frame, self.heart_3_small, [self.img_width - 560, 1000])
