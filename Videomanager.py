@@ -14,20 +14,21 @@ class Video_Manager:
         self.is_answer_handled_red = False
         self.is_answer_handled_blue = False
         self.game_finish = False
-        self.win_red = False
-        self.win_blue = False
-        self.all_draw = False
+        # self.win_red = False
+        # self.win_blue = False
+        # self.all_draw = False
         self.one_player_result = 0
+        self.two_player_result = 0
 
         # detection_color
         self.blue_lower = (100, 150, 0)
         self.blue_upper = (140, 255, 255)
-        self.red_lower = (-10, 100, 100)
-        self.red_upper = (10, 255, 255)
+        # self.red_lower = (-10, 100, 100)
+        # self.red_upper = (10, 255, 255)
 
         # 피부가 많이 잡힘
-        # self.red_lower = (0, 70, 50)
-        # self.red_upper = (10, 255, 255)
+        self.red_lower = (0, 70, 50)
+        self.red_upper = (10, 255, 255)
 
         # 살짝 피부 많이
         # self.red_lower = (0, 50, 20)
@@ -422,7 +423,7 @@ class Video_Manager:
         self.purple_fill_59 = cv2.imread('data/gage/purple_59.png', -1)
         self.purple_fill_59 = cv2.resize(self.purple_fill_59, self.gage_size_1p, -1)
 
-        self.purple_fill_60 = cv2.imread('data/gage/purple_10.png', -1)
+        self.purple_fill_60 = cv2.imread('data/gage/purple_60.png', -1)
         self.purple_fill_60 = cv2.resize(self.purple_fill_60, self.gage_size_1p, -1)
 
         # score_text
@@ -922,6 +923,7 @@ class Video_Manager:
 
     def load_video(self):
         # load_video
+        self.two_player_result = 0
         # vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+1)
 
         vidcap = cv2.VideoCapture(0)
@@ -976,7 +978,7 @@ class Video_Manager:
 
             else:
                 # 승자 효과
-                frame = self.Winner_effect(frame, self.win_red, self.win_blue, self.all_draw, self.one_player_result, is_one_player=False)
+                frame = self.Winner_effect(frame, self.two_player_result, self.one_player_result, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -1503,11 +1505,11 @@ class Video_Manager:
     def game_result(self, red_score, blue_score, sum_score, is_one_player=False):
         if not is_one_player:
             if red_score > blue_score:
-                self.win_red = True
+                self.two_player_result = 'win_red'
             elif red_score < blue_score:
-                self.win_blue = True
+                self.two_player_result = 'win_blue'
             elif red_score == blue_score:
-                self.all_draw = True
+                self.two_player_result = 'all_draw'
         else:
             if 0 <= sum_score < 20:
                 self.one_player_result = 'Poor'
@@ -1520,11 +1522,11 @@ class Video_Manager:
             elif sum_score == 60:
                 self.one_player_result = 'Splendid'
 
-    def Winner_effect(self, frame, win_red, win_blue, all_draw, one_player_result, is_one_player=False):
+    def Winner_effect(self, frame, two_player_result, one_player_result, is_one_player=False):
         if not is_one_player:
             img = frame
             img = cv2.line(img, (self.img_width // 2, 0), (self.img_width // 2, self.img_height), self.white_color, 2)
-            if win_red:
+            if self.two_player_result == 'win_red':
                 # red 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.red_win, [(self.img_width // 4) - 200, (self.img_height // 2) - 450])
                 frame = cvzone.overlayPNG(frame, self.splendid_l_small, [(self.img_width // 4) - 300, (self.img_height // 2) - 400])
@@ -1575,7 +1577,7 @@ class Video_Manager:
                 frame = cvzone.overlayPNG(frame, self.bad_4_small, [self.img_width - 780, 1000])
                 frame = cvzone.overlayPNG(frame, self.bad_5_small, [self.img_width - 890, 1000])
 
-            elif win_blue:
+            elif self.two_player_result == 'win_blue':
                 # red 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.red_lose, [(self.img_width // 4) - 200, (self.img_height // 2) - 450])
                 frame = cvzone.overlayPNG(frame, self.poor_l_small, [(self.img_width // 4) - 300, (self.img_height // 2) - 400])
@@ -1626,7 +1628,7 @@ class Video_Manager:
                 frame = cvzone.overlayPNG(frame, self.heart_4_small, [self.img_width - 780, 1000])
                 frame = cvzone.overlayPNG(frame, self.peace_r_small, [self.img_width - 890, 1000])
 
-            elif all_draw:
+            elif self.two_player_result == 'all_draw':
                 # red 영역 화면 출력
                 frame = cvzone.overlayPNG(frame, self.red_draw, [(self.img_width // 4) - 200, (self.img_height // 2) - 450])
                 frame = cvzone.overlayPNG(frame, self.good_l_small, [(self.img_width // 4) - 300, (self.img_height // 2) - 400])
