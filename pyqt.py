@@ -6,8 +6,6 @@ from PyQt5 import QtCore
 import sys
 import random
 import threading
-import pafy
-import vlc
 import time
 import winsound
 import ctypes
@@ -57,80 +55,12 @@ class Game(QtWidgets.QWidget):
             frame = cv2.resize(frame, (vm.img_width, vm.img_height))
 
             if vm.game_finish == False:
-                box_seed_num = vm.box_num // 30
+                box_seed_num = vm.box_num // 25
                 random.seed(box_seed_num)
                 vm.box_num += 1
 
                 detection_blue, detection_red = vm.tracking_ball(frame)
                 coordinate_red, coordinate_blue = vm.random_box(mode, frame, is_one_player=True)
-
-                if box_seed_num != vm.current_seed:
-                    vm.is_answer_handled_red = False
-                    vm.is_answer_handled_blue = False
-
-                rectangle_seed_num = vm.rect_num % 3
-                vm.rect_num += 1
-
-                # 점수 계산
-                blue_score, red_score, is_answer_handled_red, is_answer_handled_blue, sum_score = \
-                    vm.score_calculation(frame, rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num,
-                                         detection_red, coordinate_red)
-
-                # 정답 rect 그리기
-                vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
-                                     is_answer_handled_blue)
-
-                # 점수 표기
-                frame = vm.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
-
-                vm.frame_num = vm.frame_num + 1
-                if vm.frame_num == 900:
-                    vm.game_finish = True
-
-                # 승자 결정
-                vm.game_result(red_score, blue_score, sum_score, is_one_player=True)
-
-            else:
-                # 승자 효과
-                frame = vm.Winner_effect(frame, vm.win_red, vm.win_blue, vm.all_draw, vm.one_player_result,
-                                         is_one_player=True)
-
-            cv2.imshow('Rhythm Box Slaughter', frame)
-
-            if cv2.waitKey(15) == 27:
-                ctypes.windll.user32.MessageBoxW(0, '게임을 종료합니다', '안내', 0)
-                break
-
-        vidcap.release()
-        cv2.destroyAllWindows()
-
-    def player_2(self, mode):
-        vm = Video_Manager()
-
-        # load_video
-        vidcap = cv2.VideoCapture(cv2.CAP_DSHOW+0)
-
-        if not vidcap.isOpened():
-            vidcap = cv2.VideoCapture(0)
-
-        while True:
-            _, frame = vidcap.read()  # _: ret
-            # print(_)
-            # 영상 좌우 반전
-            frame = cv2.flip(frame, 1)
-
-            if frame is None:
-                break
-
-            frame = cv2.resize(frame, (vm.img_width, vm.img_height))
-
-            if vm.game_finish == False:
-                box_seed_num = vm.box_num // 30
-                random.seed(box_seed_num)
-                vm.box_num += 1
-
-                detection_blue, detection_red = vm.tracking_ball(frame)
-                coordinate_red, coordinate_blue = vm.random_box(mode, frame, is_one_player=False)
 
                 if box_seed_num != vm.current_seed:
                     vm.is_answer_handled_red = False
@@ -149,10 +79,77 @@ class Game(QtWidgets.QWidget):
                                        is_answer_handled_blue)
 
                 # 점수 표기
+                frame = vm.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=True)
+
+                vm.frame_num = vm.frame_num + 1
+                if vm.frame_num == 750:
+                    vm.game_finish = True
+
+                # 승자 결정
+                vm.game_result(red_score, blue_score, sum_score, is_one_player=True)
+
+            else:
+                # 승자 효과
+                frame = vm.Winner_effect(frame, vm.one_player_result, vm.two_player_result,
+                                           is_one_player=True)
+
+            cv2.imshow('Rhythm Box Slaughter', frame)
+
+            if cv2.waitKey(15) == 27:
+                ctypes.windll.user32.MessageBoxW(0, '게임을 종료합니다', '안내', 0)
+                break
+
+        vidcap.release()
+        cv2.destroyAllWindows()
+
+    def player_2(self, mode):
+        vm = Video_Manager()
+
+        # load_video
+        vidcap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)
+
+        if not vidcap.isOpened():
+            vidcap = cv2.VideoCapture(0)
+
+        while True:
+            _, frame = vidcap.read()  # _: ret
+            # print(_)
+            # 영상 좌우 반전
+            frame = cv2.flip(frame, 1)
+
+            if frame is None:
+                break
+
+            frame = cv2.resize(frame, (vm.img_width, vm.img_height))
+            if vm.game_finish == False:
+                box_seed_num = vm.box_num // 20
+                random.seed(box_seed_num)
+                vm.box_num += 1
+
+                detection_blue, detection_red = vm.tracking_ball(frame)
+                coordinate_red, coordinate_blue = vm.random_box(mode, frame, is_one_player=False)
+
+                if box_seed_num != vm.current_seed:
+                    vm.is_answer_handled_red = False
+                    vm.is_answer_handled_blue = False
+
+                rectangle_seed_num = vm.rect_num % 3
+                vm.rect_num += 1
+
+                # 점수 계산
+                blue_score, red_score, is_answer_handled_red, is_answer_handled_blue, sum_score = \
+                    vm.score_calculation(frame, rectangle_seed_num, detection_blue, coordinate_blue, box_seed_num,
+                          detection_red, coordinate_red)
+
+                # 정답 rect 그리기
+                vm.Drawing_Rectangle(frame, coordinate_blue, coordinate_red, is_answer_handled_red,
+                                  is_answer_handled_blue)
+
+                # 점수 표기
                 frame = vm.PlayerGameStats(frame, red_score, blue_score, sum_score, is_one_player=False)
 
                 vm.frame_num = vm.frame_num + 1
-                if vm.frame_num == 900:
+                if vm.frame_num == 600:
                     vm.game_finish = True
 
                 # 승자 결정
@@ -160,8 +157,7 @@ class Game(QtWidgets.QWidget):
 
             else:
                 # 승자 효과
-                frame = vm.Winner_effect(frame, vm.win_red, vm.win_blue, vm.all_draw, vm.one_player_result,
-                                           is_one_player=False)
+                frame = vm.Winner_effect(frame, vm.two_player_result, vm.one_player_result, is_one_player=False)
 
             cv2.imshow('Rhythm Box Slaughter', frame)
 
@@ -178,11 +174,11 @@ class Game(QtWidgets.QWidget):
         elif self.btn_player_2.isChecked():
             self.player_2('easy')
 
-    def game_start_normal(self):
+    def game_start_norm(self):
         if self.btn_player_1.isChecked():
-            self.player_1('normal')
+            self.player_1('norm')
         elif self.btn_player_2.isChecked():
-            self.player_2('normal')
+            self.player_2('norm')
 
     def game_start_hard(self):
         if self.btn_player_1.isChecked():
@@ -243,11 +239,11 @@ class Game(QtWidgets.QWidget):
                     '%3Dhttps%253A%252F%252Fwww.youtube.com%252Fmusicpremium&hl=ko&ec=65620&flowName=GlifWebSignIn&flowEntry'
                     '=ServiceLogin')
 
-            pyautogui.write('helennaby')  # Fill in your ID or E-mail
+            pyautogui.write('ID')  # Fill in your ID or E-mail
             pyautogui.press('tab', presses=3)  # Press the Tab key 3 times
             pyautogui.press('enter')
             time.sleep(3)  # wait a process
-            pyautogui.write('Fernweh.marclius')  # Fill in your PW
+            pyautogui.write('PW')  # Fill in your PW
             pyautogui.press('enter')
 
             start = time.time()
@@ -257,42 +253,9 @@ class Game(QtWidgets.QWidget):
 
             while True:
                 time.sleep(1)
-                if time.time() - start > 30:
+                if time.time() - start > 60:
                     driver.close()
                     break
-
-            def player():
-                url = 'https://www.youtube.com/watch?v=lXDyWT3VlKg&ab_channel=M2'
-                # video = pafy.new(url)
-                # best = video.getbest()
-                # play_url = best.url
-                test = time.time()
-                audio = pafy.new(url)
-                print(time.time() - test)
-                audio = audio.getbestaudio()
-                print(time.time() - test)
-                play_url = audio.url
-                print(time.time() - test)
-                Instance = vlc.Instance()
-                print(time.time() - test)
-                player = Instance.media_player_new()
-                print(time.time() - test)
-                Media = Instance.media_new(play_url)
-                print(time.time() - test)
-                # Media = Instance.media_new(url)
-                Media.get_mrl()
-                print(time.time() - test)
-                player.set_media(Media)
-                print(time.time() - test)
-                player.play()
-
-                start = time.time()
-                # if keyboard.is_pressed('esc'):
-                #     player.pause()
-                while True:
-                    if time.time() - start > 40:
-                        player.pause()
-                        break
 
         except KeyError as err:
             if err.args[0] == 'dislike_count':
@@ -324,13 +287,13 @@ class Game(QtWidgets.QWidget):
 
 
 class GameWindow1(Game):
-    music_list = ['(노레를 선택하세요)',
-                  '에이핑크 - Secret Garden : easy',
-                  "NU'EST - Love Paint : hard",
-                  '샤이니 - Wowowow : easy',
-                  '샤이니 - One : hard',
-                  "박효신 - It's You : hard",
-                  '여자친구 - 시간을 달려서 : norm', '인피니트 - Follow Me : hard', "비스트 - I'm sorry : easy", 'K.Will - 눈물이 뚝뚝 : easy', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)',
+                  '에이핑크 - Secret Garden : ★☆☆☆☆',
+                  "NU'EST - Love Paint : ★★★★★",
+                  '샤이니 - Wowowow : ★☆☆☆☆',
+                  '샤이니 - One : ★★★★★',
+                  "박효신 - It's You : ★★★★★",
+                  '여자친구 - 시간을 달려서 : ★★★☆☆', '인피니트 - Follow Me : ★★★★★', "비스트 - I'm sorry : ★☆☆☆☆", 'K.Will - 눈물이 뚝뚝 : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -384,7 +347,7 @@ class GameWindow1(Game):
 
 
 class GameWindow2(Game):
-    music_list = ['(노레를 선택하세요)', '잔나비 - Goodnight (Intro) : hard', '샤이니 - One : hard', 'IU - 미운 오리 : easy', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', '샤이니 - Wowowow : easy', '바람이 분다OST - 비밀의 방 : hard', 'f(x) - All Mine : hard', '곽연진 - 재회의 테마 : norm', '여자친구 - 시간을 달려서 : norm', 'EXO - Heart Attack : easy']
+    music_list = ['(노래를 선택하세요)', '잔나비 - Goodnight (Intro) : ★★★★★', '샤이니 - One : ★★★★★', 'IU - 미운 오리 : ★☆☆☆☆', '양파&다비치&HANNA -  사랑이 다 그런거래요 : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '바람이 분다OST - 비밀의 방 : ★★★★★', 'f(x) - All Mine : ★★★★★', '곽연진 - 재회의 테마 : ★★★☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆', 'EXO - Heart Attack : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -438,7 +401,7 @@ class GameWindow2(Game):
 
 
 class GameWindow3(Game):
-    music_list = ['(노레를 선택하세요)', '레드벨벳 - Ice Cream Cake : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '여자친구 - 시간을 달려서 : norm', "비스트 - I'm sorry : easy", '에이핑크 - Secret Garden : easy', '엠버 - Borders : easy', '샤이니 - One : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '샤이니 - Wowowow : easy', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)', '레드벨벳 - Ice Cream Cake : ★★★★★', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '여자친구 - 시간을 달려서 : ★★★☆☆', "비스트 - I'm sorry : ★☆☆☆☆", '에이핑크 - Secret Garden : ★☆☆☆☆', '엠버 - Borders : ★☆☆☆☆', '샤이니 - One : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -492,7 +455,7 @@ class GameWindow3(Game):
 
 
 class GameWindow4(Game):
-    music_list = ['(노레를 선택하세요)', 'EXO - Monster : hard', '슈퍼주니어 - Shirt : easy', '잔나비 - Goodnight (Intro) : hard', '연애말고 결혼 OST - Love Knots : hard', 'f(x) - All Mine : hard', '샤이니 - One : hard', '샤이니 - Wowowow : easy', "비스트 - I'm sorry : easy", '에이핑크 - Secret Garden : easy', '여자친구 - 시간을 달려서 : norm']
+    music_list = ['(노래를 선택하세요)', 'EXO - Monster : ★★★★★', '슈퍼주니어 - Shirt : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '연애말고 결혼 OST - Love Knots : ★★★★★', 'f(x) - All Mine : ★★★★★', '샤이니 - One : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', "비스트 - I'm sorry : ★☆☆☆☆", '에이핑크 - Secret Garden : ★☆☆☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -546,7 +509,7 @@ class GameWindow4(Game):
 
 
 class GameWindow5(Game):
-    music_list = ['(노레를 선택하세요)', '아이유 - 스물셋 : hard', '여자친구 - 시간을 달려서 : norm', '박세영 - 블루로드 : norm', '안녕하신가영 - 순간의 순간 : easy', "G.NA - Don't Cry : easy", '비투비 - Anymore : easy', '일레븐 - Pray For Korea : norm', '레드벨벳 - Automatic : easy', '에일리 - 그대도 같은가요 : hard', '최정우 - 어디선가 나의 노랠듣고 있을 너에게 : hard']
+    music_list = ['(노래를 선택하세요)', '아이유 - 스물셋 : ★★★★★', '여자친구 - 시간을 달려서 : ★★★☆☆', '박세영 - 블루로드 : ★★★☆☆', '안녕하신가영 - 순간의 순간 : ★☆☆☆☆', "G.NA - Don't Cry : ★☆☆☆☆", '비투비 - Anymore : ★☆☆☆☆', '일레븐 - Pray For Korea : ★★★☆☆', '레드벨벳 - Automatic : ★☆☆☆☆', '에일리 - 그대도 같은가요 : ★★★★★', '최정우 - 어디선가 나의 노랠듣고 있을 너에게 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -600,7 +563,7 @@ class GameWindow5(Game):
 
 
 class GameWindow6(Game):
-    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '여자친구 - 시간을 달려서 : norm', "박효신 - It's You : hard", '현아 - 빨개요 : hard', '이지수 - 너야 : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', "바람이 분다OST - It's Over : hard", '인피니트 - Follow Me : hard']
+    music_list = ['(노래를 선택하세요)', '에이핑크 - Secret Garden : ★☆☆☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆', "박효신 - It's You : ★★★★★", '현아 - 빨개요 : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', "바람이 분다OST - It's Over : ★★★★★", '인피니트 - Follow Me : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -654,7 +617,7 @@ class GameWindow6(Game):
 
 
 class GameWindow7(Game):
-    music_list = ['(노레를 선택하세요)', '비투비 - 두 번째 고백 : easy', '에일리 - 노래가 늘었어 : easy', '제이민 - Song On My Guitar : hard', '앤츠 - 예쁜 너니까 : easy', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '레인보우 유아동요 - 숲 속의 음악가 : easy', '혁오 - Hooka : easy', '투하트 - Tell Me Why : easy', '인피니트 - Because : norm', '여자친구 - 시간을 달려서 : norm']
+    music_list = ['(노래를 선택하세요)', '비투비 - 두 번째 고백 : ★☆☆☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '제이민 - Song On My Guitar : ★★★★★', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '블루베어스 & 택연 - 오늘 같은 밤 : ★★★★★', '레인보우 유아동요 - 숲 속의 음악가 : ★☆☆☆☆', '혁오 - Hooka : ★☆☆☆☆', '투하트 - Tell Me Why : ★☆☆☆☆', '인피니트 - Because : ★★★☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -708,7 +671,7 @@ class GameWindow7(Game):
 
 
 class GameWindow8(Game):
-    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '최준영 - 얼음심장 : hard', '4MINUTE - 팜므파탈 : norm', '지훈 - 너만 생각나 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', "박효신 - It's You : hard", '지나유 - 처음사랑 : hard', '윤지훈 - 너밖에 몰라 : hard', '디아 - 날 위한 이별 : hard', '인피니트 - 내꺼하자 : hard']
+    music_list = ['(노래를 선택하세요)', '여자친구 - 시간을 달려서 : ★★★☆☆', '최준영 - 얼음심장 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '지훈 - 너만 생각나 : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', "박효신 - It's You : ★★★★★", '지나유 - 처음사랑 : ★★★★★', '윤지훈 - 너밖에 몰라 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -762,7 +725,7 @@ class GameWindow8(Game):
 
 
 class GameWindow9(Game):
-    music_list = ['(노레를 선택하세요)', 'f(x) - Lollipop : hard', '동방신기 - Humanoids : norm', '요조 - 바나나파티 : hard', '천둥 - Good : norm', "박효신 - It's You : hard", '이지수 - 너야 : easy', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '인피니트 - Follow Me : hard', 'Flower - 사랑은 알아도... : easy', '여자친구 - 시간을 달려서 : norm']
+    music_list = ['(노래를 선택하세요)', 'f(x) - Lollipop : ★★★★★', '동방신기 - Humanoids : ★★★☆☆', '요조 - 바나나파티 : ★★★★★', '천둥 - Good : ★★★☆☆', "박효신 - It's You : ★★★★★", '이지수 - 너야 : ★☆☆☆☆', 'MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', '인피니트 - Follow Me : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -816,7 +779,7 @@ class GameWindow9(Game):
 
 
 class GameWindow10(Game):
-    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '인피니트 - Follow Me : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard', '잔나비 - Goodnight (Intro) : hard', '엠버 - Borders : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', '슈퍼주니어 - A-Oh! : hard', '애프터스쿨 - 너 때문에 : hard']
+    music_list = ['(노래를 선택하세요)', '여자친구 - 시간을 달려서 : ★★★☆☆', '인피니트 - Follow Me : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '샤이니 - One : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', '엠버 - Borders : ★☆☆☆☆', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '양파&다비치&HANNA -  사랑이 다 그런거래요 : ★★★★★', '슈퍼주니어 - A-Oh! : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -870,7 +833,7 @@ class GameWindow10(Game):
 
 
 class GameWindow11(Game):
-    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '보아 - One Dream : easy', '인피니트 - 내꺼하자 : hard', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : hard', '비스트 - Let It Snow : norm', '김나영 - 어땠을까 : hard', '장기하와 얼굴들 - 그러게 왜 그랬어 : hard', '이오공감 - 한 사람을 위한 마음 : norm', '아이유 - 마쉬멜로우 : hard', '엠씨더맥스 - 어디에도 : hard']
+    music_list = ['(노래를 선택하세요)', '여자친구 - 시간을 달려서 : ★★★☆☆', '보아 - One Dream : ★☆☆☆☆', '인피니트 - 내꺼하자 : ★★★★★', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : ★★★★★', '비스트 - Let It Snow : ★★★☆☆', '김나영 - 어땠을까 : ★★★★★', '장기하와 얼굴들 - 그러게 왜 그랬어 : ★★★★★', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', '아이유 - 마쉬멜로우 : ★★★★★', '엠씨더맥스 - 어디에도 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -924,7 +887,7 @@ class GameWindow11(Game):
 
 
 class GameWindow12(Game):
-    music_list = ['(노레를 선택하세요)', '시스타 - One More Day : hard', '샤이니 - 산소 같은 너 : easy', '엠버 - Borders : easy', '연애말고 결혼 OST - Love Knots : hard', '샤이니 - One : hard', '샤이니 - Wowowow : easy', '여자친구 - 시간을 달려서 : norm', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', 'K.Will - 눈물이 뚝뚝 : easy', "비스트 - I'm sorry : easy"]
+    music_list = ['(노래를 선택하세요)', '시스타 - One More Day : ★★★★★', '샤이니 - 산소 같은 너 : ★☆☆☆☆', '엠버 - Borders : ★☆☆☆☆', '연애말고 결혼 OST - Love Knots : ★★★★★', '샤이니 - One : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆', '양파&다비치&HANNA -  사랑이 다 그런거래요 : ★★★★★', 'K.Will - 눈물이 뚝뚝 : ★☆☆☆☆', "비스트 - I'm sorry : ★☆☆☆☆"]
 
     def __init__(self):
         super().__init__()
@@ -978,7 +941,7 @@ class GameWindow12(Game):
 
 
 class GameWindow13(Game):
-    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '가인 - 피어나 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '천둥 - Good : norm', '인피니트 - Follow Me : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)', '여자친구 - 시간을 달려서 : ★★★☆☆', '가인 - 피어나 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '천둥 - Good : ★★★☆☆', '인피니트 - Follow Me : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1032,7 +995,7 @@ class GameWindow13(Game):
 
 
 class GameWindow14(Game):
-    music_list = ['(노레를 선택하세요)', '비투비 블루 - 내 곁에 서 있어줘 : hard', '엠버 - Borders : easy', '샤이니 - One : hard', '연애말고 결혼 OST - Love Knots : hard', '여자친구 - 시간을 달려서 : norm', "비스트 - I'm sorry : easy", 'f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '샤이니 - Wowowow : easy', '박효신 - 야생화 : hard']
+    music_list = ['(노래를 선택하세요)', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '엠버 - Borders : ★☆☆☆☆', '샤이니 - One : ★★★★★', '연애말고 결혼 OST - Love Knots : ★★★★★', '여자친구 - 시간을 달려서 : ★★★☆☆', "비스트 - I'm sorry : ★☆☆☆☆", 'f(x) - All Mine : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', '샤이니 - Wowowow : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1086,7 +1049,7 @@ class GameWindow14(Game):
 
 
 class GameWindow15(Game):
-    music_list = ['(노레를 선택하세요)', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '여자친구 - 시간을 달려서 : norm', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '잔나비 - Goodnight (Intro) : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', 'NCT 127 - Switch : norm']
+    music_list = ['(노래를 선택하세요)', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '여자친구 - 시간을 달려서 : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', 'NCT 127 - Switch : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1140,7 +1103,7 @@ class GameWindow15(Game):
 
 
 class GameWindow16(Game):
-    music_list = ['(노레를 선택하세요)', '이지수 - 너야 : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', 'VIXX - Love Me Do : hard', 'B1A4 - 몇 번을 : hard', '샤이니 - Hold You : easy', '여자친구 - 시간을 달려서 : norm', '잔나비 - Goodnight (Intro) : hard', '안현정 - 그대와 나 : hard', '인피니트 - Follow Me : hard', '빅스 - 사슬 : easy']
+    music_list = ['(노래를 선택하세요)', '이지수 - 너야 : ★☆☆☆☆', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', 'VIXX - Love Me Do : ★★★★★', 'B1A4 - 몇 번을 : ★★★★★', '샤이니 - Hold You : ★☆☆☆☆', '여자친구 - 시간을 달려서 : ★★★☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '안현정 - 그대와 나 : ★★★★★', '인피니트 - Follow Me : ★★★★★', '빅스 - 사슬 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1194,7 +1157,7 @@ class GameWindow16(Game):
 
 
 class GameWindow17(Game):
-    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '보아 - Only One : easy', "비스트 - I'm sorry : easy", '연애말고 결혼 OST - Love Knots : hard', '샤이니 - One : hard', 'f(x) - All Mine : hard', '샤이니 - Wowowow : easy', '잔나비 - Goodnight (Intro) : hard', '여자친구 - 시간을 달려서 : norm', '엠버 - Borders : easy']
+    music_list = ['(노래를 선택하세요)', '에이핑크 - Secret Garden : ★☆☆☆☆', '보아 - Only One : ★☆☆☆☆', "비스트 - I'm sorry : ★☆☆☆☆", '연애말고 결혼 OST - Love Knots : ★★★★★', '샤이니 - One : ★★★★★', 'f(x) - All Mine : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '여자친구 - 시간을 달려서 : ★★★☆☆', '엠버 - Borders : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1248,7 +1211,7 @@ class GameWindow17(Game):
 
 
 class GameWindow18(Game):
-    music_list = ['(노레를 선택하세요)', '2NE1 - 안녕 : hard', '이지수 - 너야 : easy', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '규현 - Eternal Sunshine : hard', '여자친구 - 시간을 달려서 : norm', '길구봉구 - 달아 : norm', '주헌, 형원, I.M - 인터스텔라 (Interstellar) : hard', '타코 & 제이형 - 어떡하죠 : norm', '아이유 - 싫은 날 : hard', '백지영 - 사랑아 또 사랑아 : easy']
+    music_list = ['(노래를 선택하세요)', '2NE1 - 안녕 : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', '블루베어스 & 택연 - 오늘 같은 밤 : ★★★★★', '규현 - Eternal Sunshine : ★★★★★', '여자친구 - 시간을 달려서 : ★★★☆☆', '길구봉구 - 달아 : ★★★☆☆', '주헌, 형원, I.M - 인터스텔라 (Interstellar) : ★★★★★', '타코 & 제이형 - 어떡하죠 : ★★★☆☆', '아이유 - 싫은 날 : ★★★★★', '백지영 - 사랑아 또 사랑아 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1302,7 +1265,7 @@ class GameWindow18(Game):
 
 
 class GameWindow19(Game):
-    music_list = ['(노레를 선택하세요)', '여자친구 - 시간을 달려서 : norm', '휘성 - Night and Day : easy', '에이핑크 - Secret Garden : easy', '연애말고 결혼 OST - Love Knots : hard', '동방신기 - Humanoids : norm', '잔나비 - Goodnight (Intro) : hard', '양파&다비치&HANNA -  사랑이 다 그런거래요 : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '김장훈 - 어머니는 내 마음을 아세요 : hard', '내 여자친구를 소개합니다 OST - 명우의 수난 : norm']
+    music_list = ['(노래를 선택하세요)', '여자친구 - 시간을 달려서 : ★★★☆☆', '휘성 - Night and Day : ★☆☆☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', '연애말고 결혼 OST - Love Knots : ★★★★★', '동방신기 - Humanoids : ★★★☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '양파&다비치&HANNA -  사랑이 다 그런거래요 : ★★★★★', 'MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '내 여자친구를 소개합니다 OST - 명우의 수난 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1356,7 +1319,7 @@ class GameWindow19(Game):
 
 
 class GameWindow20(Game):
-    music_list = ['(노레를 선택하세요)', '규현 - 우리가 사랑한 시간 : hard', "NU'EST - Love Paint : hard", 'EXO - Heart Attack : easy', '박재범 - When : easy', 'GOD - 길 : hard', 'IU - 미운 오리 : easy', '레드벨벳 - Light Me Up : norm', '비투비 블루 - 내 곁에 서 있어줘 : hard', '데미온 - Street of Dawn : norm', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)', '규현 - 우리가 사랑한 시간 : ★★★★★', "NU'EST - Love Paint : ★★★★★", 'EXO - Heart Attack : ★☆☆☆☆', '박재범 - When : ★☆☆☆☆', 'GOD - 길 : ★★★★★', 'IU - 미운 오리 : ★☆☆☆☆', '레드벨벳 - Light Me Up : ★★★☆☆', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '데미온 - Street of Dawn : ★★★☆☆', '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1410,7 +1373,7 @@ class GameWindow20(Game):
 
 
 class GameWindow21(Game):
-    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'Flower - 사랑은 알아도... : easy', "NU'EST - Love Paint : hard", "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard']
+    music_list = ['(노래를 선택하세요)', '에이핑크 - Secret Garden : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '인피니트 - Follow Me : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "NU'EST - Love Paint : ★★★★★", "박효신 - It's You : ★★★★★", '레드벨벳 - Ice Cream Cake : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1464,7 +1427,7 @@ class GameWindow21(Game):
 
 
 class GameWindow22(Game):
-    music_list = ['(노레를 선택하세요)', '지나유 - 처음사랑 : hard', '지훈 - 너만 생각나 : hard', '윤지훈 - 너밖에 몰라 : hard', '최준영 - 얼음심장 : hard', '가인 - Fxxk U : hard', '디아 - 날 위한 이별 : hard', "NU'EST - Love Paint : hard", '4MINUTE - 팜므파탈 : norm', 'EXO - Monster : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    music_list = ['(노래를 선택하세요)', '지나유 - 처음사랑 : ★★★★★', '지훈 - 너만 생각나 : ★★★★★', '윤지훈 - 너밖에 몰라 : ★★★★★', '최준영 - 얼음심장 : ★★★★★', '가인 - Fxxk U : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', "NU'EST - Love Paint : ★★★★★", '4MINUTE - 팜므파탈 : ★★★☆☆', 'EXO - Monster : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -1517,7 +1480,7 @@ class GameWindow22(Game):
 
 
 class GameWindow23(Game):
-    music_list = ['(노레를 선택하세요)', '린 - 이별주 : hard', "NU'EST - Love Paint : hard", '아이유 - 스물셋 : hard', 'EXO - Baby : easy', '크래용팝 - 1, 2, 3, 4 : hard', '비투비 - Anymore : easy', '샤이니 - Last Christmas : norm', '방탄소년단 - 고엽 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가비엔제이 - 연애소설 : norm']
+    music_list = ['(노래를 선택하세요)', '린 - 이별주 : ★★★★★', "NU'EST - Love Paint : ★★★★★", '아이유 - 스물셋 : ★★★★★', 'EXO - Baby : ★☆☆☆☆', '크래용팝 - 1, 2, 3, 4 : ★★★★★', '비투비 - Anymore : ★☆☆☆☆', '샤이니 - Last Christmas : ★★★☆☆', '방탄소년단 - 고엽 : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '가비엔제이 - 연애소설 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1571,7 +1534,7 @@ class GameWindow23(Game):
 
 
 class GameWindow24(Game):
-    music_list = ['(노레를 선택하세요)', "NU'EST - Love Paint : hard", '잠비나이 - Connection : hard', '현아 - 빨개요 : hard', '4MINUTE - 팜므파탈 : norm', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)', "NU'EST - Love Paint : ★★★★★", '잠비나이 - Connection : ★★★★★', '현아 - 빨개요 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1625,7 +1588,7 @@ class GameWindow24(Game):
 
 
 class GameWindow25(Game):
-    music_list = ['(노레를 선택하세요)', "NU'EST - Love Paint : hard", '4MINUTE - 팜므파탈 : norm', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '에일리 - 노래가 늘었어 : easy', '이지수 - 너야 : easy', '인피니트 - Follow Me : hard']
+    music_list = ['(노래를 선택하세요)', "NU'EST - Love Paint : ★★★★★", '4MINUTE - 팜므파탈 : ★★★☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '에일리 - 노래가 늘었어 : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆', '인피니트 - Follow Me : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1679,7 +1642,7 @@ class GameWindow25(Game):
 
 
 class GameWindow26(Game):
-    music_list = ['(노레를 선택하세요)', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "비스트 - I'm sorry : easy", '연애말고 결혼 OST - Love Knots : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', '인피니트 - 내꺼하자 : hard', "NU'EST - Love Paint : hard", '동방신기 - Humanoids : norm']
+    music_list = ['(노래를 선택하세요)', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', "비스트 - I'm sorry : ★☆☆☆☆", '연애말고 결혼 OST - Love Knots : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', "NU'EST - Love Paint : ★★★★★", '동방신기 - Humanoids : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1733,7 +1696,7 @@ class GameWindow26(Game):
 
 
 class GameWindow27(Game):
-    music_list = ['(노레를 선택하세요)', 'f(x) - Lollipop : hard', "NU'EST - Love Paint : hard", '이지수 - 너야 : easy', "박효신 - It's You : hard", '오빠친구동생 - 소보루빵 : hard', '지코 - 날 : easy', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '우주소녀 - Catch Me : hard', '모던다락방 - All I Want Is 바라만봐도 : norm']
+    music_list = ['(노래를 선택하세요)', 'f(x) - Lollipop : ★★★★★', "NU'EST - Love Paint : ★★★★★", '이지수 - 너야 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '오빠친구동생 - 소보루빵 : ★★★★★', '지코 - 날 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '우주소녀 - Catch Me : ★★★★★', '모던다락방 - All I Want Is 바라만봐도 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -1787,7 +1750,7 @@ class GameWindow27(Game):
 
 
 class GameWindow28(Game):
-    music_list = ['(노레를 선택하세요)', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '연애말고 결혼 OST - Love Knots : hard', '애프터스쿨 - 너 때문에 : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '엠버 - Borders : easy', '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard', "비스트 - I'm sorry : easy", "NU'EST - Love Paint : hard"]
+    music_list = ['(노래를 선택하세요)', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '연애말고 결혼 OST - Love Knots : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '엠버 - Borders : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '샤이니 - One : ★★★★★', "비스트 - I'm sorry : ★☆☆☆☆", "NU'EST - Love Paint : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -1841,7 +1804,7 @@ class GameWindow28(Game):
 
 
 class GameWindow29(Game):
-    music_list = ['(노레를 선택하세요)', 'Flower - 사랑은 알아도... : easy', '포맨 - 살다가 한번쯤 : hard', '봄바람 소년 - Only One : norm', '요조 - 바나나파티 : hard', '슈퍼주니어 - SUPERMAN : hard', '지나 - 싫어 : easy', "박효신 - It's You : hard", '보아 - One Dream : easy', "NU'EST - Love Paint : hard", '정동하 - Mystery (주군의 태양 OST) : hard']
+    music_list = ['(노래를 선택하세요)', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '봄바람 소년 - Only One : ★★★☆☆', '요조 - 바나나파티 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '지나 - 싫어 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '보아 - One Dream : ★☆☆☆☆', "NU'EST - Love Paint : ★★★★★", '정동하 - Mystery (주군의 태양 OST) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1895,7 +1858,7 @@ class GameWindow29(Game):
 
 
 class GameWindow30(Game):
-    music_list = ['(노레를 선택하세요)', '시스타 - One More Day : hard', "NU'EST - Love Paint : hard", '디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '솔뱅 - 함께 걷던 청계천 : norm', 'Flower - 사랑은 알아도... : easy', '방탄소년단 - We on : easy', '오빠친구동생 - 소보루빵 : hard', '팀 - Liquid : norm', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)', '시스타 - One More Day : ★★★★★', "NU'EST - Love Paint : ★★★★★", '디아 - 날 위한 이별 : ★★★★★', "박효신 - It's You : ★★★★★", '솔뱅 - 함께 걷던 청계천 : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '방탄소년단 - We on : ★☆☆☆☆', '오빠친구동생 - 소보루빵 : ★★★★★', '팀 - Liquid : ★★★☆☆', '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -1949,7 +1912,7 @@ class GameWindow30(Game):
 
 
 class GameWindow31(Game):
-    music_list = ['(노레를 선택하세요)', '슈퍼주니어 - SUPERMAN : hard', '가인 - 피어나 : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지훈 - 너만 생각나 : hard', '봄바람 소년 - Only One : norm', "박효신 - It's You : hard", '정동하 - Mystery (주군의 태양 OST) : hard', "NU'EST - Love Paint : hard", 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)', '슈퍼주니어 - SUPERMAN : ★★★★★', '가인 - 피어나 : ★★★★★', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '지훈 - 너만 생각나 : ★★★★★', '봄바람 소년 - Only One : ★★★☆☆', "박효신 - It's You : ★★★★★", '정동하 - Mystery (주군의 태양 OST) : ★★★★★', "NU'EST - Love Paint : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -2003,7 +1966,7 @@ class GameWindow31(Game):
 
 
 class GameWindow32(Game):
-    music_list = ['(노레를 선택하세요)', '디아 - 날 위한 이별 : hard', '포맨 - 살다가 한번쯤 : hard', '슈퍼주니어 - SUPERMAN : hard', '나플라 - 우 : easy', "NU'EST - Love Paint : hard", '스윙스 - 이겨낼거야 2 : norm', '지훈 - 너만 생각나 : hard', '박효신 - 야생화 : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    music_list = ['(노래를 선택하세요)', '디아 - 날 위한 이별 : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '나플라 - 우 : ★☆☆☆☆', "NU'EST - Love Paint : ★★★★★", '스윙스 - 이겨낼거야 2 : ★★★☆☆', '지훈 - 너만 생각나 : ★★★★★', '박효신 - 야생화 : ★★★★★', "박효신 - It's You : ★★★★★", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2057,7 +2020,7 @@ class GameWindow32(Game):
 
 
 class GameWindow33(Game):
-    music_list = ['(노레를 선택하세요)', 'NCT 127 - Switch : norm', '여은 - 사랑아 나의 사랑아 : norm', "NU'EST - Love Paint : hard", '동방신기 - Humanoids : norm', '안현정 - 그대와 나 : hard', '에이핑크 - 몰라요 : hard', '방탄소년단 - 고엽 : easy', '에일리 - 이제는 안녕 : hard', '방탄소년단 - Intro: Never Mind : easy', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)', 'NCT 127 - Switch : ★★★☆☆', '여은 - 사랑아 나의 사랑아 : ★★★☆☆', "NU'EST - Love Paint : ★★★★★", '동방신기 - Humanoids : ★★★☆☆', '안현정 - 그대와 나 : ★★★★★', '에이핑크 - 몰라요 : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆', '에일리 - 이제는 안녕 : ★★★★★', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2111,7 +2074,7 @@ class GameWindow33(Game):
 
 
 class GameWindow34(Game):
-    music_list = ['(노레를 선택하세요)', '신용재 - 평범한 사랑 : norm', '인피니트 - 붙박이 별 : hard', '4MINUTE - 팜므파탈 : norm', '오빠친구동생 - 소보루빵 : hard', 'VIXX - Love Me Do : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", "NU'EST - Love Paint : hard", '빅스 - 사슬 : easy', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)', '신용재 - 평범한 사랑 : ★★★☆☆', '인피니트 - 붙박이 별 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '오빠친구동생 - 소보루빵 : ★★★★★', 'VIXX - Love Me Do : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", "NU'EST - Love Paint : ★★★★★", '빅스 - 사슬 : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2165,7 +2128,7 @@ class GameWindow34(Game):
 
 
 class GameWindow35(Game):
-    music_list = ['(노레를 선택하세요)', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'Flower - 사랑은 알아도... : easy', '인피니트 - Follow Me : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '잔나비 - Goodnight (Intro) : hard', "NU'EST - Love Paint : hard", '보아 - Only One : easy', '장나라 - 오월의 눈사람 : hard']
+    music_list = ['(노래를 선택하세요)', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '인피니트 - Follow Me : ★★★★★', "박효신 - It's You : ★★★★★", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', 'MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', "NU'EST - Love Paint : ★★★★★", '보아 - Only One : ★☆☆☆☆', '장나라 - 오월의 눈사람 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2219,7 +2182,7 @@ class GameWindow35(Game):
 
 
 class GameWindow36(Game):
-    music_list = ['(노레를 선택하세요)', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '이지수 - 너야 : easy', 'VAV - 달빛 아래서 : easy', 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', "NU'EST - Love Paint : hard", '2NE1 - 안녕 : hard', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard']
+    music_list = ['(노래를 선택하세요)', "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', 'VAV - 달빛 아래서 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', "NU'EST - Love Paint : ★★★★★", '2NE1 - 안녕 : ★★★★★', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2274,7 +2237,7 @@ class GameWindow36(Game):
 
 
 class GameWindow37(Game):
-    music_list = ['(노레를 선택하세요)', '에일리 - 수줍은 내 사랑 : easy', '박재민 - 하루 : norm', "NU'EST - Love Paint : hard", "박효신 - It's You : hard", '인피니트 - Follow Me : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', '휘성 - Night and Day : easy', '잠비나이 - Connection : hard', '잔나비 - Goodnight (Intro) : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard']
+    music_list = ['(노래를 선택하세요)', '에일리 - 수줍은 내 사랑 : ★☆☆☆☆', '박재민 - 하루 : ★★★☆☆', "NU'EST - Love Paint : ★★★★★", "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', 'MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', '휘성 - Night and Day : ★☆☆☆☆', '잠비나이 - Connection : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2328,7 +2291,7 @@ class GameWindow37(Game):
 
 
 class GameWindow38(Game):
-    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', '엠버 - Borders : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', '잔나비 - Goodnight (Intro) : hard', 'GOD - 길 : hard', '샤이니 - Wowowow : easy', 'f(x) - All Mine : hard', 'EXO - Heart Attack : easy', '샤이니 - One : hard', '레드벨벳 - Ice Cream Cake : hard']
+    music_list = ['(노래를 선택하세요)', '에이핑크 - Secret Garden : ★☆☆☆☆', '엠버 - Borders : ★☆☆☆☆', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', 'GOD - 길 : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', 'f(x) - All Mine : ★★★★★', 'EXO - Heart Attack : ★☆☆☆☆', '샤이니 - One : ★★★★★', '레드벨벳 - Ice Cream Cake : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2382,7 +2345,7 @@ class GameWindow38(Game):
 
 
 class GameWindow39(Game):
-    music_list = ['(노레를 선택하세요)', 'EXO - Monster : hard', 'EXO - Heart Attack : easy', 'GOD - 길 : hard', '잔나비 - Goodnight (Intro) : hard', '틴탑 - 향수 뿌리지마 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'IU - 미운 오리 : easy', '레드벨벳 - Light Me Up : norm', '데미온 - Street of Dawn : norm', 'VAV - 달빛 아래서 : easy']
+    music_list = ['(노래를 선택하세요)', 'EXO - Monster : ★★★★★', 'EXO - Heart Attack : ★☆☆☆☆', 'GOD - 길 : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', '틴탑 - 향수 뿌리지마 : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', 'IU - 미운 오리 : ★☆☆☆☆', '레드벨벳 - Light Me Up : ★★★☆☆', '데미온 - Street of Dawn : ★★★☆☆', 'VAV - 달빛 아래서 : ★☆☆☆☆']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -2435,7 +2398,7 @@ class GameWindow39(Game):
 
 
 class GameWindow40(Game):
-    music_list = ['(노레를 선택하세요)', 'EXO - Heart Attack : easy', '아이유 - 스물셋 : hard', '비투비 - 두 번째 고백 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '앤츠 - 예쁜 너니까 : easy', '헨리 - I Would : hard', '인피니트 - 맡겨 : norm', '빅뱅 - 맨정신 : hard', 'EXO - BEAUTIFUL : norm', '산들(B1A4) - 짝사랑 : norm']
+    music_list = ['(노래를 선택하세요)', 'EXO - Heart Attack : ★☆☆☆☆', '아이유 - 스물셋 : ★★★★★', '비투비 - 두 번째 고백 : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '헨리 - I Would : ★★★★★', '인피니트 - 맡겨 : ★★★☆☆', '빅뱅 - 맨정신 : ★★★★★', 'EXO - BEAUTIFUL : ★★★☆☆', '산들(B1A4) - 짝사랑 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -2489,7 +2452,7 @@ class GameWindow40(Game):
 
 
 class GameWindow41(Game):
-    music_list = ['(노레를 선택하세요)', 'EXO - Heart Attack : easy', '클래지콰이 프로젝트 - Android : norm', '현아 - 빨개요 : hard', '셰인 - Be My Love : norm', '지나 - 싫어 : easy', '엠버 - Need To Feel Needed : easy', 'J-Min - Beautiful Days : hard', '뉴이스트 - 나의 천국 : hard', '한희정 - 러브레터 : norm', '엠블랙 - Again : hard']
+    music_list = ['(노래를 선택하세요)', 'EXO - Heart Attack : ★☆☆☆☆', '클래지콰이 프로젝트 - Android : ★★★☆☆', '현아 - 빨개요 : ★★★★★', '셰인 - Be My Love : ★★★☆☆', '지나 - 싫어 : ★☆☆☆☆', '엠버 - Need To Feel Needed : ★☆☆☆☆', 'J-Min - Beautiful Days : ★★★★★', '뉴이스트 - 나의 천국 : ★★★★★', '한희정 - 러브레터 : ★★★☆☆', '엠블랙 - Again : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2543,7 +2506,7 @@ class GameWindow41(Game):
 
 
 class GameWindow42(Game):
-    music_list = ['(노레를 선택하세요)', '4MINUTE - 팜므파탈 : norm', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '제이민 x 심은지 - 집 앞에서 : norm', 'EXO - Heart Attack : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '인피니트 - 불편한 진실 : norm', '에일리 - 노래가 늘었어 : easy', '밍스 - shut up : easy', "백지영 - 아이캔't 드링크 : easy", '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard']
+    music_list = ['(노래를 선택하세요)', '4MINUTE - 팜므파탈 : ★★★☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '제이민 x 심은지 - 집 앞에서 : ★★★☆☆', 'EXO - Heart Attack : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '인피니트 - 불편한 진실 : ★★★☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '밍스 - shut up : ★☆☆☆☆', "백지영 - 아이캔't 드링크 : ★☆☆☆☆", '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2597,7 +2560,7 @@ class GameWindow42(Game):
 
 
 class GameWindow43(Game):
-    music_list = ['(노레를 선택하세요)', '이지수 - 너야 : easy', '레드벨벳 - Light Me Up : norm', '인피니트 - 내꺼하자 : hard', 'GOD - 길 : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '에이핑크 - Secret Garden : easy', 'EXO - Heart Attack : easy', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)', '이지수 - 너야 : ★☆☆☆☆', '레드벨벳 - Light Me Up : ★★★☆☆', '인피니트 - 내꺼하자 : ★★★★★', 'GOD - 길 : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', 'EXO - Heart Attack : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2651,7 +2614,7 @@ class GameWindow43(Game):
 
 
 class GameWindow44(Game):
-    music_list = ['(노레를 선택하세요)', "박효신 - It's You : hard", '아이오아이 - 내 말대로 해줘 : easy', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '에일리 - 얼음꽃 : hard', '임창정 - 그렇게 당해놓고 : norm', 'EXO - Heart Attack : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', 'f(x) - Lollipop : hard', 'RETA - Listen Now : hard']
+    music_list = ['(노래를 선택하세요)', "박효신 - It's You : ★★★★★", '아이오아이 - 내 말대로 해줘 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '에일리 - 얼음꽃 : ★★★★★', '임창정 - 그렇게 당해놓고 : ★★★☆☆', 'EXO - Heart Attack : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', 'f(x) - Lollipop : ★★★★★', 'RETA - Listen Now : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2705,7 +2668,7 @@ class GameWindow44(Game):
 
 
 class GameWindow45(Game):
-    music_list = ['(노레를 선택하세요)', '에이핑크 - Secret Garden : easy', 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '인피니트 - Follow Me : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '애프터스쿨 - 너 때문에 : hard', 'EXO - Heart Attack : easy', '잠비나이 - Connection : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)', '에이핑크 - Secret Garden : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '인피니트 - Follow Me : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', 'EXO - Heart Attack : ★☆☆☆☆', '잠비나이 - Connection : ★★★★★', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -2759,7 +2722,7 @@ class GameWindow45(Game):
 
 
 class GameWindow46(Game):
-    music_list = ['(노레를 선택하세요)', '보아 - One Dream : easy', 'EXO - Heart Attack : easy', '아지아틱스 - Cold : hard', '비즈니즈 - 죽은 위인들의 사회 : norm', '슈퍼주니어 - Sexy, Free & Single : norm', "비프리 - fly (feat. loco & s'way.d) : hard", '인피니트 - Alone : easy', '현아 - Attention : norm', '칠전팔기 구해라 OST - 아로하 : hard', '박세영 - 블루로드 : norm']
+    music_list = ['(노래를 선택하세요)', '보아 - One Dream : ★☆☆☆☆', 'EXO - Heart Attack : ★☆☆☆☆', '아지아틱스 - Cold : ★★★★★', '비즈니즈 - 죽은 위인들의 사회 : ★★★☆☆', '슈퍼주니어 - Sexy, Free & Single : ★★★☆☆', "비프리 - fly (feat. loco & s'way.d) : ★★★★★", '인피니트 - Alone : ★☆☆☆☆', '현아 - Attention : ★★★☆☆', '칠전팔기 구해라 OST - 아로하 : ★★★★★', '박세영 - 블루로드 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -2813,7 +2776,7 @@ class GameWindow46(Game):
 
 
 class GameWindow47(Game):
-    music_list = ['(노레를 선택하세요)', '시스타 - One More Day : hard', 'EXO - Heart Attack : easy', '세븐틴 - BEAUTIFUL : hard', '미생 OST - Jordan Fantasy : hard', '윤도현 - 사랑했나봐 : easy', '미생 OST - 출근길 : norm', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '앤츠 - 예쁜 너니까 : easy', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '시스타 - 이불 덮고 들어 : norm']
+    music_list = ['(노래를 선택하세요)', '시스타 - One More Day : ★★★★★', 'EXO - Heart Attack : ★☆☆☆☆', '세븐틴 - BEAUTIFUL : ★★★★★', '미생 OST - Jordan Fantasy : ★★★★★', '윤도현 - 사랑했나봐 : ★☆☆☆☆', '미생 OST - 출근길 : ★★★☆☆', '블루베어스 & 택연 - 오늘 같은 밤 : ★★★★★', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '이홍기 - Jump (뜨거운 안녕 OST) : ★★★★★', '시스타 - 이불 덮고 들어 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -2867,7 +2830,7 @@ class GameWindow47(Game):
 
 
 class GameWindow48(Game):
-    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : easy', '케이윌 - 이러지마 제발 : easy', '시크릿 - Madonna : easy', '크라운제이 - The Best (feat. 서인영) : hard', '유미 - Last one (주군의 태양 OST) : norm', '요섭(비스트) - 나와 : hard', '가인 - 피어나 : hard', '비 - 30 SEXY (East4a deeptech mix) : norm', '시스타 - Say I Love You : hard', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : ★☆☆☆☆', '케이윌 - 이러지마 제발 : ★☆☆☆☆', '시크릿 - Madonna : ★☆☆☆☆', '크라운제이 - The Best (feat. 서인영) : ★★★★★', '유미 - Last one (주군의 태양 OST) : ★★★☆☆', '요섭(비스트) - 나와 : ★★★★★', '가인 - 피어나 : ★★★★★', '비 - 30 SEXY (East4a deeptech mix) : ★★★☆☆', '시스타 - Say I Love You : ★★★★★', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2921,7 +2884,7 @@ class GameWindow48(Game):
 
 
 class GameWindow49(Game):
-    music_list = ['(노래를 선택하세요)','김종국 - 눈물자국 : easy', '우주소녀 - Catch Me : hard', '지코 - 날 : easy', '윤도현 - 요즘 내 모습 : easy', 'EXO - Heart Attack : easy', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '박효신 - 야생화 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    music_list = ['(노래를 선택하세요)','김종국 - 눈물자국 : ★☆☆☆☆', '우주소녀 - Catch Me : ★★★★★', '지코 - 날 : ★☆☆☆☆', '윤도현 - 요즘 내 모습 : ★☆☆☆☆', 'EXO - Heart Attack : ★☆☆☆☆', '4MINUTE - 팜므파탈 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★', "박효신 - It's You : ★★★★★", '박효신 - 야생화 : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -2975,7 +2938,7 @@ class GameWindow49(Game):
 
 
 class GameWindow50(Game):
-    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : easy', 'NCT 127 - Switch : norm', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', '황치열, 리싸 - 이 밤의 끝을 잡고 : easy', '비스트 - Easy : hard', '벤 - 안 괜찮아 : norm', '방탄소년단 - Intro: Never Mind : easy', '앤츠 - 예쁜 너니까 : easy', '주군의 태양 OST - Ghost World : norm', '빅뱅 - Crazy Dog : hard']
+    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : ★☆☆☆☆', 'NCT 127 - Switch : ★★★☆☆', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : ★★★☆☆', '황치열, 리싸 - 이 밤의 끝을 잡고 : ★☆☆☆☆', '비스트 - Easy : ★★★★★', '벤 - 안 괜찮아 : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '주군의 태양 OST - Ghost World : ★★★☆☆', '빅뱅 - Crazy Dog : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3029,7 +2992,7 @@ class GameWindow50(Game):
 
 
 class GameWindow51(Game):
-    music_list = ['(노래를 선택하세요)','박재민 - 하루 : norm', 'VAV - 달빛 아래서 : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '데미온 - Street of Dawn : norm', '잔나비 - Goodnight (Intro) : hard', '윤지훈 - 너밖에 몰라 : hard', '빅스 - 사슬 : easy', 'GOD - 길 : hard', 'EXO - Heart Attack : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    music_list = ['(노래를 선택하세요)','박재민 - 하루 : ★★★☆☆', 'VAV - 달빛 아래서 : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '데미온 - Street of Dawn : ★★★☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '윤지훈 - 너밖에 몰라 : ★★★★★', '빅스 - 사슬 : ★☆☆☆☆', 'GOD - 길 : ★★★★★', 'EXO - Heart Attack : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3084,7 +3047,7 @@ class GameWindow51(Game):
 
 
 class GameWindow52(Game):
-    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : easy', 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '이오공감 - 한 사람을 위한 마음 : norm', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', "바람이 분다OST - It's Over : hard", '에이핑크 - Secret Garden : easy', '슈가볼 - Cherish : norm', '보아 - Only One : easy']
+    music_list = ['(노래를 선택하세요)','EXO - Heart Attack : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', "바람이 분다OST - It's Over : ★★★★★", '에이핑크 - Secret Garden : ★☆☆☆☆', '슈가볼 - Cherish : ★★★☆☆', '보아 - Only One : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3139,7 +3102,7 @@ class GameWindow52(Game):
 
 
 class GameWindow53(Game):
-    music_list = ['(노래를 선택하세요)',"신데렐라와 네 명의 기사 OST - Let's Cheer Up! : easy", '이준기 - 하루만 : hard', '임창정 - 그렇게 당해놓고 : norm', '에이핑크 - Wanna Be : easy', '2NE1 - 안녕 : hard', '4MINUTE - BABABA : hard', '비스트 - Sad Movie : easy', '시스타 - Say I Love You : hard', 'EXO - Heart Attack : easy', '크라운제이 - The Best (feat. 서인영) : hard']
+    music_list = ['(노래를 선택하세요)',"신데렐라와 네 명의 기사 OST - Let's Cheer Up! : ★☆☆☆☆", '이준기 - 하루만 : ★★★★★', '임창정 - 그렇게 당해놓고 : ★★★☆☆', '에이핑크 - Wanna Be : ★☆☆☆☆', '2NE1 - 안녕 : ★★★★★', '4MINUTE - BABABA : ★★★★★', '비스트 - Sad Movie : ★☆☆☆☆', '시스타 - Say I Love You : ★★★★★', 'EXO - Heart Attack : ★☆☆☆☆', '크라운제이 - The Best (feat. 서인영) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3193,7 +3156,7 @@ class GameWindow53(Game):
 
 
 class GameWindow54(Game):
-    music_list = ['(노래를 선택하세요)','비스트 - Fiction : hard', 'MBLAQ - 유령(같이 사랑했잖아) : easy', "박효신 - It's You : hard", '캐스커 - Undo : hard', '인피니트 - Follow Me : hard', '잔나비 - Goodnight (Intro) : hard', '에이핑크 - Secret Garden : easy', '천둥 - Good : norm', '휘성 - Night and Day : easy', 'EXO - Heart Attack : easy']
+    music_list = ['(노래를 선택하세요)','비스트 - Fiction : ★★★★★', 'MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '캐스커 - Undo : ★★★★★', '인피니트 - Follow Me : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', '천둥 - Good : ★★★☆☆', '휘성 - Night and Day : ★☆☆☆☆', 'EXO - Heart Attack : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3247,7 +3210,7 @@ class GameWindow54(Game):
 
 
 class GameWindow55(Game):
-    music_list = ['(노래를 선택하세요)','지훈 - 너만 생각나 : hard', '슈퍼주니어 - SUPERMAN : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '딕펑스 - 한강에서 놀아요 : norm', 'EXO - Monster : hard', '레드벨벳 - Ice Cream Cake : hard']
+    music_list = ['(노래를 선택하세요)','지훈 - 너만 생각나 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '봄바람 소년 - Only One : ★★★☆☆', '딕펑스 - 한강에서 놀아요 : ★★★☆☆', 'EXO - Monster : ★★★★★', '레드벨벳 - Ice Cream Cake : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3301,7 +3264,7 @@ class GameWindow55(Game):
 
 
 class GameWindow56(Game):
-    music_list = ['(노래를 선택하세요)','려욱 - 그대 : norm', '방탄소년단 - Intro: Never Mind : easy', 'EXO - Let out the Beast : hard', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '커피소년 - 바보 : hard', '방탄소년단 - 진격의 방탄 : norm', '레드벨벳 - Ice Cream Cake : hard', '아이유 - 스물셋 : hard', '현아 - Change : hard']
+    music_list = ['(노래를 선택하세요)','려욱 - 그대 : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', 'EXO - Let out the Beast : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '커피소년 - 바보 : ★★★★★', '방탄소년단 - 진격의 방탄 : ★★★☆☆', '레드벨벳 - Ice Cream Cake : ★★★★★', '아이유 - 스물셋 : ★★★★★', '현아 - Change : ★★★★★']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -3354,7 +3317,7 @@ class GameWindow56(Game):
 
 
 class GameWindow57(Game):
-    music_list = ['(노래를 선택하세요)','샤이니 - Runaway : hard', '슬리피 - 기분탓 : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '디아 - 날 위한 이별 : hard', '신용재 - 평범한 사랑 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '현아 - 빨개요 : hard', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)','샤이니 - Runaway : ★★★★★', '슬리피 - 기분탓 : ★☆☆☆☆', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '신용재 - 평범한 사랑 : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '레드벨벳 - Ice Cream Cake : ★★★★★', '현아 - 빨개요 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3408,7 +3371,7 @@ class GameWindow57(Game):
 
 
 class GameWindow58(Game):
-    music_list = ['(노래를 선택하세요)','MBLAQ - 유령(같이 사랑했잖아) : easy', 'GOD - 길 : hard', '레드벨벳 - Ice Cream Cake : hard', '에일리 - 노래가 늘었어 : easy', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', '데미온 - Street of Dawn : norm', '인피니트 - Follow Me : hard', '장나라 - 오월의 눈사람 : hard', '레드벨벳 - Light Me Up : norm']
+    music_list = ['(노래를 선택하세요)','MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', 'GOD - 길 : ★★★★★', '레드벨벳 - Ice Cream Cake : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '데미온 - Street of Dawn : ★★★☆☆', '인피니트 - Follow Me : ★★★★★', '장나라 - 오월의 눈사람 : ★★★★★', '레드벨벳 - Light Me Up : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3462,7 +3425,7 @@ class GameWindow58(Game):
 
 
 class GameWindow59(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '레드벨벳 - Ice Cream Cake : hard', '슈퍼주니어 - SUPERMAN : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '봄바람 소년 - Only One : norm', '인피니트 - 내꺼하자 : hard', '디아 - 날 위한 이별 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '레드벨벳 - Ice Cream Cake : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '봄바람 소년 - Only One : ★★★☆☆', '인피니트 - 내꺼하자 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3516,7 +3479,7 @@ class GameWindow59(Game):
 
 
 class GameWindow60(Game):
-    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : hard', 'f(x) - Lollipop : hard', '레드벨벳 - Huff n Puff : easy', '윤도현밴드 - 미스터리 : norm', '딕펑스 - 한강에서 놀아요 : norm', '딕펑스 - 요즘 젊은 것들 : norm', '방탄소년단 - 진격의 방탄 : norm', '스타러브피쉬 (with Jane) - Goodbye (연애의 발견 OST) : norm', '이오공감 - 한 사람을 위한 마음 : norm', '안현정 - 그대와 나 : hard']
+    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : ★★★★★', 'f(x) - Lollipop : ★★★★★', '레드벨벳 - Huff n Puff : ★☆☆☆☆', '윤도현밴드 - 미스터리 : ★★★☆☆', '딕펑스 - 한강에서 놀아요 : ★★★☆☆', '딕펑스 - 요즘 젊은 것들 : ★★★☆☆', '방탄소년단 - 진격의 방탄 : ★★★☆☆', '스타러브피쉬 (with Jane) - Goodbye (연애의 발견 OST) : ★★★☆☆', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', '안현정 - 그대와 나 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3568,8 +3531,9 @@ class GameWindow60(Game):
             self.music_thread('https://youtu.be/4eRNIS6zMeo')
             self.btn_start.clicked.connect(self.game_start_hard)
 
+
 class GameWindow61(Game):
-    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : hard', '애프터스쿨 - 너 때문에 : hard', '지나유 - 처음사랑 : hard', '슈퍼주니어 - SUPERMAN : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', '지나유 - 처음사랑 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '포맨 - 살다가 한번쯤 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3623,7 +3587,7 @@ class GameWindow61(Game):
 
 
 class GameWindow62(Game):
-    music_list = ['(노래를 선택하세요)','보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '요조 - 바나나파티 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지나 - 싫어 : easy']
+    music_list = ['(노래를 선택하세요)','보아 - One Dream : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', "박효신 - It's You : ★★★★★", '레드벨벳 - Ice Cream Cake : ★★★★★', '요조 - 바나나파티 : ★★★★★', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '샤이니 - Last Christmas : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '지나 - 싫어 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3677,7 +3641,7 @@ class GameWindow62(Game):
 
 
 class GameWindow63(Game):
-    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', 'Flower - 사랑은 알아도... : easy', '시스타 - One More Day : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '레드벨벳 - Ice Cream Cake : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '시스타 - One More Day : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -3731,7 +3695,7 @@ class GameWindow63(Game):
 
 
 class GameWindow64(Game):
-    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : hard', '요조 - 바나나파티 : hard', '포맨 - 살다가 한번쯤 : hard', '봄바람 소년 - Only One : norm', '슈퍼주니어 - SUPERMAN : hard', '가인 - 피어나 : hard', '레드벨벳 - Ice Cream Cake : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : ★★★★★', '요조 - 바나나파티 : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', '봄바람 소년 - Only One : ★★★☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '가인 - 피어나 : ★★★★★', '레드벨벳 - Ice Cream Cake : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -3785,7 +3749,7 @@ class GameWindow64(Game):
 
 
 class GameWindow65(Game):
-    music_list = ['(노래를 선택하세요)','NS 윤지 - 니가 뭘 알아 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '박재민 - 하루 : norm', '오빠친구동생 - 소보루빵 : hard', '레드벨벳 - Ice Cream Cake : hard', '박효신 - 야생화 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '윤지훈 - 너밖에 몰라 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard']
+    music_list = ['(노래를 선택하세요)','NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '박재민 - 하루 : ★★★☆☆', '오빠친구동생 - 소보루빵 : ★★★★★', '레드벨벳 - Ice Cream Cake : ★★★★★', '박효신 - 야생화 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '윤지훈 - 너밖에 몰라 : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3839,7 +3803,7 @@ class GameWindow65(Game):
 
 
 class GameWindow66(Game):
-    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard', '디아 - 날 위한 이별 : hard', 'NCT 127 - Switch : norm', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '정동하 - Mystery (주군의 태양 OST) : hard']
+    music_list = ['(노래를 선택하세요)','레드벨벳 - Ice Cream Cake : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', 'NCT 127 - Switch : ★★★☆☆', "박효신 - It's You : ★★★★★", '봄바람 소년 - Only One : ★★★☆☆', '정동하 - Mystery (주군의 태양 OST) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3893,7 +3857,7 @@ class GameWindow66(Game):
 
 
 class GameWindow67(Game):
-    music_list = ['(노래를 선택하세요)','빅스 - 사슬 : easy', '지나유 - 처음사랑 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', "박효신 - It's You : hard", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', 'Flower - 사랑은 알아도... : easy', '레드벨벳 - Ice Cream Cake : hard', '윤지훈 - 너밖에 몰라 : hard']
+    music_list = ['(노래를 선택하세요)','빅스 - 사슬 : ★☆☆☆☆', '지나유 - 처음사랑 : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', "박효신 - It's You : ★★★★★", 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '레드벨벳 - Ice Cream Cake : ★★★★★', '윤지훈 - 너밖에 몰라 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -3948,7 +3912,7 @@ class GameWindow67(Game):
 
 
 class GameWindow68(Game):
-    music_list = ['(노래를 선택하세요)','보아 - Only One : easy', '레드벨벳 - Ice Cream Cake : hard', '딕펑스 - 한강에서 놀아요 : norm', '4MINUTE - 팜므파탈 : norm', '슈퍼주니어 - SUPERMAN : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard']
+    music_list = ['(노래를 선택하세요)','보아 - Only One : ★☆☆☆☆', '레드벨벳 - Ice Cream Cake : ★★★★★', '딕펑스 - 한강에서 놀아요 : ★★★☆☆', '4MINUTE - 팜므파탈 : ★★★☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '포맨 - 살다가 한번쯤 : ★★★★★']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -4001,7 +3965,7 @@ class GameWindow68(Game):
 
 
 class GameWindow69(Game):
-    music_list = ['(노래를 선택하세요)','4MINUTE - 팜므파탈 : norm', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '디아 - 날 위한 이별 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard', '인피니트 - Follow Me : hard', "박효신 - It's You : hard", '레드벨벳 - Ice Cream Cake : hard', '2NE1 - Goodbye : hard', '이지수 - 너야 : easy']
+    music_list = ['(노래를 선택하세요)','4MINUTE - 팜므파탈 : ★★★☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : ★★★★★', '인피니트 - Follow Me : ★★★★★', "박효신 - It's You : ★★★★★", '레드벨벳 - Ice Cream Cake : ★★★★★', '2NE1 - Goodbye : ★★★★★', '이지수 - 너야 : ★☆☆☆☆']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -4054,7 +4018,7 @@ class GameWindow69(Game):
 
 
 class GameWindow70(Game):
-    music_list = ['(노래를 선택하세요)','휘성 - Night and Day : easy', '윤지훈 - 너밖에 몰라 : hard', '레드벨벳 - Ice Cream Cake : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '인피니트 - Follow Me : hard', '잠비나이 - Connection : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard']
+    music_list = ['(노래를 선택하세요)','휘성 - Night and Day : ★☆☆☆☆', '윤지훈 - 너밖에 몰라 : ★★★★★', '레드벨벳 - Ice Cream Cake : ★★★★★', "박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '인피니트 - Follow Me : ★★★★★', '잠비나이 - Connection : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4108,7 +4072,7 @@ class GameWindow70(Game):
 
 
 class GameWindow71(Game):
-    music_list = ['(노래를 선택하세요)','유준상 - Love & Hate : hard', '좋아서하는밴드 - 우리 함께 하면 : norm', '한희정 - 러브레터 : norm', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm', '샤이니 - Your Number : easy', 'EXO - Monster : hard', '아이유 - 스물셋 : hard']
+    music_list = ['(노래를 선택하세요)','유준상 - Love & Hate : ★★★★★', '좋아서하는밴드 - 우리 함께 하면 : ★★★☆☆', '한희정 - 러브레터 : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : ★★★☆☆', '샤이니 - Your Number : ★☆☆☆☆', 'EXO - Monster : ★★★★★', '아이유 - 스물셋 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4162,7 +4126,7 @@ class GameWindow71(Game):
 
 
 class GameWindow72(Game):
-    music_list = ['(노래를 선택하세요)','안혜은 - 그녀를 찾지마 : easy', 'EXO - Monster : hard', '바스코 - Whoa Ha ! : norm', 'Lucia(심규선) - 녹여줘 : norm', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '현아 -Red : hard', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : hard', '딕펑스 - 한강에서 놀아요 : norm', '비스트 - Let It Snow : norm', '스윙스 - 이겨낼거야 2 : norm']
+    music_list = ['(노래를 선택하세요)','안혜은 - 그녀를 찾지마 : ★☆☆☆☆', 'EXO - Monster : ★★★★★', '바스코 - Whoa Ha ! : ★★★☆☆', 'Lucia(심규선) - 녹여줘 : ★★★☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '현아 -Red : ★★★★★', '다방 - Wanna Buy Love (여자친구 사주세요) (사랑을 살 수 있다면) : ★★★★★', '딕펑스 - 한강에서 놀아요 : ★★★☆☆', '비스트 - Let It Snow : ★★★☆☆', '스윙스 - 이겨낼거야 2 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4216,7 +4180,7 @@ class GameWindow72(Game):
 
 
 class GameWindow73(Game):
-    music_list = ['(노래를 선택하세요)','f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', '샤이니 - One : hard', '인피니트 - Follow Me : hard', '에일리 - 노래가 늘었어 : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', 'EXO - Monster : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','f(x) - All Mine : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '샤이니 - One : ★★★★★', '인피니트 - Follow Me : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', 'EXO - Monster : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4270,7 +4234,7 @@ class GameWindow73(Game):
 
 
 class GameWindow74(Game):
-    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : hard', 'EXO - Monster : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '이지수 - 너야 : easy', "박효신 - It's You : hard", '에이핑크 - Secret Garden : easy', '4MINUTE - 팜므파탈 : norm', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '모던다락방 - All I Want Is 바라만봐도 : norm']
+    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : ★★★★★', 'EXO - Monster : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '에이핑크 - Secret Garden : ★☆☆☆☆', '4MINUTE - 팜므파탈 : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '모던다락방 - All I Want Is 바라만봐도 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4324,7 +4288,7 @@ class GameWindow74(Game):
 
 
 class GameWindow75(Game):
-    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', 'f(x) - Lollipop : hard', '딕펑스 - 한강에서 놀아요 : norm', '오빠친구동생 - 소보루빵 : hard', '수지 - Ring My Bell : hard', 'EXO - Monster : hard', '인피니트 - 붙박이 별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', '딕펑스 - 요즘 젊은 것들 : norm']
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : ★☆☆☆☆', 'f(x) - Lollipop : ★★★★★', '딕펑스 - 한강에서 놀아요 : ★★★☆☆', '오빠친구동생 - 소보루빵 : ★★★★★', '수지 - Ring My Bell : ★★★★★', 'EXO - Monster : ★★★★★', '인피니트 - 붙박이 별 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', '딕펑스 - 요즘 젊은 것들 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4378,7 +4342,7 @@ class GameWindow75(Game):
 
 
 class GameWindow76(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '이지수 - 너야 : easy', '잔나비 - Goodnight (Intro) : hard', '4MINUTE - 팜므파탈 : norm', 'EXO - Monster : hard', '애프터스쿨 - 너 때문에 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '인피니트 - Follow Me : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', 'EXO - Monster : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4432,7 +4396,7 @@ class GameWindow76(Game):
 
 
 class GameWindow77(Game):
-    music_list = ['(노래를 선택하세요)','EXO - Monster : hard', '보아 - One Dream : easy', '시스타 - Say I Love You : hard', '오준성 - Enjoy Party : easy', '에이핑크 - It Girl : easy', '비스트 - 내가 아니야 : easy', '뉴이스트 - 나의 천국 : hard', '더 라임 그리워서 : norm', 'FTISLAND - 여자는 몰라 : easy', '틴탑 - Date : easy']
+    music_list = ['(노래를 선택하세요)','EXO - Monster : ★★★★★', '보아 - One Dream : ★☆☆☆☆', '시스타 - Say I Love You : ★★★★★', '오준성 - Enjoy Party : ★☆☆☆☆', '에이핑크 - It Girl : ★☆☆☆☆', '비스트 - 내가 아니야 : ★☆☆☆☆', '뉴이스트 - 나의 천국 : ★★★★★', '더 라임 그리워서 : ★★★☆☆', 'FTISLAND - 여자는 몰라 : ★☆☆☆☆', '틴탑 - Date : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4486,7 +4450,7 @@ class GameWindow77(Game):
 
 
 class GameWindow78(Game):
-    music_list = ['(노래를 선택하세요)','딕펑스 - 요즘 젊은 것들 : norm', '디아 - 날 위한 이별 : hard', '시스타 - One More Day : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '이지수 - 너야 : easy', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', "박효신 - It's You : hard", '딕펑스 - 한강에서 놀아요 : norm', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','딕펑스 - 요즘 젊은 것들 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★', '시스타 - One More Day : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'EXO - Monster : ★★★★★', "박효신 - It's You : ★★★★★", '딕펑스 - 한강에서 놀아요 : ★★★☆☆', '4MINUTE - 팜므파탈 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4540,7 +4504,7 @@ class GameWindow78(Game):
 
 
 class GameWindow79(Game):
-    music_list = ['(노래를 선택하세요)','가인 - 피어나 : hard', 'EXO - Monster : hard', '딕펑스 - 한강에서 놀아요 : norm', '딕펑스 - 요즘 젊은 것들 : norm', '인피니트 - 붙박이 별 : hard', "박효신 - It's You : hard", '이지수 - 너야 : easy', '요조 - 바나나파티 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','가인 - 피어나 : ★★★★★', 'EXO - Monster : ★★★★★', '딕펑스 - 한강에서 놀아요 : ★★★☆☆', '딕펑스 - 요즘 젊은 것들 : ★★★☆☆', '인피니트 - 붙박이 별 : ★★★★★', "박효신 - It's You : ★★★★★", '이지수 - 너야 : ★☆☆☆☆', '요조 - 바나나파티 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4594,7 +4558,7 @@ class GameWindow79(Game):
 
 
 class GameWindow80(Game):
-    music_list = ['(노래를 선택하세요)','인피니트 - Follow Me : hard', "박효신 - It's You : hard", '박효신 - 야생화 : hard', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '윤지훈 - 너밖에 몰라 : hard', '4MINUTE - 팜므파탈 : norm', '지나유 - 처음사랑 : hard']
+    music_list = ['(노래를 선택하세요)','인피니트 - Follow Me : ★★★★★', "박효신 - It's You : ★★★★★", '박효신 - 야생화 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'EXO - Monster : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '윤지훈 - 너밖에 몰라 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '지나유 - 처음사랑 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4648,7 +4612,7 @@ class GameWindow80(Game):
 
 
 class GameWindow81(Game):
-    music_list = ['(노래를 선택하세요)','윤미래 - 사랑이 맞을거야 : norm', 'NCT 127 - Switch : norm', 'Ailee - 폭풍속으로 : hard', '에일리 - 까꿍 : hard', '세븐틴 - 글쎄 : hard', '비투비 - 북 치고 장구 치고 : easy', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : hard', '신용재 - 평범한 사랑 : norm', 'EXO - Monster : hard', '보아 - Kiss My Lips : easy']
+    music_list = ['(노래를 선택하세요)','윤미래 - 사랑이 맞을거야 : ★★★☆☆', 'NCT 127 - Switch : ★★★☆☆', 'Ailee - 폭풍속으로 : ★★★★★', '에일리 - 까꿍 : ★★★★★', '세븐틴 - 글쎄 : ★★★★★', '비투비 - 북 치고 장구 치고 : ★☆☆☆☆', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : ★★★★★', '신용재 - 평범한 사랑 : ★★★☆☆', 'EXO - Monster : ★★★★★', '보아 - Kiss My Lips : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4702,7 +4666,7 @@ class GameWindow81(Game):
 
 
 class GameWindow82(Game):
-    music_list = ['(노래를 선택하세요)','효린 - 널 사랑하겠어 : easy', '백지영 - 내 귀에 캔디 : hard', '김종국 - 눈물자국 : easy', '빅스 - 사슬 : easy', 'EXO - Monster : hard', '오빠친구동생 - 소보루빵 : hard', '봄바람 소년 - Only One : norm', '레드벨벳 - Huff n Puff : easy', '디아 - 날 위한 이별 : hard', '산이 - Do It For Fun : norm']
+    music_list = ['(노래를 선택하세요)','효린 - 널 사랑하겠어 : ★☆☆☆☆', '백지영 - 내 귀에 캔디 : ★★★★★', '김종국 - 눈물자국 : ★☆☆☆☆', '빅스 - 사슬 : ★☆☆☆☆', 'EXO - Monster : ★★★★★', '오빠친구동생 - 소보루빵 : ★★★★★', '봄바람 소년 - Only One : ★★★☆☆', '레드벨벳 - Huff n Puff : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '산이 - Do It For Fun : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4756,7 +4720,7 @@ class GameWindow82(Game):
 
 
 class GameWindow83(Game):
-    music_list = ['(노래를 선택하세요)','보아 - Only One : easy', 'EXO - Monster : hard', '샤이니 - One : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', 'f(x) - All Mine : hard', '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '에이핑크 - Secret Garden : easy']
+    music_list = ['(노래를 선택하세요)','보아 - Only One : ★☆☆☆☆', 'EXO - Monster : ★★★★★', '샤이니 - One : ★★★★★', "박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆', 'f(x) - All Mine : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -4810,7 +4774,7 @@ class GameWindow83(Game):
 
 
 class GameWindow84(Game):
-    music_list = ['(노래를 선택하세요)','2NE1 - 안녕 : hard', '시크릿 - Madonna : easy', '비 - 널 붙잡을 노래 : hard', '태양 - Where U At : hard', '니엘 - 심쿵 : hard', '시스타 - 나혼자 : norm', 'EXO - Monster : hard', 'EXO - December, 2014 (The Winter’s Tale) : norm', '니엘 - 그런 날 : norm', '박재범 - Evolution (feat. Gray) : hard']
+    music_list = ['(노래를 선택하세요)','2NE1 - 안녕 : ★★★★★', '시크릿 - Madonna : ★☆☆☆☆', '비 - 널 붙잡을 노래 : ★★★★★', '태양 - Where U At : ★★★★★', '니엘 - 심쿵 : ★★★★★', '시스타 - 나혼자 : ★★★☆☆', 'EXO - Monster : ★★★★★', 'EXO - December, 2014 (The Winter’s Tale) : ★★★☆☆', '니엘 - 그런 날 : ★★★☆☆', '박재범 - Evolution (feat. Gray) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4864,7 +4828,7 @@ class GameWindow84(Game):
 
 
 class GameWindow85(Game):
-    music_list = ['(노래를 선택하세요)','이지수 - 너야 : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', '휘성 - Night and Day : easy', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', 'EXO - Monster : hard', '잔나비 - Goodnight (Intro) : hard', '에이핑크 - Secret Garden : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard']
+    music_list = ['(노래를 선택하세요)','이지수 - 너야 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', '휘성 - Night and Day : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'EXO - Monster : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4918,7 +4882,7 @@ class GameWindow85(Game):
 
 
 class GameWindow86(Game):
-    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '샤이니 - Last Christmas : norm', '용준형(비스트) - Caffeine : easy', '현아 -Red : hard', '박보람 - 연예할래 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '멜로디데이 - 마법의 성 : hard', '커피소년 - 바보 : hard', '성훈 - The Justice : hard', 'EXO - MY ANSWER : hard']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', '용준형(비스트) - Caffeine : ★☆☆☆☆', '현아 -Red : ★★★★★', '박보람 - 연예할래 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '멜로디데이 - 마법의 성 : ★★★★★', '커피소년 - 바보 : ★★★★★', '성훈 - The Justice : ★★★★★', 'EXO - MY ANSWER : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -4972,7 +4936,7 @@ class GameWindow86(Game):
 
 
 class GameWindow87(Game):
-    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '혁오 - Hooka : easy', '빅뱅 - Remember : hard', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '아이유 - 입술 사이 (50cm) : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '이오공감 - 한 사람을 위한 마음 : norm', "샤이니 - Don't Stop : norm", 'EXO - Thunder : easy', '에일리 - 노래가 늘었어 : easy']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : ★★★★★', '혁오 - Hooka : ★☆☆☆☆', '빅뱅 - Remember : ★★★★★', '이홍기 - Jump (뜨거운 안녕 OST) : ★★★★★', '아이유 - 입술 사이 (50cm) : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', "샤이니 - Don't Stop : ★★★☆☆", 'EXO - Thunder : ★☆☆☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5026,7 +4990,7 @@ class GameWindow87(Game):
 
 
 class GameWindow88(Game):
-    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '4MINUTE - 팜므파탈 : norm', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '포맨 - 살다가 한번쯤 : hard', '슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard", '이지수 - 너야 : easy']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '인피니트 - 내꺼하자 : ★★★★★', "박효신 - It's You : ★★★★★", '이지수 - 너야 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5080,7 +5044,7 @@ class GameWindow88(Game):
 
 
 class GameWindow89(Game):
-    music_list = ['(노래를 선택하세요)','아이유 - 느리게 하는 일 : hard', 'f(x) - Lollipop : hard', '빅스 - Can’t say : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '업텐션 - Just Like That : easy', '디아 - 날 위한 이별 : hard', '나플라 - 우 : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '아이유 - 스물셋 : hard']
+    music_list = ['(노래를 선택하세요)','아이유 - 느리게 하는 일 : ★★★★★', 'f(x) - Lollipop : ★★★★★', '빅스 - Can’t say : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '업텐션 - Just Like That : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '나플라 - 우 : ★☆☆☆☆', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '아이유 - 스물셋 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5134,7 +5098,7 @@ class GameWindow89(Game):
 
 
 class GameWindow90(Game):
-    music_list = ['(노래를 선택하세요)','규현 - Eternal Sunshine : hard', '에이핑크 - Secret Garden : easy', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '아이유 - 스물셋 : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', "박효신 - It's You : hard", '애프터스쿨 - 너 때문에 : hard', '요조 - 바나나파티 : hard']
+    music_list = ['(노래를 선택하세요)','규현 - Eternal Sunshine : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '아이유 - 스물셋 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', "박효신 - It's You : ★★★★★", '애프터스쿨 - 너 때문에 : ★★★★★', '요조 - 바나나파티 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5188,7 +5152,7 @@ class GameWindow90(Game):
 
 
 class GameWindow91(Game):
-    music_list = ['(노래를 선택하세요)','보아 - One Dream : easy', '앤츠 - 예쁜 너니까 : easy', 'AZIATIX - Lights : easy', '주영 - 들리나요 : hard', '비투비 - 두 번째 고백 : easy', '비투비 - For You : easy', '벤 - 안 괜찮아 : norm', '윤미래 - 사랑이 맞을거야 : norm', '아이유 - 스물셋 : hard', '현아 - 내 집에서 나가 : easy']
+    music_list = ['(노래를 선택하세요)','보아 - One Dream : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', 'AZIATIX - Lights : ★☆☆☆☆', '주영 - 들리나요 : ★★★★★', '비투비 - 두 번째 고백 : ★☆☆☆☆', '비투비 - For You : ★☆☆☆☆', '벤 - 안 괜찮아 : ★★★☆☆', '윤미래 - 사랑이 맞을거야 : ★★★☆☆', '아이유 - 스물셋 : ★★★★★', '현아 - 내 집에서 나가 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5242,7 +5206,7 @@ class GameWindow91(Game):
 
 
 class GameWindow92(Game):
-    music_list = ['(노래를 선택하세요)','제아 - 그대 바보 : hard', "연애말고결혼OST - What's Up : easy", '아이유 - 스물셋 : hard', '김희진 - 이별얘기 : hard', '거미 - 너를 사랑해 : hard', '안녕하신가영 - 순간의 순간 : easy', '인피니트 - Real Story : easy', '시스타 - One More Day : hard', '채정아 - 죽어야 살까 : hard', '제시 - 쾌지나 칭칭나네 : easy']
+    music_list = ['(노래를 선택하세요)','제아 - 그대 바보 : ★★★★★', "연애말고결혼OST - What's Up : ★☆☆☆☆", '아이유 - 스물셋 : ★★★★★', '김희진 - 이별얘기 : ★★★★★', '거미 - 너를 사랑해 : ★★★★★', '안녕하신가영 - 순간의 순간 : ★☆☆☆☆', '인피니트 - Real Story : ★☆☆☆☆', '시스타 - One More Day : ★★★★★', '채정아 - 죽어야 살까 : ★★★★★', '제시 - 쾌지나 칭칭나네 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5297,7 +5261,7 @@ class GameWindow92(Game):
 
 
 class GameWindow93(Game):
-    music_list = ['(노래를 선택하세요)','가인 - 피어나 : hard', '아이유 - 스물셋 : hard', '비투비 - Anymore : easy', '크래용팝 - 1, 2, 3, 4 : hard', '가비엔제이 - 연애소설 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '이승철 - 달링(프로듀사 OST) : norm', 'EXO - Baby : easy', '비스트 - Dance With U : hard', '린 - 이별주 : hard']
+    music_list = ['(노래를 선택하세요)','가인 - 피어나 : ★★★★★', '아이유 - 스물셋 : ★★★★★', '비투비 - Anymore : ★☆☆☆☆', '크래용팝 - 1, 2, 3, 4 : ★★★★★', '가비엔제이 - 연애소설 : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '이승철 - 달링(프로듀사 OST) : ★★★☆☆', 'EXO - Baby : ★☆☆☆☆', '비스트 - Dance With U : ★★★★★', '린 - 이별주 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5351,7 +5315,7 @@ class GameWindow93(Game):
 
 
 class GameWindow94(Game):
-    music_list = ['(노래를 선택하세요)','4MINUTE - Sweet Suga Honey! : easy', '린 - 이별주 : hard', '아이유 - 스물셋 : hard', '크래용팝 - 1, 2, 3, 4 : hard', '인피니트 - Julia : easy', '박효신 - 야생화 : hard', '비투비 - 스릴러 : hard', 'G.NA - 첫눈에 한눈에 : easy', '박재범 - 사실은 : easy', '엠블랙 - Y : hard']
+    music_list = ['(노래를 선택하세요)','4MINUTE - Sweet Suga Honey! : ★☆☆☆☆', '린 - 이별주 : ★★★★★', '아이유 - 스물셋 : ★★★★★', '크래용팝 - 1, 2, 3, 4 : ★★★★★', '인피니트 - Julia : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★', '비투비 - 스릴러 : ★★★★★', 'G.NA - 첫눈에 한눈에 : ★☆☆☆☆', '박재범 - 사실은 : ★☆☆☆☆', '엠블랙 - Y : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5405,7 +5369,7 @@ class GameWindow94(Game):
 
 
 class GameWindow95(Game):
-    music_list = ['(노래를 선택하세요)','빅뱅 - 맨정신 : hard', '스윙스 - a real lady : easy', '세븐틴 - 어른이 되면 : easy', '아이유 - 스물셋 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '에일리 - 이제는 안녕 : hard', '업텐션 - Just Like That : easy', '이유성 - Butter Flying : norm', '아이유 - 느리게 하는 일 : hard', 'NCT 127 - Switch : norm']
+    music_list = ['(노래를 선택하세요)','빅뱅 - 맨정신 : ★★★★★', '스윙스 - a real lady : ★☆☆☆☆', '세븐틴 - 어른이 되면 : ★☆☆☆☆', '아이유 - 스물셋 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '에일리 - 이제는 안녕 : ★★★★★', '업텐션 - Just Like That : ★☆☆☆☆', '이유성 - Butter Flying : ★★★☆☆', '아이유 - 느리게 하는 일 : ★★★★★', 'NCT 127 - Switch : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5459,7 +5423,7 @@ class GameWindow95(Game):
 
 
 class GameWindow96(Game):
-    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '슈퍼주니어 - SUPERMAN : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '바람이 분다OST - 비밀의 방 : hard', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '윤도현 - 요즘 내 모습 : easy', '빅스 - 사슬 : easy']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '바람이 분다OST - 비밀의 방 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '윤도현 - 요즘 내 모습 : ★☆☆☆☆', '빅스 - 사슬 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5513,7 +5477,7 @@ class GameWindow96(Game):
 
 
 class GameWindow97(Game):
-    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : hard', '보아 - Only One : easy', '산들(B1A4) - 짝사랑 : norm', '업텐션 - Just Like That : easy', '아이유 - 느리게 하는 일 : hard', '이유성 - Butter Flying : norm', '백지영 - 안해요 : hard', '셰인 - Be My Love : norm', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '유미 - Last one (주군의 태양 OST) : norm']
+    music_list = ['(노래를 선택하세요)','아이유 - 스물셋 : ★★★★★', '보아 - Only One : ★☆☆☆☆', '산들(B1A4) - 짝사랑 : ★★★☆☆', '업텐션 - Just Like That : ★☆☆☆☆', '아이유 - 느리게 하는 일 : ★★★★★', '이유성 - Butter Flying : ★★★☆☆', '백지영 - 안해요 : ★★★★★', '셰인 - Be My Love : ★★★☆☆', '그린 카카오 - 언젠가 그대 다시 만나면 : ★★★★★', '유미 - Last one (주군의 태양 OST) : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5567,7 +5531,7 @@ class GameWindow97(Game):
 
 
 class GameWindow98(Game):
-    music_list = ['(노래를 선택하세요)','2NE1 - 안녕 : hard', '아이유 - 스물셋 : hard', '앤츠 - 예쁜 너니까 : easy', '산들(B1A4) - 짝사랑 : norm', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '오빠친구동생 - 소보루빵 : hard', "유성은 & 진영 - I'm In Love : hard", '인피니트 - 맡겨 : norm', '백지영 - 비라도 내렸으면 좋겠어 : norm', '비투비 - 두 번째 고백 : easy']
+    music_list = ['(노래를 선택하세요)','2NE1 - 안녕 : ★★★★★', '아이유 - 스물셋 : ★★★★★', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '산들(B1A4) - 짝사랑 : ★★★☆☆', '그린 카카오 - 언젠가 그대 다시 만나면 : ★★★★★', '오빠친구동생 - 소보루빵 : ★★★★★', "유성은 & 진영 - I'm In Love : ★★★★★", '인피니트 - 맡겨 : ★★★☆☆', '백지영 - 비라도 내렸으면 좋겠어 : ★★★☆☆', '비투비 - 두 번째 고백 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5621,7 +5585,7 @@ class GameWindow98(Game):
 
 
 class GameWindow99(Game):
-    music_list = ['(노래를 선택하세요)','산들 - 같이 걷는 길 : hard', '휘성 - Night and Day : easy', '아이유 - 스물셋 : hard', '업텐션 - Just Like That : easy', '앤츠 - 예쁜 너니까 : easy', '4MINUTE - BABABA : hard', '그린 카카오 - 언젠가 그대 다시 만나면 : hard', '몬스타엑스 - 출구는 없어 : easy', '라이너스의 담요 - Love Me : hard', '비투비 - 두 번째 고백 : easy']
+    music_list = ['(노래를 선택하세요)','산들 - 같이 걷는 길 : ★★★★★', '휘성 - Night and Day : ★☆☆☆☆', '아이유 - 스물셋 : ★★★★★', '업텐션 - Just Like That : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '4MINUTE - BABABA : ★★★★★', '그린 카카오 - 언젠가 그대 다시 만나면 : ★★★★★', '몬스타엑스 - 출구는 없어 : ★☆☆☆☆', '라이너스의 담요 - Love Me : ★★★★★', '비투비 - 두 번째 고백 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5675,7 +5639,7 @@ class GameWindow99(Game):
 
 
 class GameWindow100(Game):
-    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : easy', '현아 - 빨개요 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '클래지콰이 프로젝트 - Android : norm', '앤츠 - 예쁜 너니까 : easy', '타루 - 세탁기 : norm', '한희정 - 러브레터 : norm', '예성 - 먹지 : hard', '4MINUTE - BABABA : hard', '이홍기 - Jump (뜨거운 안녕 OST) : hard']
+    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : ★☆☆☆☆', '현아 - 빨개요 : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '클래지콰이 프로젝트 - Android : ★★★☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '타루 - 세탁기 : ★★★☆☆', '한희정 - 러브레터 : ★★★☆☆', '예성 - 먹지 : ★★★★★', '4MINUTE - BABABA : ★★★★★', '이홍기 - Jump (뜨거운 안녕 OST) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5729,7 +5693,7 @@ class GameWindow100(Game):
 
 
 class GameWindow101(Game):
-    music_list = ['(노래를 선택하세요)','정동하 - Mystery (주군의 태양 OST) : hard', '인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '현아 - 빨개요 : hard', "박효신 - It's You : hard", '에이핑크 - Secret Garden : easy', '샤이니 - Wowowow : easy', '샤이니 - One : hard', '슈퍼주니어 - SUPERMAN : hard', '잠비나이 - Connection : hard']
+    music_list = ['(노래를 선택하세요)','정동하 - Mystery (주군의 태양 OST) : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '현아 - 빨개요 : ★★★★★', "박효신 - It's You : ★★★★★", '에이핑크 - Secret Garden : ★☆☆☆☆', '샤이니 - Wowowow : ★☆☆☆☆', '샤이니 - One : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '잠비나이 - Connection : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5783,7 +5747,7 @@ class GameWindow101(Game):
 
 
 class GameWindow102(Game):
-    music_list = ['(노래를 선택하세요)','천둥 - Good : norm', '이지수 - 너야 : easy', "박효신 - It's You : hard", '인피니트 - Follow Me : hard', 'f(x) - Lollipop : hard', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', 'NS 윤지 - 니가 뭘 알아 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '현아 - 빨개요 : hard']
+    music_list = ['(노래를 선택하세요)','천둥 - Good : ★★★☆☆', '이지수 - 너야 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '인피니트 - Follow Me : ★★★★★', 'f(x) - Lollipop : ★★★★★', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '현아 - 빨개요 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5837,7 +5801,7 @@ class GameWindow102(Game):
 
 
 class GameWindow103(Game):
-    music_list = ['(노래를 선택하세요)','시스타 - Oh Baby : easy', '려욱 - 그대 : norm', '린 - 이별주 : hard', '방탄소년단 - Intro: Never Mind : easy', '애프터스쿨 - 너 때문에 : hard', '현아 - 빨개요 : hard', '샤이니 - Last Christmas : norm', "박효신 - It's You : hard", '슈퍼주니어 - SUPERMAN : hard', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','시스타 - Oh Baby : ★☆☆☆☆', '려욱 - 그대 : ★★★☆☆', '린 - 이별주 : ★★★★★', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '애프터스쿨 - 너 때문에 : ★★★★★', '현아 - 빨개요 : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', "박효신 - It's You : ★★★★★", '슈퍼주니어 - SUPERMAN : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5891,7 +5855,7 @@ class GameWindow103(Game):
 
 
 class GameWindow104(Game):
-    music_list = ['(노래를 선택하세요)','현아 - 빨개요 : hard', '알파벳 - 답정너 : hard', '보아 - One Dream : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '지나 - 싫어 : easy', 'We are the night - 흐려도 좋아 : easy', '앤츠 - 예쁜 너니까 : easy', '더 라임 그리워서 : norm', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard']
+    music_list = ['(노래를 선택하세요)','현아 - 빨개요 : ★★★★★', '알파벳 - 답정너 : ★★★★★', '보아 - One Dream : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '지나 - 싫어 : ★☆☆☆☆', 'We are the night - 흐려도 좋아 : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '더 라임 그리워서 : ★★★☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -5945,7 +5909,7 @@ class GameWindow104(Game):
 
 
 class GameWindow105(Game):
-    music_list = ['(노래를 선택하세요)','샤이니 - Runaway : hard', '시스타 - One More Day : hard', '이지수 - 너야 : easy', '4MINUTE - 팜므파탈 : norm', '현아 - 빨개요 : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '천둥 - Good : norm', '동방신기 - Humanoids : norm']
+    music_list = ['(노래를 선택하세요)','샤이니 - Runaway : ★★★★★', '시스타 - One More Day : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', '4MINUTE - 팜므파탈 : ★★★☆☆', '현아 - 빨개요 : ★★★★★', "박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '천둥 - Good : ★★★☆☆', '동방신기 - Humanoids : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -5999,7 +5963,7 @@ class GameWindow105(Game):
 
 
 class GameWindow106(Game):
-    music_list = ['(노래를 선택하세요)','박수진 & 일렉트로보이즈 - 떨려요 : norm', '방탄소년단 - Intro: Never Mind : easy', '린 - 이별주 : hard', '방탄소년단 - 고엽 : easy', '현아 - 빨개요 : hard', '인피니트 - Julia : easy', '가인 - 피어나 : hard', '려욱 - 그대 : norm', '현아 - Change : hard', '샤이니 - Last Christmas : norm']
+    music_list = ['(노래를 선택하세요)','박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '린 - 이별주 : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆', '현아 - 빨개요 : ★★★★★', '인피니트 - Julia : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', '려욱 - 그대 : ★★★☆☆', '현아 - Change : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6053,7 +6017,7 @@ class GameWindow106(Game):
 
 
 class GameWindow107(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', '이오공감 - 한 사람을 위한 마음 : norm', '현아 - 빨개요 : hard', '박효신 - 야생화 : hard', '샤이니 - Runaway : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '이지수 - 너야 : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", '디아 - 날 위한 이별 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', '현아 - 빨개요 : ★★★★★', '박효신 - 야생화 : ★★★★★', '샤이니 - Runaway : ★★★★★', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6107,7 +6071,7 @@ class GameWindow107(Game):
 
 
 class GameWindow108(Game):
-    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '박수진 & 일렉트로보이즈 - 떨려요 : norm', 'Beta89 - 청춘아 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '코코소리 - 다크서클 : hard', '딕펑스 - 요즘 젊은 것들 : norm', '지나 - 싫어 : easy', '현아 - 빨개요 : hard', '아우라 - 커졌다 작아졌다 : norm', 'NCT 127 - Switch : norm']
+    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆', 'Beta89 - 청춘아 : ★☆☆☆☆', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', '코코소리 - 다크서클 : ★★★★★', '딕펑스 - 요즘 젊은 것들 : ★★★☆☆', '지나 - 싫어 : ★☆☆☆☆', '현아 - 빨개요 : ★★★★★', '아우라 - 커졌다 작아졌다 : ★★★☆☆', 'NCT 127 - Switch : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6161,7 +6125,7 @@ class GameWindow108(Game):
 
 
 class GameWindow109(Game):
-    music_list = ['(노래를 선택하세요)','세븐틴 - 어른이 되면 : easy', '헨리 - Butterfly : easy', '시크릿 - POISON : easy', '민효린 & 진영 - 당신과 만난 이날 : norm', '이유성 - Butter Flying : norm', '현아 - 빨개요 : hard', '비스트 - 일하러 가야 돼 : easy', '블락비 - 몇 년 후에 : easy', '빅스 - 사슬 : easy', '오준성 - Out Of The Ghost : norm']
+    music_list = ['(노래를 선택하세요)','세븐틴 - 어른이 되면 : ★☆☆☆☆', '헨리 - Butterfly : ★☆☆☆☆', '시크릿 - POISON : ★☆☆☆☆', '민효린 & 진영 - 당신과 만난 이날 : ★★★☆☆', '이유성 - Butter Flying : ★★★☆☆', '현아 - 빨개요 : ★★★★★', '비스트 - 일하러 가야 돼 : ★☆☆☆☆', '블락비 - 몇 년 후에 : ★☆☆☆☆', '빅스 - 사슬 : ★☆☆☆☆', '오준성 - Out Of The Ghost : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6215,7 +6179,7 @@ class GameWindow109(Game):
 
 
 class GameWindow110(Game):
-    music_list = ['(노래를 선택하세요)','어반자카파 - Rainbow Ride (Prelude) : hard', '업텐션 - Just Like That : easy', '비투비 - 두 번째 고백 : easy', '셰인 - Be My Love : norm', '아이유 - 느리게 하는 일 : hard', '앤츠 - 예쁜 너니까 : easy', '악동뮤지션 - 매력있어 : hard', '현아 - 빨개요 : hard', '보아 - Only One : easy', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : hard']
+    music_list = ['(노래를 선택하세요)','어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '업텐션 - Just Like That : ★☆☆☆☆', '비투비 - 두 번째 고백 : ★☆☆☆☆', '셰인 - Be My Love : ★★★☆☆', '아이유 - 느리게 하는 일 : ★★★★★', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '악동뮤지션 - 매력있어 : ★★★★★', '현아 - 빨개요 : ★★★★★', '보아 - Only One : ★☆☆☆☆', '헨리(슈퍼주니어 M) - 1-4-3 (I Love You) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6269,7 +6233,7 @@ class GameWindow110(Game):
 
 
 class GameWindow111(Game):
-    music_list = ['(노래를 선택하세요)','앤츠 - 예쁜 너니까 : easy', "유성은 & 진영 - I'm In Love : hard", '2NE1 - 안녕 : hard', '비투비 - 두 번째 고백 : easy', '틴탑 - 우린 문제없어 : easy', '인피니트 - Amazing : norm', '에이핑크 - 하늘 높이 : hard', '씨잼 - 걍 음악이다 : norm', '릴보이 - 돈돈돈 : easy', '현아 - 빨개요 : hard']
+    music_list = ['(노래를 선택하세요)','앤츠 - 예쁜 너니까 : ★☆☆☆☆', "유성은 & 진영 - I'm In Love : ★★★★★", '2NE1 - 안녕 : ★★★★★', '비투비 - 두 번째 고백 : ★☆☆☆☆', '틴탑 - 우린 문제없어 : ★☆☆☆☆', '인피니트 - Amazing : ★★★☆☆', '에이핑크 - 하늘 높이 : ★★★★★', '씨잼 - 걍 음악이다 : ★★★☆☆', '릴보이 - 돈돈돈 : ★☆☆☆☆', '현아 - 빨개요 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6323,7 +6287,7 @@ class GameWindow111(Game):
 
 
 class GameWindow112(Game):
-    music_list = ['(노래를 선택하세요)','잠비나이 - Connection : hard', '휘성 - Night and Day : easy', '미 - 온도 : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '현아 - 빨개요 : hard', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '슈퍼주니어 - SUPERMAN : hard', '포맨 - 살다가 한번쯤 : hard', 'NS 윤지 - 니가 뭘 알아 : easy']
+    music_list = ['(노래를 선택하세요)','잠비나이 - Connection : ★★★★★', '휘성 - Night and Day : ★☆☆☆☆', '미 - 온도 : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '현아 - 빨개요 : ★★★★★', "박효신 - It's You : ★★★★★", '디아 - 날 위한 이별 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6377,7 +6341,7 @@ class GameWindow112(Game):
 
 
 class GameWindow113(Game):
-    music_list = ['(노래를 선택하세요)','비투비 블루 - 내 곁에 서 있어줘 : hard', '에이핑크 - Secret Garden : easy', "박효신 - It's You : hard", '이지수 - 너야 : easy', '에일리 - 노래가 늘었어 : easy', 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '모던다락방 - All I Want Is 바라만봐도 : norm', '인피니트 - 내꺼하자 : hard', '4MINUTE - 팜므파탈 : norm']
+    music_list = ['(노래를 선택하세요)','비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '이지수 - 너야 : ★☆☆☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '모던다락방 - All I Want Is 바라만봐도 : ★★★☆☆', '인피니트 - 내꺼하자 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6431,7 +6395,7 @@ class GameWindow113(Game):
 
 
 class GameWindow114(Game):
-    music_list = ['(노래를 선택하세요)','이지수 - 너야 : easy', '에이핑크 - Secret Garden : easy', 'MBLAQ - 유령(같이 사랑했잖아) : easy', "박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '비스트 - Fiction : hard', '인피니트 - Follow Me : hard', '에일리 - 노래가 늘었어 : easy', '요조 - 바나나파티 : hard', 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','이지수 - 너야 : ★☆☆☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', 'MBLAQ - 유령(같이 사랑했잖아) : ★☆☆☆☆', "박효신 - It's You : ★★★★★", 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '비스트 - Fiction : ★★★★★', '인피니트 - Follow Me : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '요조 - 바나나파티 : ★★★★★', 'f(x) - Lollipop : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6485,7 +6449,7 @@ class GameWindow114(Game):
 
 
 class GameWindow115(Game):
-    music_list = ['(노래를 선택하세요)',"바람이 분다OST - It's Over : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '인피니트 - Follow Me : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '봄바람 소년 - Only One : norm', '잔나비 - Goodnight (Intro) : hard', "박효신 - It's You : hard", '애프터스쿨 - 너 때문에 : hard', '에일리 - 노래가 늘었어 : easy', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)',"바람이 분다OST - It's Over : ★★★★★", 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '인피니트 - Follow Me : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '봄바람 소년 - Only One : ★★★☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', "박효신 - It's You : ★★★★★", '애프터스쿨 - 너 때문에 : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6539,7 +6503,7 @@ class GameWindow115(Game):
 
 
 class GameWindow116(Game):
-    music_list = ['(노래를 선택하세요)','4MINUTE - BABABA : hard', '동방신기 - Humanoids : norm', '아이유 - 느리게 하는 일 : hard', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : norm', '보아 - One Dream : easy', '업텐션 - Just Like That : easy', '앤츠 - 예쁜 너니까 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '에일리 - 노래가 늘었어 : easy', '백지영 - 안해요 : hard']
+    music_list = ['(노래를 선택하세요)','4MINUTE - BABABA : ★★★★★', '동방신기 - Humanoids : ★★★☆☆', '아이유 - 느리게 하는 일 : ★★★★★', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : ★★★☆☆', '보아 - One Dream : ★☆☆☆☆', '업텐션 - Just Like That : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '백지영 - 안해요 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6593,7 +6557,7 @@ class GameWindow116(Game):
 
 
 class GameWindow117(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '잔나비 - Goodnight (Intro) : hard', 'f(x) - All Mine : hard', '이지수 - 너야 : easy', '인피니트 - Follow Me : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '샤이니 - One : hard', '에일리 - 노래가 늘었어 : easy', '시스타 - One More Day : hard', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", '잔나비 - Goodnight (Intro) : ★★★★★', 'f(x) - All Mine : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', '인피니트 - Follow Me : ★★★★★', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '샤이니 - One : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '시스타 - One More Day : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6648,7 +6612,7 @@ class GameWindow117(Game):
 
 
 class GameWindow118(Game):
-    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : easy', '가인 - 피어나 : hard', 'Ra.L - 잠을 좀 자고싶어요 : easy', '이유림 - 이런 기분 : norm', 'EXO - Let Out The Beast : hard', 'EXO - Cloud 9 : easy', '바이브 - 외로운 놈 : norm', '보경, 셰인 - Summer Love : norm', '백지영 - 사랑아 또 사랑아 : easy', 'B.A.P - 빗소리 : easy']
+    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', 'Ra.L - 잠을 좀 자고싶어요 : ★☆☆☆☆', '이유림 - 이런 기분 : ★★★☆☆', 'EXO - Let Out The Beast : ★★★★★', 'EXO - Cloud 9 : ★☆☆☆☆', '바이브 - 외로운 놈 : ★★★☆☆', '보경, 셰인 - Summer Love : ★★★☆☆', '백지영 - 사랑아 또 사랑아 : ★☆☆☆☆', 'B.A.P - 빗소리 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6702,7 +6666,7 @@ class GameWindow118(Game):
 
 
 class GameWindow119(Game):
-    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : easy', '박효신 - 야생화 : hard', '에이핑크 - Secret Garden : easy', "박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '인피니트 - Follow Me : hard', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','에일리 - 노래가 늘었어 : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', "박효신 - It's You : ★★★★★", 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '인피니트 - Follow Me : ★★★★★', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6756,7 +6720,7 @@ class GameWindow119(Game):
 
 
 class GameWindow120(Game):
-    music_list = ['(노래를 선택하세요)','비스트 - Fiction : hard', '프롬 - 달의 뒤편으로 와요 : norm', "박효신 - It's You : hard", '레드벨벳 - 장미꽃 향기는 바람에 날리고 : hard', '천둥 - Good : norm', '임창정 - 그렇게 당해놓고 : norm', '에이핑크 - Secret Garden : easy', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', 'NCT 127 - Switch : norm', '에일리 - 노래가 늘었어 : easy']
+    music_list = ['(노래를 선택하세요)','비스트 - Fiction : ★★★★★', '프롬 - 달의 뒤편으로 와요 : ★★★☆☆', "박효신 - It's You : ★★★★★", '레드벨벳 - 장미꽃 향기는 바람에 날리고 : ★★★★★', '천둥 - Good : ★★★☆☆', '임창정 - 그렇게 당해놓고 : ★★★☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : ★★★☆☆', 'NCT 127 - Switch : ★★★☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6811,7 +6775,7 @@ class GameWindow120(Game):
 
 
 class GameWindow121(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard', '4MINUTE - 팜므파탈 : norm', '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '에일리 - 노래가 늘었어 : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '지훈 - 너만 생각나 : hard', '빅스 - 사슬 : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '지훈 - 너만 생각나 : ★★★★★', '빅스 - 사슬 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -6865,7 +6829,7 @@ class GameWindow121(Game):
 
 
 class GameWindow122(Game):
-    music_list = ['(노래를 선택하세요)','딕펑스 - 니가보여 : easy', '아이유 - 무릎 : hard', '참깨와 솜사탕 - 키스미 : norm', '샤이니 - Hold You : easy', '세븐틴 - 이 놈의 인기 : easy', 'B1A4 - Chu Chu Chu : easy', '한희정 - 러브레터 : norm', '보아 - Only One : easy', '에일리 - 노래가 늘었어 : easy', '악뮤 - 다리꼬지마 : hard']
+    music_list = ['(노래를 선택하세요)','딕펑스 - 니가보여 : ★☆☆☆☆', '아이유 - 무릎 : ★★★★★', '참깨와 솜사탕 - 키스미 : ★★★☆☆', '샤이니 - Hold You : ★☆☆☆☆', '세븐틴 - 이 놈의 인기 : ★☆☆☆☆', 'B1A4 - Chu Chu Chu : ★☆☆☆☆', '한희정 - 러브레터 : ★★★☆☆', '보아 - Only One : ★☆☆☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '악뮤 - 다리꼬지마 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6919,7 +6883,7 @@ class GameWindow122(Game):
 
 
 class GameWindow123(Game):
-    music_list = ['(노래를 선택하세요)','라디(Ra.D) - Lovesome : hard', '4MINUTE - Sweet Suga Honey! : easy', '시스타 - Give It To Me (Reno Remix) : hard', '방탄소년단 - Intro: Skool Luv Affair : easy', '멜로디데이 - Lake Wave (주군의 태양 OST) : easy', 'DEAN - And You? (Outro) : easy', 'f(x) - MILK : norm', '비스트 - 예이 : hard', '에일리 - 노래가 늘었어 : easy', '2NE1 - 안녕 : hard']
+    music_list = ['(노래를 선택하세요)','라디(Ra.D) - Lovesome : ★★★★★', '4MINUTE - Sweet Suga Honey! : ★☆☆☆☆', '시스타 - Give It To Me (Reno Remix) : ★★★★★', '방탄소년단 - Intro: Skool Luv Affair : ★☆☆☆☆', '멜로디데이 - Lake Wave (주군의 태양 OST) : ★☆☆☆☆', 'DEAN - And You? (Outro) : ★☆☆☆☆', 'f(x) - MILK : ★★★☆☆', '비스트 - 예이 : ★★★★★', '에일리 - 노래가 늘었어 : ★☆☆☆☆', '2NE1 - 안녕 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -6973,7 +6937,7 @@ class GameWindow123(Game):
 
 
 class GameWindow124(Game):
-    music_list = ['(노래를 선택하세요)','세븐틴 - 이 놈의 인기 : easy', '태양 - 기도 (feat. Teddy) : hard', '요조 - 뒹굴뒹굴 : hard', '정은지 - 하늘바라기 : easy', '딕펑스 - 니가보여 : easy', '샤이니 - Hold You : easy', '휘성 - Night and Day : easy', '이오공감 - 한 사람을 위한 마음 : norm', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : norm', '에일리 - 노래가 늘었어 : easy']
+    music_list = ['(노래를 선택하세요)','세븐틴 - 이 놈의 인기 : ★☆☆☆☆', '태양 - 기도 (feat. Teddy) : ★★★★★', '요조 - 뒹굴뒹굴 : ★★★★★', '정은지 - 하늘바라기 : ★☆☆☆☆', '딕펑스 - 니가보여 : ★☆☆☆☆', '샤이니 - Hold You : ★☆☆☆☆', '휘성 - Night and Day : ★☆☆☆☆', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', '스윗소로우 - 별 일 아니에요 (연애의 발견 OST) : ★★★☆☆', '에일리 - 노래가 늘었어 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -7027,7 +6991,7 @@ class GameWindow124(Game):
 
 
 class GameWindow125(Game):
-    music_list = ['(노래를 선택하세요)','슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', '천둥 - Good : norm', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '잠비나이 - Connection : hard', '연애말고 결혼 OST - Love Knots : hard', 'f(x) - Lollipop : hard', '인피니트 - 내꺼하자 : hard', '정동하 - Mystery (주군의 태양 OST) : hard']
+    music_list = ['(노래를 선택하세요)','슈퍼주니어 - SUPERMAN : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '천둥 - Good : ★★★☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', "박효신 - It's You : ★★★★★", '잠비나이 - Connection : ★★★★★', '연애말고 결혼 OST - Love Knots : ★★★★★', 'f(x) - Lollipop : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7081,7 +7045,7 @@ class GameWindow125(Game):
 
 
 class GameWindow126(Game):
-    music_list = ['(노래를 선택하세요)','N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '포맨 - 살다가 한번쯤 : hard', '잠비나이 - Connection : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '디아 - 날 위한 이별 : hard', '슈퍼주니어 - SUPERMAN : hard', '애프터스쿨 - 너 때문에 : hard', '인피니트 - 내꺼하자 : hard']
+    music_list = ['(노래를 선택하세요)','N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '잠비나이 - Connection : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '디아 - 날 위한 이별 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7135,7 +7099,7 @@ class GameWindow126(Game):
 
 
 class GameWindow127(Game):
-    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '잠비나이 - Connection : hard', '에일리 - 여인의 향기 : hard', 'NS 윤지 - 니가 뭘 알아 : easy', "박효신 - It's You : hard", '보아 - One Dream : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '포맨 - 살다가 한번쯤 : hard', '엠블랙 - Y : hard']
+    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '잠비나이 - Connection : ★★★★★', '에일리 - 여인의 향기 : ★★★★★', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '보아 - One Dream : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '엠블랙 - Y : ★★★★★']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -7189,7 +7153,7 @@ class GameWindow127(Game):
 
 
 class GameWindow128(Game):
-    music_list = ['(노래를 선택하세요)','슈퍼주니어 - SUPERMAN : hard', '디아 - 날 위한 이별 : hard', '천둥 - Good : norm', 'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '4MINUTE - 팜므파탈 : norm', '시스타 - One More Day : hard', '포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','슈퍼주니어 - SUPERMAN : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '천둥 - Good : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆', '4MINUTE - 팜므파탈 : ★★★☆☆', '시스타 - One More Day : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -7244,7 +7208,7 @@ class GameWindow128(Game):
 
 
 class GameWindow129(Game):
-    music_list = ['(노래를 선택하세요)','이지수 - 너야 : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '인피니트 - Follow Me : hard', '동방신기 - Humanoids : norm', "박효신 - It's You : hard", '인피니트 - 내꺼하자 : hard', 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '4MINUTE - 팜므파탈 : norm', '가인 - 피어나 : hard']
+    music_list = ['(노래를 선택하세요)','이지수 - 너야 : ★☆☆☆☆', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '인피니트 - Follow Me : ★★★★★', '동방신기 - Humanoids : ★★★☆☆', "박효신 - It's You : ★★★★★", '인피니트 - 내꺼하자 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '가인 - 피어나 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7298,7 +7262,7 @@ class GameWindow129(Game):
 
 
 class GameWindow130(Game):
-    music_list = ['(노래를 선택하세요)','포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', "박효신 - It's You : hard", '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Flower - 사랑은 알아도... : easy', '박효신 - 야생화 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '슈퍼주니어 - SUPERMAN : hard', '신용재 - 평범한 사랑 : norm', '디아 - 날 위한 이별 : hard']
+    music_list = ['(노래를 선택하세요)','포맨 - 살다가 한번쯤 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', "박효신 - It's You : ★★★★★", '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '신용재 - 평범한 사랑 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7352,7 +7316,7 @@ class GameWindow130(Game):
 
 
 class GameWindow131(Game):
-    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : hard', 'NCT 127 - Switch : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '디아 - 날 위한 이별 : hard', '신용재 - 평범한 사랑 : norm', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Runaway : hard', '방탄소년단 - 고엽 : easy', '규현 - Eternal Sunshine : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','인피니트 - 내꺼하자 : ★★★★★', 'NCT 127 - Switch : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '신용재 - 평범한 사랑 : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '샤이니 - Runaway : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆', '규현 - Eternal Sunshine : ★★★★★', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -7406,7 +7370,7 @@ class GameWindow131(Game):
 
 
 class GameWindow132(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '안혜은 - 그녀를 찾지마 : easy', '윤도현 - 요즘 내 모습 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '디아 - 날 위한 이별 : hard', '김종국 - 눈물자국 : easy', '빅스 - 사슬 : easy', '포맨 - 살다가 한번쯤 : hard', '인피니트 - 내꺼하자 : hard', '슈퍼주니어 - SUPERMAN : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", '안혜은 - 그녀를 찾지마 : ★☆☆☆☆', '윤도현 - 요즘 내 모습 : ★☆☆☆☆', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '김종국 - 눈물자국 : ★☆☆☆☆', '빅스 - 사슬 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7460,7 +7424,7 @@ class GameWindow132(Game):
 
 
 class GameWindow133(Game):
-    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '이지수 - 너야 : easy', '에이핑크 - Secret Garden : easy', '보아 - Only One : easy', '인피니트 - 내꺼하자 : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '인피니트 - Follow Me : hard']
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '이지수 - 너야 : ★☆☆☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', '보아 - Only One : ★☆☆☆☆', '인피니트 - 내꺼하자 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '인피니트 - Follow Me : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7514,7 +7478,7 @@ class GameWindow133(Game):
 
 
 class GameWindow134(Game):
-    music_list = ['(노래를 선택하세요)','윤미래 - Who : easy', '미(MIIII) - Not-Boyfriend : easy', '엠블랙 - Again : hard', '어쿠루브 - 그날 : easy', '뉴이스트 - 나의 천국 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '2NE1 - 안녕 : hard', '인피니트 - 내꺼하자 : hard', '한희정 - 러브레터 : norm', '여자친구 - 나침반 : hard']
+    music_list = ['(노래를 선택하세요)','윤미래 - Who : ★☆☆☆☆', '미(MIIII) - Not-Boyfriend : ★☆☆☆☆', '엠블랙 - Again : ★★★★★', '어쿠루브 - 그날 : ★☆☆☆☆', '뉴이스트 - 나의 천국 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '2NE1 - 안녕 : ★★★★★', '인피니트 - 내꺼하자 : ★★★★★', '한희정 - 러브레터 : ★★★☆☆', '여자친구 - 나침반 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7568,7 +7532,7 @@ class GameWindow134(Game):
 
 
 class GameWindow135(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '잔나비 - Goodnight (Intro) : hard', '포맨 - 살다가 한번쯤 : hard', '잠비나이 - Connection : hard', '인피니트 - Follow Me : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', '휘성 - Night and Day : easy', '인피니트 - 내꺼하자 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', '잠비나이 - Connection : ★★★★★', '인피니트 - Follow Me : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', '휘성 - Night and Day : ★☆☆☆☆', '인피니트 - 내꺼하자 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7622,7 +7586,7 @@ class GameWindow135(Game):
 
 
 class GameWindow136(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", '방탄소년단 - Intro: Never Mind : easy', '방탄소년단 - 고엽 : easy', '애프터스쿨 - 너 때문에 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '유준상 - Love & Hate : hard', '린 - 이별주 : hard', '비투비 - 자리비움 : easy', 'f(x) - Lollipop : hard', 'Flower - 사랑은 알아도... : easy']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '방탄소년단 - 고엽 : ★☆☆☆☆', '애프터스쿨 - 너 때문에 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '유준상 - Love & Hate : ★★★★★', '린 - 이별주 : ★★★★★', '비투비 - 자리비움 : ★☆☆☆☆', 'f(x) - Lollipop : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -7676,7 +7640,7 @@ class GameWindow136(Game):
 
 
 class GameWindow137(Game):
-    music_list = ['(노래를 선택하세요)','f(x) - Lollipop : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '지코 - 날 : easy', '앤츠 - 예쁜 너니까 : easy', '동방신기 - 아테나 : hard', 'YoungAh - 이별통보 : hard', '셰인 - Be My Love : norm', "The K2 OST - Anna's Appassionata : easy", '오빠친구동생 - 소보루빵 : hard', '보아 - One Dream : easy']
+    music_list = ['(노래를 선택하세요)','f(x) - Lollipop : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '지코 - 날 : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '동방신기 - 아테나 : ★★★★★', 'YoungAh - 이별통보 : ★★★★★', '셰인 - Be My Love : ★★★☆☆', "The K2 OST - Anna's Appassionata : ★☆☆☆☆", '오빠친구동생 - 소보루빵 : ★★★★★', '보아 - One Dream : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -7730,7 +7694,7 @@ class GameWindow137(Game):
 
 
 class GameWindow138(Game):
-    music_list = ['(노래를 선택하세요)','천둥 - Good : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '방탄소년단 - Intro: Never Mind : easy', '비투비 - Killing Me : hard', '방탄소년단 - 고엽 : easy', '샤이니 - Your Number : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '시스타 - One More Day : hard', 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','천둥 - Good : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '비투비 - Killing Me : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆', '샤이니 - Your Number : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆', '시스타 - One More Day : ★★★★★', 'f(x) - Lollipop : ★★★★★']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -7783,7 +7747,7 @@ class GameWindow138(Game):
 
 
 class GameWindow139(Game):
-    music_list = ['(노래를 선택하세요)','안현정 - 그대와 나 : hard', '여은 - 사랑아 나의 사랑아 : norm', '가인 - 피어나 : hard', '샤이니 - Last Christmas : norm', '에일리 - 이제는 안녕 : hard', '비투비 - Killing Me : hard', '에이핑크 - 몰라요 : hard', 'f(x) - Lollipop : hard', '방탄소년단 - Intro: Never Mind : easy', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','안현정 - 그대와 나 : ★★★★★', '여은 - 사랑아 나의 사랑아 : ★★★☆☆', '가인 - 피어나 : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', '에일리 - 이제는 안녕 : ★★★★★', '비투비 - Killing Me : ★★★★★', '에이핑크 - 몰라요 : ★★★★★', 'f(x) - Lollipop : ★★★★★', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '방탄소년단 - 고엽 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -7837,7 +7801,7 @@ class GameWindow139(Game):
 
 
 class GameWindow140(Game):
-    music_list = ['(노래를 선택하세요)',"박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '잠비나이 - Connection : hard', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '4MINUTE - 팜므파탈 : norm', '김장훈 - 어머니는 내 마음을 아세요 : hard', 'f(x) - Lollipop : hard', '지나유 - 처음사랑 : hard', '박효신 - 야생화 : hard']
+    music_list = ['(노래를 선택하세요)',"박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '잠비나이 - Connection : ★★★★★', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', 'f(x) - Lollipop : ★★★★★', '지나유 - 처음사랑 : ★★★★★', '박효신 - 야생화 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7891,7 +7855,7 @@ class GameWindow140(Game):
 
 
 class GameWindow141(Game):
-    music_list = ['(노래를 선택하세요)','보아 - Home : easy', 'f(x) - Lollipop : hard', '에이핑크 - 몰라요 : hard', '안현정 - 그대와 나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', 'NCT 127 - Switch : norm', '방탄소년단 - Intro: Never Mind : easy', '시크릿 - POISON : easy', '천둥 - Good : norm', '참깨와 솜사탕 - 키스미 : norm']
+    music_list = ['(노래를 선택하세요)','보아 - Home : ★☆☆☆☆', 'f(x) - Lollipop : ★★★★★', '에이핑크 - 몰라요 : ★★★★★', '안현정 - 그대와 나 : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', 'NCT 127 - Switch : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '시크릿 - POISON : ★☆☆☆☆', '천둥 - Good : ★★★☆☆', '참깨와 솜사탕 - 키스미 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -7945,7 +7909,7 @@ class GameWindow141(Game):
 
 
 class GameWindow142(Game):
-    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : hard', "박효신 - It's You : hard", '악뮤 - 다리꼬지마 : hard', '슬리피 - 기분탓 : easy', '에일리 - 이제는 안녕 : hard', '인피니트 - 붙박이 별 : hard', '오빠친구동생 - 소보루빵 : hard', '빅스 - 사슬 : easy', '레드벨벳 - Huff n Puff : easy', 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : ★★★★★', "박효신 - It's You : ★★★★★", '악뮤 - 다리꼬지마 : ★★★★★', '슬리피 - 기분탓 : ★☆☆☆☆', '에일리 - 이제는 안녕 : ★★★★★', '인피니트 - 붙박이 별 : ★★★★★', '오빠친구동생 - 소보루빵 : ★★★★★', '빅스 - 사슬 : ★☆☆☆☆', '레드벨벳 - Huff n Puff : ★☆☆☆☆', 'f(x) - Lollipop : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -7999,7 +7963,7 @@ class GameWindow142(Game):
 
 
 class GameWindow143(Game):
-    music_list = ['(노래를 선택하세요)','보아 - Only One : easy', '슈퍼주니어 - SUPERMAN : hard', '코코소리 - 다크서클 : hard', '이지수 - 너야 : easy', 'Beta89 - 청춘아 : easy', '샤이니 - Last Christmas : norm', 'Flower - 사랑은 알아도... : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', "박효신 - It's You : hard", 'f(x) - Lollipop : hard']
+    music_list = ['(노래를 선택하세요)','보아 - Only One : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '코코소리 - 다크서클 : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', 'Beta89 - 청춘아 : ★☆☆☆☆', '샤이니 - Last Christmas : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', "박효신 - It's You : ★★★★★", 'f(x) - Lollipop : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -8053,7 +8017,7 @@ class GameWindow143(Game):
 
 
 class GameWindow144(Game):
-    music_list = ['(노래를 선택하세요)','유성은 - 500일의 Summer : easy', '레인보우 유아동요 - 숲 속의 음악가 : easy', 'f(x) - MILK : norm', 'HUS - Space Loves Disco : hard', 'f(x) - Lollipop : hard', '효린 - 미치게 만들어 : hard', '백지영 - 사랑아 또 사랑아 : easy', '2NE1 - 안녕 : hard', '악동뮤지션 - 외국인의 고백 : norm', 'FTISLAND - 새들처럼 : hard']
+    music_list = ['(노래를 선택하세요)','유성은 - 500일의 Summer : ★☆☆☆☆', '레인보우 유아동요 - 숲 속의 음악가 : ★☆☆☆☆', 'f(x) - MILK : ★★★☆☆', 'HUS - Space Loves Disco : ★★★★★', 'f(x) - Lollipop : ★★★★★', '효린 - 미치게 만들어 : ★★★★★', '백지영 - 사랑아 또 사랑아 : ★☆☆☆☆', '2NE1 - 안녕 : ★★★★★', '악동뮤지션 - 외국인의 고백 : ★★★☆☆', 'FTISLAND - 새들처럼 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -8107,7 +8071,7 @@ class GameWindow144(Game):
 
 
 class GameWindow145(Game):
-    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', '디아 - 날 위한 이별 : hard', '이지수 - 너야 : easy', '샤이니 - Your Number : easy', "박효신 - It's You : hard", '천둥 - Good : norm', 'f(x) - Lollipop : hard', '샤이니 - Last Christmas : norm', '휘성 - Night and Day : easy', '인피니트 - 붙박이 별 : hard']
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : ★☆☆☆☆', '디아 - 날 위한 이별 : ★★★★★', '이지수 - 너야 : ★☆☆☆☆', '샤이니 - Your Number : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '천둥 - Good : ★★★☆☆', 'f(x) - Lollipop : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', '휘성 - Night and Day : ★☆☆☆☆', '인피니트 - 붙박이 별 : ★★★★★']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -8160,7 +8124,7 @@ class GameWindow145(Game):
 
 
 class GameWindow146(Game):
-    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'NS 윤지 - 니가 뭘 알아 : easy', '샤이니 - Last Christmas : norm', '방탄소년단 - 고엽 : easy', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '봄바람 소년 - Only One : norm', '슈퍼주니어 - SUPERMAN : hard', '애프터스쿨 - 너 때문에 : hard', '보아 - One Dream : easy']
+    music_list = ['(노래를 선택하세요)','더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', '샤이니 - Last Christmas : ★★★☆☆', '방탄소년단 - 고엽 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', "박효신 - It's You : ★★★★★", '봄바람 소년 - Only One : ★★★☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', '보아 - One Dream : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8214,7 +8178,7 @@ class GameWindow146(Game):
 
 
 class GameWindow147(Game):
-    music_list = ['(노래를 선택하세요)','에이핑크 - Secret Garden : easy', '애프터스쿨 - 너 때문에 : hard', '시스타 - One More Day : hard', "비스트 - I'm sorry : easy", '샤이니 - Wowowow : easy', '샤이니 - One : hard', '연애말고 결혼 OST - Love Knots : hard', '잔나비 - Goodnight (Intro) : hard', '비투비 블루 - 내 곁에 서 있어줘 : hard', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy']
+    music_list = ['(노래를 선택하세요)','에이핑크 - Secret Garden : ★☆☆☆☆', '애프터스쿨 - 너 때문에 : ★★★★★', '시스타 - One More Day : ★★★★★', "비스트 - I'm sorry : ★☆☆☆☆", '샤이니 - Wowowow : ★☆☆☆☆', '샤이니 - One : ★★★★★', '연애말고 결혼 OST - Love Knots : ★★★★★', '잔나비 - Goodnight (Intro) : ★★★★★', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8268,7 +8232,7 @@ class GameWindow147(Game):
 
 
 class GameWindow148(Game):
-    music_list = ['(노래를 선택하세요)','정동하 - Mystery (주군의 태양 OST) : hard', 'Flower - 사랑은 알아도... : easy', '슈퍼주니어 - SUPERMAN : hard', '샤이니 - Last Christmas : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '애프터스쿨 - 너 때문에 : hard', "박효신 - It's You : hard", '포맨 - 살다가 한번쯤 : hard', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','정동하 - Mystery (주군의 태양 OST) : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', "박효신 - It's You : ★★★★★", '포맨 - 살다가 한번쯤 : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8322,7 +8286,7 @@ class GameWindow148(Game):
 
 
 class GameWindow149(Game):
-    music_list = ['(노래를 선택하세요)','오빠친구동생 - 소보루빵 : hard', '애프터스쿨 - 너 때문에 : hard', '박효신 - 야생화 : hard', "박효신 - It's You : hard", 'Flower - 사랑은 알아도... : easy', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '포맨 - 살다가 한번쯤 : hard', '4MINUTE - 팜므파탈 : norm', '스트레이 - Tonight : norm']
+    music_list = ['(노래를 선택하세요)','오빠친구동생 - 소보루빵 : ★★★★★', '애프터스쿨 - 너 때문에 : ★★★★★', '박효신 - 야생화 : ★★★★★', "박효신 - It's You : ★★★★★", 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '스트레이 - Tonight : ★★★☆☆']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -8375,7 +8339,7 @@ class GameWindow149(Game):
 
 
 class GameWindow150(Game):
-    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : easy', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Last Christmas : norm', '에일리 - 이제는 안녕 : hard', '김장훈 - 어머니는 내 마음을 아세요 : hard', '디아 - 날 위한 이별 : hard', '유준상 - Love & Hate : hard', 'NCT 127 - Switch : norm', '애프터스쿨 - 너 때문에 : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','Flower - 사랑은 알아도... : ★☆☆☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '샤이니 - Last Christmas : ★★★☆☆', '에일리 - 이제는 안녕 : ★★★★★', '김장훈 - 어머니는 내 마음을 아세요 : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '유준상 - Love & Hate : ★★★★★', 'NCT 127 - Switch : ★★★☆☆', '애프터스쿨 - 너 때문에 : ★★★★★', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -8429,7 +8393,7 @@ class GameWindow150(Game):
 
 
 class GameWindow151(Game):
-    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '빅스 - 사슬 : easy', '애프터스쿨 - 너 때문에 : hard', '지훈 - 너만 생각나 : hard', '지나유 - 처음사랑 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '4MINUTE - 팜므파탈 : norm', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : hard']
+    music_list = ['(노래를 선택하세요)','디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '빅스 - 사슬 : ★☆☆☆☆', '애프터스쿨 - 너 때문에 : ★★★★★', '지훈 - 너만 생각나 : ★★★★★', '지나유 - 처음사랑 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', 'N(엔) (VIXX) X 여은 (MelodyDay) - 니가 없는 난 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -8483,7 +8447,7 @@ class GameWindow151(Game):
 
 
 class GameWindow152(Game):
-    music_list = ['(노래를 선택하세요)',"비스트 - I'm sorry : easy", '애프터스쿨 - 너 때문에 : hard', 'f(x) - All Mine : hard', '에이핑크 - Secret Garden : easy', '비투비 블루 - 내 곁에 서 있어줘 : hard', '보아 - Only One : easy', "박효신 - It's You : hard", '잔나비 - Goodnight (Intro) : hard', '샤이니 - Wowowow : easy', '샤이니 - One : hard']
+    music_list = ['(노래를 선택하세요)',"비스트 - I'm sorry : ★☆☆☆☆", '애프터스쿨 - 너 때문에 : ★★★★★', 'f(x) - All Mine : ★★★★★', '에이핑크 - Secret Garden : ★☆☆☆☆', '비투비 블루 - 내 곁에 서 있어줘 : ★★★★★', '보아 - Only One : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '잔나비 - Goodnight (Intro) : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '샤이니 - One : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -8537,7 +8501,7 @@ class GameWindow152(Game):
 
 
 class GameWindow153(Game):
-    music_list = ['(노래를 선택하세요)','애프터스쿨 - 너 때문에 : hard', '2NE1 - 안녕 : hard', 'f(x) - Beautiful Goodbye : easy', '제이스 - 라디오 스타 : norm', '타코 & 제이형 - 어떡하죠 : norm', '크래용팝 - 1, 2, 3, 4 : hard', '시스타 - 니까짓게 : hard', '최가람 - Broken Heart : easy', '비 - 30 SEXY (East4a deeptech mix) : norm', '지놉 - 여기봐요 : norm']
+    music_list = ['(노래를 선택하세요)','애프터스쿨 - 너 때문에 : ★★★★★', '2NE1 - 안녕 : ★★★★★', 'f(x) - Beautiful Goodbye : ★☆☆☆☆', '제이스 - 라디오 스타 : ★★★☆☆', '타코 & 제이형 - 어떡하죠 : ★★★☆☆', '크래용팝 - 1, 2, 3, 4 : ★★★★★', '시스타 - 니까짓게 : ★★★★★', '최가람 - Broken Heart : ★☆☆☆☆', '비 - 30 SEXY (East4a deeptech mix) : ★★★☆☆', '지놉 - 여기봐요 : ★★★☆☆']
     def __init__(self):
         super().__init__()
         Game.__init__(self)
@@ -8590,7 +8554,7 @@ class GameWindow153(Game):
 
 
 class GameWindow154(Game):
-    music_list = ['(노래를 선택하세요)','봄바람 소년 - Only One : norm', '애프터스쿨 - 너 때문에 : hard', '인피니트 - Follow Me : hard', '디아 - 날 위한 이별 : hard', '정동하 - Mystery (주군의 태양 OST) : hard', '슈퍼주니어 - SUPERMAN : hard', 'Flower - 사랑은 알아도... : easy', "박효신 - It's You : hard", '휘성 - Night and Day : easy', '잔나비 - Goodnight (Intro) : hard']
+    music_list = ['(노래를 선택하세요)','봄바람 소년 - Only One : ★★★☆☆', '애프터스쿨 - 너 때문에 : ★★★★★', '인피니트 - Follow Me : ★★★★★', '디아 - 날 위한 이별 : ★★★★★', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '슈퍼주니어 - SUPERMAN : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', "박효신 - It's You : ★★★★★", '휘성 - Night and Day : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -8644,7 +8608,7 @@ class GameWindow154(Game):
 
 
 class GameWindow155(Game):
-    music_list = ['(노래를 선택하세요)','틴탑 - Date : easy', '어반자카파 - Rainbow Ride (Prelude) : hard', '시스타 - One More Day : hard', 'K.Will - 눈물이 뚝뚝 : easy', '셰인 - Be My Love : norm', '블루베어스 & 택연 - 오늘 같은 밤 : hard', '윤도현 - 사랑했나봐 : easy', '앤츠 - 예쁜 너니까 : easy', '창민 & 다희 - 한 사람만 보여요 (최고다 이순신 OST) : hard', '보아 - One Dream : easy']
+    music_list = ['(노래를 선택하세요)','틴탑 - Date : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '시스타 - One More Day : ★★★★★', 'K.Will - 눈물이 뚝뚝 : ★☆☆☆☆', '셰인 - Be My Love : ★★★☆☆', '블루베어스 & 택연 - 오늘 같은 밤 : ★★★★★', '윤도현 - 사랑했나봐 : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '창민 & 다희 - 한 사람만 보여요 (최고다 이순신 OST) : ★★★★★', '보아 - One Dream : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8698,7 +8662,7 @@ class GameWindow155(Game):
 
 
 class GameWindow156(Game):
-    music_list = ['(노래를 선택하세요)','에일리 - 이제는 안녕 : hard', '여은 - 사랑아 나의 사랑아 : norm', '샤이니 - Runaway : hard', '샤이니 - Last Christmas : norm', '보아 - One Dream : easy', '방탄소년단 - Intro: Never Mind : easy', '가인 - 피어나 : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '지나 - 싫어 : easy', '방탄소년단 - 고엽 : easy']
+    music_list = ['(노래를 선택하세요)','에일리 - 이제는 안녕 : ★★★★★', '여은 - 사랑아 나의 사랑아 : ★★★☆☆', '샤이니 - Runaway : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆', '보아 - One Dream : ★☆☆☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', '박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆', '지나 - 싫어 : ★☆☆☆☆', '방탄소년단 - 고엽 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8752,7 +8716,7 @@ class GameWindow156(Game):
 
 
 class GameWindow157(Game):
-    music_list = ['(노래를 선택하세요)','개리 - 둥둥 : easy', '최철호 - Der Rosenkavalier : hard', '보아 - One Dream : easy', '지나 - 싫어 : easy', 'Flower - 사랑은 알아도... : easy', '샤이니 - Runaway : hard', "박효신 - It's You : hard", '박수진 & 일렉트로보이즈 - 떨려요 : norm', '박효신 - 야생화 : hard', '이오공감 - 한 사람을 위한 마음 : norm']
+    music_list = ['(노래를 선택하세요)','개리 - 둥둥 : ★☆☆☆☆', '최철호 - Der Rosenkavalier : ★★★★★', '보아 - One Dream : ★☆☆☆☆', '지나 - 싫어 : ★☆☆☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '샤이니 - Runaway : ★★★★★', "박효신 - It's You : ★★★★★", '박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆', '박효신 - 야생화 : ★★★★★', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8807,7 +8771,7 @@ class GameWindow157(Game):
 
 
 class GameWindow158(Game):
-    music_list = ['(노래를 선택하세요)','보아 - One Dream : easy', '산들(B1A4) - 짝사랑 : norm', '스윙스 - a real lady : easy', '박재범 - Forever : hard', '샤이니 - 너의 노래가 되어 : hard', '박수진 & 일렉트로보이즈 - 떨려요 : norm', '지나 - 싫어 : easy', 'We are the night - 흐려도 좋아 : easy', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm', 'NCT 127 - Switch : norm']
+    music_list = ['(노래를 선택하세요)','보아 - One Dream : ★☆☆☆☆', '산들(B1A4) - 짝사랑 : ★★★☆☆', '스윙스 - a real lady : ★☆☆☆☆', '박재범 - Forever : ★★★★★', '샤이니 - 너의 노래가 되어 : ★★★★★', '박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆', '지나 - 싫어 : ★☆☆☆☆', 'We are the night - 흐려도 좋아 : ★☆☆☆☆', '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : ★★★☆☆', 'NCT 127 - Switch : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8861,7 +8825,7 @@ class GameWindow158(Game):
 
 
 class GameWindow159(Game):
-    music_list = ['(노래를 선택하세요)','인피니트 - 붙박이 별 : hard', '샤이니 - Your Number : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '봄바람 소년 - Only One : norm', 'Flower - 사랑은 알아도... : easy', '정동하 - Mystery (주군의 태양 OST) : hard', '빅스 - 사슬 : easy', '보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', "박효신 - It's You : hard"]
+    music_list = ['(노래를 선택하세요)','인피니트 - 붙박이 별 : ★★★★★', '샤이니 - Your Number : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '봄바람 소년 - Only One : ★★★☆☆', 'Flower - 사랑은 알아도... : ★☆☆☆☆', '정동하 - Mystery (주군의 태양 OST) : ★★★★★', '빅스 - 사슬 : ★☆☆☆☆', '보아 - One Dream : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -8916,7 +8880,7 @@ class GameWindow159(Game):
 
 class GameWindow160(Game):
     music_list = ['(노래를 선택하세요)',
-                  '보아 - Only One : easy', '유미 - Last one (주군의 태양 OST) : norm', '슈퍼주니어 - Let’s Dance : hard', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : norm', '앤츠 - 예쁜 너니까 : easy', '몬스타엑스 - 히어로 : hard', '에일리 - Live or Die : easy', '악뮤 - 다리꼬지마 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '보아 - One Dream : easy']
+                  '보아 - Only One : ★☆☆☆☆', '유미 - Last one (주군의 태양 OST) : ★★★☆☆', '슈퍼주니어 - Let’s Dance : ★★★★★', '알레그로 - 우리가 스쳐온 서울 밤하늘엔 : ★★★☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '몬스타엑스 - 히어로 : ★★★★★', '에일리 - Live or Die : ★☆☆☆☆', '악뮤 - 다리꼬지마 : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '보아 - One Dream : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -8971,7 +8935,7 @@ class GameWindow160(Game):
 
 class GameWindow161(Game):
     music_list = ['(노래를 선택하세요)',
-                  '제이켠 - 나쁜 X : norm', '어반자카파 - Rainbow Ride (Prelude) : hard', '거미 - 너를 사랑해 : hard', 'AZIATIX - Lights : easy', '비투비 - 두 번째 고백 : easy', '앤츠 - 예쁜 너니까 : easy', '에이핑크 - 하늘 높이 : hard', '2NE1 - 안녕 : hard', '보아 - One Dream : easy', '릴보이 - 돈돈돈 : easy']
+                  '제이켠 - 나쁜 X : ★★★☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '거미 - 너를 사랑해 : ★★★★★', 'AZIATIX - Lights : ★☆☆☆☆', '비투비 - 두 번째 고백 : ★☆☆☆☆', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '에이핑크 - 하늘 높이 : ★★★★★', '2NE1 - 안녕 : ★★★★★', '보아 - One Dream : ★☆☆☆☆', '릴보이 - 돈돈돈 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9026,7 +8990,7 @@ class GameWindow161(Game):
 
 class GameWindow162(Game):
     music_list = ['(노래를 선택하세요)',
-                  '보아 - One Dream : easy', '슈퍼주니어 - SUPERMAN : hard', '에이핑크 - BUBIBU : norm', '엠블랙 - Y : hard', '지나 - 싫어 : easy', '시스타 - Sunshine : hard', '주영 - 들리나요 : hard', '앤츠 - 예쁜 너니까 : easy', '휘성 - Night and Day : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy']
+                  '보아 - One Dream : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '에이핑크 - BUBIBU : ★★★☆☆', '엠블랙 - Y : ★★★★★', '지나 - 싫어 : ★☆☆☆☆', '시스타 - Sunshine : ★★★★★', '주영 - 들리나요 : ★★★★★', '앤츠 - 예쁜 너니까 : ★☆☆☆☆', '휘성 - Night and Day : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9081,7 +9045,7 @@ class GameWindow162(Game):
 
 class GameWindow163(Game):
     music_list = ['(노래를 선택하세요)',
-                  '가인 - 피어나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '김남주 & 육성재 - 사진 : norm', '뉴이스트 - 나의 천국 : hard', '한희정 - 러브레터 : norm', '참깨와 솜사탕 - 키스미 : norm', '이홍기 - Jump (뜨거운 안녕 OST) : hard', '시스타 - One More Day : hard', '클래지콰이 프로젝트 - Android : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy']
+                  '가인 - 피어나 : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '김남주 & 육성재 - 사진 : ★★★☆☆', '뉴이스트 - 나의 천국 : ★★★★★', '한희정 - 러브레터 : ★★★☆☆', '참깨와 솜사탕 - 키스미 : ★★★☆☆', '이홍기 - Jump (뜨거운 안녕 OST) : ★★★★★', '시스타 - One More Day : ★★★★★', '클래지콰이 프로젝트 - Android : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9136,7 +9100,7 @@ class GameWindow163(Game):
 
 class GameWindow164(Game):
     music_list = ['(노래를 선택하세요)',
-                  '시스타 - One More Day : hard', 'Beta89 - 청춘아 : easy', '박효신 - 야생화 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : easy', '포맨 - 살다가 한번쯤 : hard', 'EXO - MY ANSWER : hard', '코코소리 - 다크서클 : hard', '요조 - 바나나파티 : hard', '샤이니 - Last Christmas : norm']
+                  '시스타 - One More Day : ★★★★★', 'Beta89 - 청춘아 : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '형돈이와 대준이 - 안좋을때 들으면 더 안좋은 노래 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', 'EXO - MY ANSWER : ★★★★★', '코코소리 - 다크서클 : ★★★★★', '요조 - 바나나파티 : ★★★★★', '샤이니 - Last Christmas : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9191,7 +9155,7 @@ class GameWindow164(Game):
 
 class GameWindow165(Game):
     music_list = ['(노래를 선택하세요)',
-                  '에일리 - 이제는 안녕 : hard', '에이핑크 - 몰라요 : hard', '안현정 - 그대와 나 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '방탄소년단 - Intro: Never Mind : easy', '시크릿 - POISON : easy', '시스타 - One More Day : hard', 'NCT 127 - Switch : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '샤이니 - Evil : hard']
+                  '에일리 - 이제는 안녕 : ★★★★★', '에이핑크 - 몰라요 : ★★★★★', '안현정 - 그대와 나 : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '시크릿 - POISON : ★☆☆☆☆', '시스타 - One More Day : ★★★★★', 'NCT 127 - Switch : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '샤이니 - Evil : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9246,9 +9210,9 @@ class GameWindow165(Game):
 
 class GameWindow166(Game):
     music_list = ['(노래를 선택하세요)',
-                  '에이핑크 - Secret Garden : easy', '비스트 - Fiction : hard', '모던다락방 - All I Want Is 바라만봐도 : norm',
-                  '디아 - 날 위한 이별 : hard', 'Flower - 사랑은 알아도... : easy', 'DICKPUNKS - 지금을 잃고 싶지 않아 : hard',
-                  '이지수 - 너야 : easy', '시스타 - One More Day : hard', '빅스 - 사슬 : easy', "박효신 - It's You : hard"]
+                  '에이핑크 - Secret Garden : ★☆☆☆☆', '비스트 - Fiction : ★★★★★', '모던다락방 - All I Want Is 바라만봐도 : ★★★☆☆',
+                  '디아 - 날 위한 이별 : ★★★★★', 'Flower - 사랑은 알아도... : ★☆☆☆☆', 'DICKPUNKS - 지금을 잃고 싶지 않아 : ★★★★★',
+                  '이지수 - 너야 : ★☆☆☆☆', '시스타 - One More Day : ★★★★★', '빅스 - 사슬 : ★☆☆☆☆', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -9303,7 +9267,7 @@ class GameWindow166(Game):
 
 class GameWindow167(Game):
     music_list = ['(노래를 선택하세요)',
-                  '샤이니 - One : hard', '시스타 - One More Day : hard', "비스트 - I'm sorry : easy", '연애말고 결혼 OST - Love Knots : hard', '샤이니 - Wowowow : easy', '에이핑크 - Secret Garden : easy', '비스트 - Fiction : hard', 'K.Will - 눈물이 뚝뚝 : easy', '잔나비 - Goodnight (Intro) : hard', '보아 - Only One : easy']
+                  '샤이니 - One : ★★★★★', '시스타 - One More Day : ★★★★★', "비스트 - I'm sorry : ★☆☆☆☆", '연애말고 결혼 OST - Love Knots : ★★★★★', '샤이니 - Wowowow : ★☆☆☆☆', '에이핑크 - Secret Garden : ★☆☆☆☆', '비스트 - Fiction : ★★★★★', 'K.Will - 눈물이 뚝뚝 : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', '보아 - Only One : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9358,9 +9322,9 @@ class GameWindow167(Game):
 
 class GameWindow168(Game):
     music_list = ['(노래를 선택하세요)',
-                  '이오공감 - 한 사람을 위한 마음 : norm', '딕펑스 - 들리지 않겠죠 : easy', '안현정 - 그대와 나 : hard', '뉴이스트 - 나의 천국 : hard',
-                  '엠블랙 - Y : hard', 'B1A4 - 몇 번을 : hard', '박재범 - Evolution (feat. Gray) : hard', '더 라임 그리워서 : norm',
-                  '2NE1 - 안녕 : hard', '시스타 - One More Day : hard']
+                  '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', '딕펑스 - 들리지 않겠죠 : ★☆☆☆☆', '안현정 - 그대와 나 : ★★★★★', '뉴이스트 - 나의 천국 : ★★★★★',
+                  '엠블랙 - Y : ★★★★★', 'B1A4 - 몇 번을 : ★★★★★', '박재범 - Evolution (feat. Gray) : ★★★★★', '더 라임 그리워서 : ★★★☆☆',
+                  '2NE1 - 안녕 : ★★★★★', '시스타 - One More Day : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9415,7 +9379,7 @@ class GameWindow168(Game):
 
 class GameWindow169(Game):
     music_list = ['(노래를 선택하세요)',
-                  '휘성 - Night and Day : easy', '시스타 - One More Day : hard', '샤이니 - One : hard', "비스트 - I'm sorry : easy", '에이핑크 - Secret Garden : easy', '잔나비 - Goodnight (Intro) : hard', 'f(x) - All Mine : hard', '천둥 - Good : norm', '연애말고 결혼 OST - Love Knots : hard', "박효신 - It's You : hard"]
+                  '휘성 - Night and Day : ★☆☆☆☆', '시스타 - One More Day : ★★★★★', '샤이니 - One : ★★★★★', "비스트 - I'm sorry : ★☆☆☆☆", '에이핑크 - Secret Garden : ★☆☆☆☆', '잔나비 - Goodnight (Intro) : ★★★★★', 'f(x) - All Mine : ★★★★★', '천둥 - Good : ★★★☆☆', '연애말고 결혼 OST - Love Knots : ★★★★★', "박효신 - It's You : ★★★★★"]
 
     def __init__(self):
         super().__init__()
@@ -9470,7 +9434,7 @@ class GameWindow169(Game):
 
 class GameWindow170(Game):
     music_list = ['(노래를 선택하세요)',
-                  '박효신 - 야생화 : hard', '가인 - 피어나 : hard', 'B1A4 - 둘만 있으면 : easy', 'Second Moon - 다음 이시간에 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '슈퍼주니어 - SUPERMAN : hard', 'NS 윤지 - 니가 뭘 알아 : easy', '포맨 - 살다가 한번쯤 : hard', '클래지콰이 프로젝트 - Madly : norm', '지나 - 싫어 : easy']
+                  '박효신 - 야생화 : ★★★★★', '가인 - 피어나 : ★★★★★', 'B1A4 - 둘만 있으면 : ★☆☆☆☆', 'Second Moon - 다음 이시간에 : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', 'NS 윤지 - 니가 뭘 알아 : ★☆☆☆☆', '포맨 - 살다가 한번쯤 : ★★★★★', '클래지콰이 프로젝트 - Madly : ★★★☆☆', '지나 - 싫어 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9525,7 +9489,7 @@ class GameWindow170(Game):
 
 class GameWindow171(Game):
     music_list = ['(노래를 선택하세요)',
-                  '뉴클리어스 - 깃길 : easy', '가인 - 피어나 : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '크래용팝 - 1, 2, 3, 4 : hard', '샤이니 - Evil : hard', '보아 - Home : easy', 'NCT 127 - Switch : norm', '김남주 & 육성재 - 사진 : norm', '방탄소년단 - Intro: Never Mind : easy', '태양 - 기도 (feat. Teddy) : hard']
+                  '뉴클리어스 - 깃길 : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '크래용팝 - 1, 2, 3, 4 : ★★★★★', '샤이니 - Evil : ★★★★★', '보아 - Home : ★☆☆☆☆', 'NCT 127 - Switch : ★★★☆☆', '김남주 & 육성재 - 사진 : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '태양 - 기도 (feat. Teddy) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9580,7 +9544,7 @@ class GameWindow171(Game):
 
 class GameWindow172(Game):
     music_list = ['(노래를 선택하세요)',
-                  '크래용팝 - 1, 2, 3, 4 : hard', '방탄소년단 - 고엽 : easy', '샤이니 - Evil : hard', '비투비 - 자리비움 : easy', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '방탄소년단 - Intro: Never Mind : easy', '빅스 - 사슬 : easy', '에이프릴 - 스노우맨 : norm', '홍대광 - 아닌가요 : hard']
+                  '크래용팝 - 1, 2, 3, 4 : ★★★★★', '방탄소년단 - 고엽 : ★☆☆☆☆', '샤이니 - Evil : ★★★★★', '비투비 - 자리비움 : ★☆☆☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '빅스 - 사슬 : ★☆☆☆☆', '에이프릴 - 스노우맨 : ★★★☆☆', '홍대광 - 아닌가요 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9635,7 +9599,7 @@ class GameWindow172(Game):
 
 class GameWindow173(Game):
     music_list = ['(노래를 선택하세요)',
-                  '아이유 - 느리게 하는 일 : hard', '한희정 - 러브레터 : norm', '뉴이스트 - 나의 천국 : hard', '안현정 - 그대와 나 : hard', '황치열, 리싸 - 이 밤의 끝을 잡고 : easy', '이유성 - Butter Flying : norm', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '가인 - 피어나 : hard', '유미 - Last one (주군의 태양 OST) : norm', '보아 - Only One : easy']
+                  '아이유 - 느리게 하는 일 : ★★★★★', '한희정 - 러브레터 : ★★★☆☆', '뉴이스트 - 나의 천국 : ★★★★★', '안현정 - 그대와 나 : ★★★★★', '황치열, 리싸 - 이 밤의 끝을 잡고 : ★☆☆☆☆', '이유성 - Butter Flying : ★★★☆☆', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '가인 - 피어나 : ★★★★★', '유미 - Last one (주군의 태양 OST) : ★★★☆☆', '보아 - Only One : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9690,7 +9654,7 @@ class GameWindow173(Game):
 
 class GameWindow174(Game):
     music_list = ['(노래를 선택하세요)',
-                  '안현정 - 그대와 나 : hard', '뉴이스트 - 나의 천국 : hard', 'B1A4 - 몇 번을 : hard', '2NE1 - 안녕 : hard', '수지 - Ring My Bell : hard', '멜로디데이 - Lake Wave (주군의 태양 OST) : easy', '이오공감 - 한 사람을 위한 마음 : norm', '주헌, 형원, I.M - 인터스텔라 (Interstellar) : hard', '더 케이투 OST - The K2 Main Theme : norm', '가인 - 피어나 : hard']
+                  '안현정 - 그대와 나 : ★★★★★', '뉴이스트 - 나의 천국 : ★★★★★', 'B1A4 - 몇 번을 : ★★★★★', '2NE1 - 안녕 : ★★★★★', '수지 - Ring My Bell : ★★★★★', '멜로디데이 - Lake Wave (주군의 태양 OST) : ★☆☆☆☆', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆', '주헌, 형원, I.M - 인터스텔라 (Interstellar) : ★★★★★', '더 케이투 OST - The K2 Main Theme : ★★★☆☆', '가인 - 피어나 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9745,9 +9709,9 @@ class GameWindow174(Game):
 
 class GameWindow175(Game):
     music_list = ['(노래를 선택하세요)',
-                  "박효신 - It's You : hard", '천둥 - Good : norm', '가인 - 피어나 : hard', '휘성 - Night and Day : easy',
-                  'Flower - 사랑은 알아도... : easy', '이지수 - 너야 : easy', '정동하 - Mystery (주군의 태양 OST) : hard',
-                  '디아 - 날 위한 이별 : hard', '4MINUTE - 팜므파탈 : norm', '슈퍼주니어 - SUPERMAN : hard']
+                  "박효신 - It's You : ★★★★★", '천둥 - Good : ★★★☆☆', '가인 - 피어나 : ★★★★★', '휘성 - Night and Day : ★☆☆☆☆',
+                  'Flower - 사랑은 알아도... : ★☆☆☆☆', '이지수 - 너야 : ★☆☆☆☆', '정동하 - Mystery (주군의 태양 OST) : ★★★★★',
+                  '디아 - 날 위한 이별 : ★★★★★', '4MINUTE - 팜므파탈 : ★★★☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9802,7 +9766,7 @@ class GameWindow175(Game):
 
 class GameWindow176(Game):
     music_list = ['(노래를 선택하세요)',
-                  'NCT 127 - Switch : norm', '박효신 - 야생화 : hard', '태양 - 기도 (feat. Teddy) : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '샤이니 - Evil : hard', '김남주 & 육성재 - 사진 : norm', '안현정 - 그대와 나 : hard', '한희정 - 러브레터 : norm', '뉴클리어스 - 깃길 : easy', '어반자카파 - Rainbow Ride (Prelude) : hard']
+                  'NCT 127 - Switch : ★★★☆☆', '박효신 - 야생화 : ★★★★★', '태양 - 기도 (feat. Teddy) : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '샤이니 - Evil : ★★★★★', '김남주 & 육성재 - 사진 : ★★★☆☆', '안현정 - 그대와 나 : ★★★★★', '한희정 - 러브레터 : ★★★☆☆', '뉴클리어스 - 깃길 : ★☆☆☆☆', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9857,7 +9821,7 @@ class GameWindow176(Game):
 
 class GameWindow177(Game):
     music_list = ['(노래를 선택하세요)',
-                  '빅스 - 사슬 : easy', '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', '샤이니 - Last Christmas : norm', '박효신 - 야생화 : hard', '코코소리 - 다크서클 : hard', '방탄소년단 - Intro: Never Mind : easy', 'Lucia(심규선) - 녹여줘 : norm', "박효신 - It's You : hard", 'Beta89 - 청춘아 : easy']
+                  '빅스 - 사슬 : ★☆☆☆☆', '슈퍼주니어 - SUPERMAN : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', '샤이니 - Last Christmas : ★★★☆☆', '박효신 - 야생화 : ★★★★★', '코코소리 - 다크서클 : ★★★★★', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', 'Lucia(심규선) - 녹여줘 : ★★★☆☆', "박효신 - It's You : ★★★★★", 'Beta89 - 청춘아 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -9912,7 +9876,7 @@ class GameWindow177(Game):
 
 class GameWindow178(Game):
     music_list = ['(노래를 선택하세요)',
-                  '보아 - Only One : easy', '박효신 - 야생화 : hard', '포맨 - 살다가 한번쯤 : hard', "박효신 - It's You : hard", '슈퍼주니어 - SUPERMAN : hard', '더 콰이엇 - 진흙 속에서 피는 꽃 : easy', 'Lucia(심규선) - 녹여줘 : norm', 'Beta89 - 청춘아 : easy', '바스코 - Whoa Ha ! : norm', '코코소리 - 다크서클 : hard']
+                  '보아 - Only One : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★', '포맨 - 살다가 한번쯤 : ★★★★★', "박효신 - It's You : ★★★★★", '슈퍼주니어 - SUPERMAN : ★★★★★', '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆', 'Lucia(심규선) - 녹여줘 : ★★★☆☆', 'Beta89 - 청춘아 : ★☆☆☆☆', '바스코 - Whoa Ha ! : ★★★☆☆', '코코소리 - 다크서클 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -9966,7 +9930,7 @@ class GameWindow178(Game):
 
 class GameWindow179(Game):
     music_list = ['(노래를 선택하세요)',
-                  '박효신 - 야생화 : hard', '니엘 - 심쿵 : hard', '에이핑크 - 하늘 높이 : hard', '시크릿 - Madonna : easy', '태민 - One By One : norm', '송지은 - 예쁜 나이 25살 : norm', '디아 - 날 위한 이별 : hard', '민연재 - 비행소녀 : hard', '2NE1 - 안녕 : hard', 'We are the night - 흐려도 좋아 : easy']
+                  '박효신 - 야생화 : ★★★★★', '니엘 - 심쿵 : ★★★★★', '에이핑크 - 하늘 높이 : ★★★★★', '시크릿 - Madonna : ★☆☆☆☆', '태민 - One By One : ★★★☆☆', '송지은 - 예쁜 나이 25살 : ★★★☆☆', '디아 - 날 위한 이별 : ★★★★★', '민연재 - 비행소녀 : ★★★★★', '2NE1 - 안녕 : ★★★★★', 'We are the night - 흐려도 좋아 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10021,7 +9985,7 @@ class GameWindow179(Game):
 
 class GameWindow180(Game):
     music_list = ['(노래를 선택하세요)',
-                  '김예림 - 행복한 나를 : hard', 'DEAN - Bonnie & Clyde : easy', 'f(x) - Stand Up : norm', 'B.A.P - 0 (Zero) : easy', 'B.A.P - Fermata : hard', '니엘 - 아포카토 : easy', '박효신 - 야생화 : hard', '휘성 - Night and Day : easy', '셰인 - Be My Love : norm', '4minute - 이름이 뭐예요? : norm']
+                  '김예림 - 행복한 나를 : ★★★★★', 'DEAN - Bonnie & Clyde : ★☆☆☆☆', 'f(x) - Stand Up : ★★★☆☆', 'B.A.P - 0 (Zero) : ★☆☆☆☆', 'B.A.P - Fermata : ★★★★★', '니엘 - 아포카토 : ★☆☆☆☆', '박효신 - 야생화 : ★★★★★', '휘성 - Night and Day : ★☆☆☆☆', '셰인 - Be My Love : ★★★☆☆', '4minute - 이름이 뭐예요? : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10076,7 +10040,7 @@ class GameWindow180(Game):
 
 class GameWindow181(Game):
     music_list = ['(노래를 선택하세요)',
-                  'NCT 127 - Switch : norm', '빅스 - 사슬 : easy', '시크릿 - POISON : easy', '악뮤 - 다리꼬지마 : hard', 'B1A4 - 몇 번을 : hard', '어반자카파 - Rainbow Ride (Prelude) : hard', '보경, 셰인 - Summer Love : norm', '방탄소년단 - Intro: Never Mind : easy', '샤이니 - Evil : hard', '이오공감 - 한 사람을 위한 마음 : norm']
+                  'NCT 127 - Switch : ★★★☆☆', '빅스 - 사슬 : ★☆☆☆☆', '시크릿 - POISON : ★☆☆☆☆', '악뮤 - 다리꼬지마 : ★★★★★', 'B1A4 - 몇 번을 : ★★★★★', '어반자카파 - Rainbow Ride (Prelude) : ★★★★★', '보경, 셰인 - Summer Love : ★★★☆☆', '방탄소년단 - Intro: Never Mind : ★☆☆☆☆', '샤이니 - Evil : ★★★★★', '이오공감 - 한 사람을 위한 마음 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10131,16 +10095,16 @@ class GameWindow181(Game):
 
 class GameWindow182(Game):
     music_list = ['(노래를 선택하세요)',
-                  '샤이니 - Your Number : easy',
-                  '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : norm',
-                  '더 콰이엇 - 진흙 속에서 피는 꽃 : easy',
-                  '태양 - 기도 (feat. Teddy) : hard',
-                  '황치열, 리싸 - 이 밤의 끝을 잡고 : easy',
-                  '에일리 - 이제는 안녕 : hard',
-                  '보아 - Only One (Instrumental) : easy',
-                  '김남주 & 육성재 - 사진 : norm',
-                  '방탄소년단 - Intro: Never Mind : easy',
-                  'NCT 127 - Switch : norm']
+                  '샤이니 - Your Number : ★☆☆☆☆',
+                  '임창정 - 그렇게 당해놓고 (feat.마부스 OF 일렉트로보이즈) (inst) : ★★★☆☆',
+                  '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆',
+                  '태양 - 기도 (feat. Teddy) : ★★★★★',
+                  '황치열, 리싸 - 이 밤의 끝을 잡고 : ★☆☆☆☆',
+                  '에일리 - 이제는 안녕 : ★★★★★',
+                  '보아 - Only One (Instrumental) : ★☆☆☆☆',
+                  '김남주 & 육성재 - 사진 : ★★★☆☆',
+                  '방탄소년단 - Intro: Never Mind : ★☆☆☆☆',
+                  'NCT 127 - Switch : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10184,16 +10148,16 @@ class GameWindow182(Game):
 
 class GameWindow183(Game):
     music_list = ['(노래를 선택하세요)',
-                  '김현우 - Love Blowing : norm',
-                  'NCT 127 - Switch : norm',
-                  '한희정 - 입맞춤, 입술의 춤 : hard',
-                  '2NE1 - Goodbye : hard',
-                  '오준성 - The Chorus Of Knights : easy',
-                  '악동뮤지션 - 사람들이 움직이는 게 : hard',
-                  '인피니트 - 붙박이 별 : hard',
-                  '딕펑스 - 요즘 젊은 것들 : norm',
-                  '백지영 - 사랑아 또 사랑아 : easy',
-                  '이지수 - 너야 : easy']
+                  '김현우 - Love Blowing : ★★★☆☆',
+                  'NCT 127 - Switch : ★★★☆☆',
+                  '한희정 - 입맞춤, 입술의 춤 : ★★★★★',
+                  '2NE1 - Goodbye : ★★★★★',
+                  '오준성 - The Chorus Of Knights : ★☆☆☆☆',
+                  '악동뮤지션 - 사람들이 움직이는 게 : ★★★★★',
+                  '인피니트 - 붙박이 별 : ★★★★★',
+                  '딕펑스 - 요즘 젊은 것들 : ★★★☆☆',
+                  '백지영 - 사랑아 또 사랑아 : ★☆☆☆☆',
+                  '이지수 - 너야 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10237,16 +10201,16 @@ class GameWindow183(Game):
 
 class GameWindow184(Game):
     music_list = ['(노래를 선택하세요)',
-                  '휘성 - Night and Day : easy',
-                  '방탄소년단 - Intro: Never Mind : easy',
-                  '딕펑스 - 요즘 젊은 것들 : norm',
-                  '샤이니 - Your Number : easy',
-                  '천둥 - Good : norm',
-                  '황치열, 리싸 - 이 밤의 끝을 잡고 : easy',
-                  '더 콰이엇 - 진흙 속에서 피는 꽃 : easy',
-                  'NCT 127 - Switch : norm',
-                  '어반자카파 - Rainbow Ride (Prelude) : hard',
-                  '정동하 - Mystery (주군의 태양 OST) : hard']
+                  '휘성 - Night and Day : ★☆☆☆☆',
+                  '방탄소년단 - Intro: Never Mind : ★☆☆☆☆',
+                  '딕펑스 - 요즘 젊은 것들 : ★★★☆☆',
+                  '샤이니 - Your Number : ★☆☆☆☆',
+                  '천둥 - Good : ★★★☆☆',
+                  '황치열, 리싸 - 이 밤의 끝을 잡고 : ★☆☆☆☆',
+                  '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆',
+                  'NCT 127 - Switch : ★★★☆☆',
+                  '어반자카파 - Rainbow Ride (Prelude) : ★★★★★',
+                  '정동하 - Mystery (주군의 태양 OST) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -10291,16 +10255,16 @@ class GameWindow184(Game):
 
 class GameWindow185(Game):
     music_list = ['(노래를 선택하세요)',
-                  '오빠친구동생 - 소보루빵 : hard',
-                  '딕펑스 - 한강에서 놀아요 : norm',
-                  '이지수 - 너야 : easy',
-                  '스트레이 - Tonight : norm',
-                  "박효신 - It's You : hard",
-                  '디아 - 날 위한 이별 : hard',
-                  '보아 - Only One (Instrumental) : easy',
-                  'Flower - 사랑은 알아도... : easy',
-                  '빅스 - 사슬 : easy',
-                  '딕펑스 - 요즘 젊은 것들 : norm']
+                  '오빠친구동생 - 소보루빵 : ★★★★★',
+                  '딕펑스 - 한강에서 놀아요 : ★★★☆☆',
+                  '이지수 - 너야 : ★☆☆☆☆',
+                  '스트레이 - Tonight : ★★★☆☆',
+                  "박효신 - It's You : ★★★★★",
+                  '디아 - 날 위한 이별 : ★★★★★',
+                  '보아 - Only One (Instrumental) : ★☆☆☆☆',
+                  'Flower - 사랑은 알아도... : ★☆☆☆☆',
+                  '빅스 - 사슬 : ★☆☆☆☆',
+                  '딕펑스 - 요즘 젊은 것들 : ★★★☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10344,16 +10308,16 @@ class GameWindow185(Game):
 
 class GameWindow186(Game):
     music_list = ['(노래를 선택하세요)',
-                  '2NE1 - Goodbye : hard',
-                  '멜로디데이 - Lake Wave (주군의 태양 OST) : easy',
-                  '빅스 - 사슬 : easy',
-                  '에이핑크 - Wanna Be : easy',
-                  '주헌, 형원, I.M - 인터스텔라 (Interstellar) : hard',
-                  '태양 - 기도 (feat. Teddy) : hard',
-                  '종현 - 그래도 되지 않아? : hard',
-                  '팀 - River Flows in You : norm',
-                  '백지영 - 사랑아 또 사랑아 : easy',
-                  '4minute - 안 줄래 : hard']
+                  '2NE1 - Goodbye : ★★★★★',
+                  '멜로디데이 - Lake Wave (주군의 태양 OST) : ★☆☆☆☆',
+                  '빅스 - 사슬 : ★☆☆☆☆',
+                  '에이핑크 - Wanna Be : ★☆☆☆☆',
+                  '주헌, 형원, I.M - 인터스텔라 (Interstellar) : ★★★★★',
+                  '태양 - 기도 (feat. Teddy) : ★★★★★',
+                  '종현 - 그래도 되지 않아? : ★★★★★',
+                  '팀 - River Flows in You : ★★★☆☆',
+                  '백지영 - 사랑아 또 사랑아 : ★☆☆☆☆',
+                  '4minute - 안 줄래 : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -10398,16 +10362,16 @@ class GameWindow186(Game):
 
 class GameWindow187(Game):
     music_list = ['(노래를 선택하세요)',
-                  '더 콰이엇 - 진흙 속에서 피는 꽃 : easy',
-                  '비하트 - 필요없어 : easy',
-                  '비투비 - 자리비움 : easy',
-                  '린 - 이별주 : hard',
-                  '방탄소년단 - 고엽 : easy',
-                  '박수진 & 일렉트로보이즈 - 떨려요 : norm',
-                  '방탄소년단 - Intro: Never Mind : easy',
-                  '휘성 - Night and Day : easy',
-                  '정동하 - Mystery (주군의 태양 OST) : hard',
-                  '빅스 - 사슬 : easy']
+                  '더 콰이엇 - 진흙 속에서 피는 꽃 : ★☆☆☆☆',
+                  '비하트 - 필요없어 : ★☆☆☆☆',
+                  '비투비 - 자리비움 : ★☆☆☆☆',
+                  '린 - 이별주 : ★★★★★',
+                  '방탄소년단 - 고엽 : ★☆☆☆☆',
+                  '박수진 & 일렉트로보이즈 - 떨려요 : ★★★☆☆',
+                  '방탄소년단 - Intro: Never Mind : ★☆☆☆☆',
+                  '휘성 - Night and Day : ★☆☆☆☆',
+                  '정동하 - Mystery (주군의 태양 OST) : ★★★★★',
+                  '빅스 - 사슬 : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
@@ -10454,16 +10418,16 @@ class GameWindow187(Game):
 
 class GameWindow188(Game):
     music_list = ['(노래를 선택하세요)',
-                  '클래지콰이 프로젝트 - Android : norm',
-                  '2NE1 - Goodbye : hard',
-                  '셰인 - Be My Love : norm',
-                  '에이핑크 - Wanna Be : easy',
-                  '한희정 - 러브레터 : norm',
-                  '뉴이스트 - 나의 천국 : hard',
-                  '헨리(슈퍼주니어 M) - My Everything : hard',
-                  '티어라이너 - Einfühlung : hard',
-                  '보아 - Only One (Instrumental) : easy',
-                  '성시경 - Winter Wonderland : hard']
+                  '클래지콰이 프로젝트 - Android : ★★★☆☆',
+                  '2NE1 - Goodbye : ★★★★★',
+                  '셰인 - Be My Love : ★★★☆☆',
+                  '에이핑크 - Wanna Be : ★☆☆☆☆',
+                  '한희정 - 러브레터 : ★★★☆☆',
+                  '뉴이스트 - 나의 천국 : ★★★★★',
+                  '헨리(슈퍼주니어 M) - My Everything : ★★★★★',
+                  '티어라이너 - Einfühlung : ★★★★★',
+                  '보아 - Only One (Instrumental) : ★☆☆☆☆',
+                  '성시경 - Winter Wonderland : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -10508,16 +10472,16 @@ class GameWindow188(Game):
 
 class GameWindow189(Game):
     music_list = ['(노래를 선택하세요)',
-                  '보아 - Only One (Instrumental) : easy',
-                  "비스트 - I'm sorry : easy",
-                  '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : hard',
-                  '인피니트 - Follow Me : hard',
-                  '프롬 - 달의 뒤편으로 와요 : norm',
-                  '휘성 - Night and Day : easy',
-                  "박효신 - It's You : hard",
-                  '연애말고 결혼 OST - Love Knots : hard',
-                  'K.Will - 눈물이 뚝뚝 : easy',
-                  '잔나비 - Goodnight (Intro) : hard']
+                  '보아 - Only One (Instrumental) : ★☆☆☆☆',
+                  "비스트 - I'm sorry : ★☆☆☆☆",
+                  '일렉트로보이즈 - love (feat. 승희 from brave new girl group) : ★★★★★',
+                  '인피니트 - Follow Me : ★★★★★',
+                  '프롬 - 달의 뒤편으로 와요 : ★★★☆☆',
+                  '휘성 - Night and Day : ★☆☆☆☆',
+                  "박효신 - It's You : ★★★★★",
+                  '연애말고 결혼 OST - Love Knots : ★★★★★',
+                  'K.Will - 눈물이 뚝뚝 : ★☆☆☆☆',
+                  '잔나비 - Goodnight (Intro) : ★★★★★']
 
     def __init__(self):
         super().__init__()
@@ -10562,16 +10526,16 @@ class GameWindow189(Game):
 
 class GameWindow190(Game):
     music_list = ['(노래를 선택하세요)',
-                  '2NE1 - Goodbye : hard',
-                  '에이핑크 - 끌려 : easy',
-                  '신용재 - 평범한 사랑 : norm',
-                  '슈퍼주니어 - Oops!! : hard',
-                  '유미 - Last one (주군의 태양 OST) : norm',
-                  'LOCO - 높아 2 : hard',
-                  '조권 & 니엘 & 지오 & 양요섭 & 우현 - 눈물나게 아름다운 : hard',
-                  '기리보이, 매드클라운, 주영 - 0 (YOUNG) : hard',
-                  '오준성 - Enjoy Party : easy',
-                  '휘성 - Night and Day : easy']
+                  '2NE1 - Goodbye : ★★★★★',
+                  '에이핑크 - 끌려 : ★☆☆☆☆',
+                  '신용재 - 평범한 사랑 : ★★★☆☆',
+                  '슈퍼주니어 - Oops!! : ★★★★★',
+                  '유미 - Last one (주군의 태양 OST) : ★★★☆☆',
+                  'LOCO - 높아 2 : ★★★★★',
+                  '조권 & 니엘 & 지오 & 양요섭 & 우현 - 눈물나게 아름다운 : ★★★★★',
+                  '기리보이, 매드클라운, 주영 - 0 (YOUNG) : ★★★★★',
+                  '오준성 - Enjoy Party : ★☆☆☆☆',
+                  '휘성 - Night and Day : ★☆☆☆☆']
 
     def __init__(self):
         super().__init__()
