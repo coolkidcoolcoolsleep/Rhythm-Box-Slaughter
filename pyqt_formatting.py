@@ -33,7 +33,7 @@ for u in tqdm(range(16509, 16699)):
 
     youtube = []
     for i in range(len(user_ids)):
-        youtube.append(f'elif item == self.music_list[{i}]: self.music_thread(\'{y_link[0][i]}\') '
+        youtube.append(f'elif item == self.music_list[{i+1}]: self.music_thread(\'{y_link[0][i]}\') '
                        f'self.btn_start.clicked.connect(self.game_start_{level[0][i]})')
     youtube_links = pd.DataFrame(youtube, columns=[f'{u}'])
     youtube_links.to_csv(f'./format/youtube_link_{u}.csv', index=False)

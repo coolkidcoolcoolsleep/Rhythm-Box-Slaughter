@@ -21,7 +21,6 @@ youtube_bpm_list = youtube_bpm_list.append(random_20, ignore_index=True)
 recommended = pd.merge(recommended_3800, youtube_bpm_list, how='inner')
 # inner 로 해서 없으면 그냥 데이터에서 삭제시키는 걸로 진행
 recommended = recommended.sort_values(by=['user_id', 'pred'], ascending=[True, False])
-recommended.to_csv('./recommended.csv', index=False)
 print(recommended.info())
 print(recommended.head())
 
@@ -31,7 +30,6 @@ users = recommended.groupby('user_id')
 # print(users.filter(lambda g: len(g) < 8))           # 8개보다 적은 건 없네
 print(users.size())
 func = lambda g: g.sort_values(by='pred', ascending=False)[:8]
-users.apply(func).set_index('user_id').to_csv('./recommended_8.csv')
 
 '''사용자가 선택한 2곡(all_prob) 에 대하여 곡의 유튜브, bpm 정보 연결하기'''
 all_prob_380 = pd.merge(all_prob, random_20, on='song_id')
@@ -64,7 +62,7 @@ print(recommended_final.head())
 print(recommended_final['level'].value_counts())
 
 '''최종 결과물 출력하기'''
-recommended_final.to_csv('./recommended_final.csv', index=False)
+# recommended_final.to_csv('./recommended_final.csv', index=False)
 
 
 
